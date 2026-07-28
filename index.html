@@ -716,7 +716,7 @@ tr:last-child td{ border-bottom:none; }
               <tr>
                 <th class="sticky-col">Agent</th>
                 <th>Zone</th>
-                <th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+                <th id="thLun">Lun</th><th id="thMar">Mar</th><th id="thMer">Mer</th><th id="thJeu">Jeu</th><th id="thVen">Ven</th><th id="thSam">Sam</th><th id="thDim">Dim</th>
                 <th>Total</th>
                 <th></th>
               </tr>
@@ -733,7 +733,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="card planning-card hidden" id="zonesGridWrap">
           <table class="planning-table">
             <thead>
-              <tr><th class="sticky-col">Zone</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th></tr>
+              <tr><th class="sticky-col">Zone</th><th id="thZLun">Lun</th><th id="thZMar">Mar</th><th id="thZMer">Mer</th><th id="thZJeu">Jeu</th><th id="thZVen">Ven</th><th id="thZSam">Sam</th><th id="thZDim">Dim</th></tr>
             </thead>
             <tbody id="zonesTableBody"></tbody>
           </table>
@@ -1800,6 +1800,23 @@ function updateWeekHeader(){
   const weekIdx = getISOWeekIndex(currentWeekStart);
   document.getElementById('weekLabel').textContent = `Semaine ${weekIdx}`;
   document.getElementById('weekRange').textContent = formatWeekRange(currentWeekStart);
+  updateDayHeaders();
+}
+
+const DAY_HEADER_IDS = ['thLun', 'thMar', 'thMer', 'thJeu', 'thVen', 'thSam', 'thDim'];
+const DAY_HEADER_SHORT = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+const ZONE_DAY_HEADER_IDS = ['thZLun', 'thZMar', 'thZMer', 'thZJeu', 'thZVen', 'thZSam', 'thZDim'];
+function updateDayHeaders(){
+  DAY_HEADER_IDS.forEach((id, i) => {
+    const d = new Date(currentWeekStart); d.setDate(d.getDate() + i);
+    const el = document.getElementById(id);
+    if(el) el.textContent = `${DAY_HEADER_SHORT[i]} ${d.getDate()}`;
+  });
+  ZONE_DAY_HEADER_IDS.forEach((id, i) => {
+    const d = new Date(currentWeekStart); d.setDate(d.getDate() + i);
+    const el = document.getElementById(id);
+    if(el) el.textContent = `${DAY_HEADER_SHORT[i]} ${d.getDate()}`;
+  });
 }
 
 document.getElementById('prevWeekBtn').addEventListener('click', () => {
