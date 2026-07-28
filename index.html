@@ -1952,6 +1952,17 @@ function populateAgentNamesDatalist(){
   list.innerHTML = AGENTS.map(a => `<option value="${a.name}">`).join('');
 }
 
+function moveAgentRow(agentId, direction, orderedList){
+  const ids = orderedList.map(a => a.id);
+  const idx = ids.indexOf(agentId);
+  const targetIdx = idx + direction;
+  if(targetIdx < 0 || targetIdx >= ids.length) return;
+  [ids[idx], ids[targetIdx]] = [ids[targetIdx], ids[idx]];
+  const batch = db.batch();
+  ids.forEach((id, i) => batch.update(db.collection('agents').doc(id), { order: i }));
+  batch.commit().catch(err => console.error(err));
+}
+
 function renderPlanningTable(){
   populateAgentNamesDatalist();
   const tbody = document.getElementById('planningTableBody');
@@ -1970,6 +1981,11 @@ function renderPlanningTable(){
 
   // Trie par Zone (agents de la même zone regroupés côte à côte), puis par nom
   groupedAgents = [...groupedAgents].sort((a, b) => {
+    const oa = typeof a.order === 'number' ? a.order : null;
+    const ob = typeof b.order === 'number' ? b.order : null;
+    if(oa !== null && ob !== null) return oa - ob;
+    if(oa !== null) return -1;
+    if(ob !== null) return 1;
     const za = (currentPlanningData.agents && currentPlanningData.agents[a.id] && currentPlanningData.agents[a.id].zone) || '';
     const zb = (currentPlanningData.agents && currentPlanningData.agents[b.id] && currentPlanningData.agents[b.id].zone) || '';
     if(za !== zb) return za.localeCompare(zb);
@@ -1995,10 +2011,17 @@ function renderPlanningTable(){
       <td class="zone-cell" style="${zoneBorder}"><select class="cell-select zone-select" data-agent="${a.id}" style="border-color: var(--line); font-weight:600;">${zoneOptions}</select></td>
       ${dayCellsHtml}
       <td class="total-cell" style="${zoneBorder}">${totalHours}h</td>
-      <td style="${zoneBorder}"><button class="icon-btn" data-toggle-period="${a.id}" title="Inverser Matin/Nuit toute la semaine">🔄</button></td>
+      <td style="${zoneBorder}; white-space:nowrap;">
+        <button class="icon-btn" data-toggle-period="${a.id}" title="Inverser Matin/Nuit toute la semaine">🔄</button>
+        <button class="icon-btn" data-move-up="${a.id}" title="Monter">▲</button>
+        <button class="icon-btn" data-move-down="${a.id}" title="Descendre">▼</button>
+      </td>
     `;
     tbody.appendChild(tr);
   });
+
+  tbody.querySelectorAll('[data-move-up]').forEach(btn => btn.addEventListener('click', () => moveAgentRow(btn.dataset.moveUp, -1, groupedAgents)));
+  tbody.querySelectorAll('[data-move-down]').forEach(btn => btn.addEventListener('click', () => moveAgentRow(btn.dataset.moveDown, 1, groupedAgents)));
 
   tbody.querySelectorAll('.agent-name-edit').forEach(input => {
     input.addEventListener('focus', () => {
