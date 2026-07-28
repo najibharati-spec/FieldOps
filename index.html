@@ -1010,6 +1010,8 @@ const SHIFT_CATALOG = {
   N8:     { label: "18:00-02:00", hours: 8, cls: "s-nuit"   },
   N7B:    { label: "17:00-00:00", hours: 7, cls: "s-nuit"   },
   N8B:    { label: "17:00-01:00", hours: 8, cls: "s-nuit"   },
+  N7C:    { label: "19:00-02:00", hours: 7, cls: "s-nuit"   },
+  N8C:    { label: "19:00-03:00", hours: 8, cls: "s-nuit"   },
   ABS:    { label: "Absent",      hours: 0, cls: "s-quiet"  },
   MALADE: { label: "Malade",      hours: 0, cls: "s-quiet"  },
   CONGE:  { label: "Congé",       hours: 0, cls: "s-quiet"  },
@@ -1934,7 +1936,7 @@ function getShiftInfo(code){
       let endM = parseInt(parts[1].slice(0, 2)) * 60 + parseInt(parts[1].slice(2));
       let hours = (endM - startM) / 60;
       if(hours <= 0) hours += 24;
-      const cls = (startHour >= 5 && startHour < 15) ? 's-jour' : 's-nuit';
+      const cls = (startHour >= 10 && startHour < 17) ? 's-jour' : 's-nuit';
       return { label: `${startLabel}-${endLabel}`, hours: Math.round(hours * 10) / 10, cls };
     }
   }
@@ -2050,7 +2052,7 @@ function togglePeriod(agentId){
   if(!currentPlanningData || !currentPlanningData.agents || !currentPlanningData.agents[agentId]) return;
   if(isEditingCurrentWeek() && !confirm('Tu modifies le planning de la semaine EN COURS. Continuer ?')) return;
   const data = currentPlanningData.agents[agentId];
-  const swap = { M7: 'N7', M8: 'N8', N7: 'M7', N8: 'M8', N7B: 'M7', N8B: 'M8' };
+  const swap = { M7: 'N7', M8: 'N8', N7: 'M7', N8: 'M8', N7B: 'M7', N8B: 'M8', N7C: 'M7', N8C: 'M8' };
   const newCells = {};
   DAY_KEYS.forEach(day => {
     const code = data.cells[day];
@@ -2160,7 +2162,7 @@ function renderZonesView(){
         if(code.startsWith('M')) icon = '☀️';
         else if(code.startsWith('C-')){
           const startHour = parseInt(code.slice(2, 4));
-          icon = (startHour >= 5 && startHour < 15) ? '☀️' : '🌙';
+          icon = (startHour >= 10 && startHour < 17) ? '☀️' : '🌙';
         }
         return `${icon} ${a.nickname || a.name.split(' ').slice(-1)[0]}`;
       });
@@ -2181,7 +2183,7 @@ function computeWarnings(planningData){
     const codes = DAY_KEYS.map(d => data.cells[d] || 'OFF');
     const workDays = codes.filter(c => c !== 'OFF').length;
     const offDays = codes.filter(c => c === 'OFF').length;
-    const eightHDays = codes.filter(c => c === 'M8' || c === 'N8' || c === 'N8B').length;
+    const eightHDays = codes.filter(c => c === 'M8' || c === 'N8' || c === 'N8B' || c === 'N8C').length;
     if(workDays > 6) warnings.push(`${a.name} : plus de 6 jours travaillés cette semaine.`);
     if(offDays === 0) warnings.push(`${a.name} : aucun jour OFF cette semaine.`);
     if(offDays > 1) warnings.push(`${a.name} : plus d'un jour OFF cette semaine.`);
