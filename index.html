@@ -662,6 +662,7 @@ tr:last-child td{ border-bottom:none; }
             <button class="btn-ghost" id="importTeamBtn" style="border:1px solid var(--line);">⚡ Importer les 13 agents</button>
             <button class="btn-ghost" id="genAllPinsBtn" style="border:1px solid var(--line);">🎲 Générer les PIN manquants</button>
             <button class="btn-ghost" id="genAllNicknamesBtn" style="border:1px solid var(--line);">✏️ Surnoms manquants</button>
+            <button class="btn-ghost" id="fixDefaultsBtn" style="border:1px solid var(--line);">🎯 Jour/Nuit/OFF par défaut</button>
             <button class="btn-ghost" id="renameZonesBtn" style="border:1px solid var(--line);">🏷️ Renommer les zones</button>
             <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
           </div>
@@ -933,7 +934,22 @@ tr:last-child td{ border-bottom:none; }
     </div>
 
     <p class="modal-hint hidden" id="rotationHint">La zone de ce groupe change chaque semaine selon la rotation automatique (Agdal - Carrousel / Hay Riad - Soussi / Temara - Oulad Mtaa).</p>
-    <p class="modal-hint hidden" id="saleHint">Zone fixe : Salé - Medina. Le Matin/Nuit tourne automatiquement entre les membres de ce groupe.</p>
+    <p class="modal-hint hidden" id="saleHint">Zone fixe : Salé - Medina.</p>
+
+    <label class="form-label">Période habituelle (fixe — ne tourne plus automatiquement)</label>
+    <select id="agentDefaultPeriodInput" class="login-input">
+      <option value="JOUR">☀️ Jour</option>
+      <option value="NUIT">🌙 Nuit</option>
+    </select>
+
+    <label class="form-label">Jour OFF habituel (fixe)</label>
+    <select id="agentDefaultOffDayInput" class="login-input">
+      <option value="0">Lundi</option>
+      <option value="1">Mardi</option>
+      <option value="2">Mercredi</option>
+      <option value="3">Jeudi</option>
+    </select>
+    <p class="modal-hint">Ces deux réglages restent les mêmes à chaque "Générer Planning", jusqu'à ce que tu les changes ici. Seule la zone (pour les groupes en rotation) change automatiquement chaque semaine.</p>
 
     <div class="modal-error" id="agentModalError"></div>
 
@@ -1365,39 +1381,33 @@ function resolveAgentZone(agent, weekIdx){
   return '—';
 }
 function resolveAgentPeriod(agent, weekIdx){
+  // Jour/Nuit est FIXE par agent (réglé dans la page Agents), pas de rotation automatique.
+  if(agent.defaultPeriod === 'JOUR' || agent.defaultPeriod === 'NUIT') return agent.defaultPeriod;
   if(!agent.group){
     if(agent.shiftType === 'FIX') return agent.fixedPeriod || 'JOUR';
-    return (weekIdx % 2 === 0) ? 'JOUR' : 'NUIT';
+    return 'JOUR';
   }
-  const g = GROUPS[agent.group];
-  if(!g) return 'NUIT';
-  if(g.mode === 'fixed_solo') return (weekIdx % 2 === 0) ? 'JOUR' : 'NUIT';
+  // Agent pas encore configuré : valeur de départ raisonnable selon sa position dans le groupe.
   const members = groupMembers(agent.group);
-  if(members.length === 0) return 'NUIT';
-  const morningIdx = ((weekIdx % members.length) + members.length) % members.length;
-  return (members[morningIdx].id === agent.id) ? 'JOUR' : 'NUIT';
+  const idx = members.findIndex(m => m.id === agent.id);
+  return idx === 0 ? 'JOUR' : 'NUIT';
 }
-// Chaque groupe de 3 personnes doit "sauter" un jour différent des autres cette semaine,
-// pour que la répartition finale des OFF soit équilibrée (4/3/3/3 sur 13 agents).
+// Chaque groupe de 3 personnes doit "sauter" un jour différent des autres,
+// pour que la répartition des OFF reste équilibrée (4/3/3/3 sur 13 agents).
 const GROUP_SKIP_OFFSET = { trio1: 0, trio2: 1, trio3: 2, sale: 3 };
 
 function offDayIndex(agent, weekIdx){
+  // OFF est FIXE par agent (réglé dans la page Agents), pas de rotation automatique.
+  if(typeof agent.defaultOffDay === 'number' && agent.defaultOffDay >= 0 && agent.defaultOffDay <= 3){
+    return agent.defaultOffDay;
+  }
   const members = agent.group ? groupMembers(agent.group) : AGENTS.filter(a => !a.group).sort((x,y) => x.id.localeCompare(y.id));
   let idx = members.findIndex(m => m.id === agent.id);
   if(idx < 0) idx = 0;
   const allDays = [0, 1, 2, 3]; // lun..jeu
-
-  if(members.length === 1){
-    // Agent seul (ex: Zakariae) : son OFF tourne simplement sur les 4 jours au fil des semaines.
-    return weekIdx % 4;
-  }
-  if(members.length >= 4){
-    return (idx + weekIdx) % 4;
-  }
-  // Groupe de 2-3 personnes : on fait tourner le jour "sauté", et ce jour est décalé
-  // différemment par groupe (GROUP_SKIP_OFFSET) pour ne pas superposer les groupes.
+  if(members.length === 1) return 0;
   const groupOffset = GROUP_SKIP_OFFSET[agent.group] || 0;
-  const skipped = (weekIdx + groupOffset) % 4;
+  const skipped = groupOffset % 4;
   const availableDays = allDays.filter(d => d !== skipped);
   return availableDays[idx % availableDays.length];
 }
@@ -1603,6 +1613,8 @@ function openAgentModal(agentId = null){
   const groupInput = document.getElementById('agentGroupInput');
   const zoneInput = document.getElementById('agentZoneInput');
   const fixedZoneInput = document.getElementById('agentFixedZoneInput');
+  const defaultPeriodInput = document.getElementById('agentDefaultPeriodInput');
+  const defaultOffDayInput = document.getElementById('agentDefaultOffDayInput');
   document.getElementById('agentModalError').textContent = '';
 
   if(agentId){
@@ -1614,6 +1626,8 @@ function openAgentModal(agentId = null){
     groupInput.value = agent.group || '';
     if(agent.zone) zoneInput.value = agent.zone;
     if(agent.fixedZone) fixedZoneInput.value = agent.fixedZone;
+    defaultPeriodInput.value = agent.defaultPeriod || resolveAgentPeriod(agent, getISOWeekIndex(new Date()));
+    defaultOffDayInput.value = typeof agent.defaultOffDay === 'number' ? String(agent.defaultOffDay) : String(offDayIndex(agent, getISOWeekIndex(new Date())));
   } else {
     title.textContent = 'Ajouter un agent';
     nameInput.value = '';
@@ -1622,6 +1636,8 @@ function openAgentModal(agentId = null){
     groupInput.value = '';
     zoneInput.selectedIndex = 0;
     fixedZoneInput.selectedIndex = 0;
+    defaultPeriodInput.value = 'JOUR';
+    defaultOffDayInput.value = '0';
   }
   toggleGroupFieldsVisibility();
   overlay.classList.remove('hidden');
@@ -1645,19 +1661,19 @@ document.getElementById('openAddAgentBtn').addEventListener('click', () => openA
 
 /* ================= BULK IMPORT (13 agents de Najib) ================= */
 const TEAM_IMPORT = [
-  { name: "Yahya Rhallah",     nickname: "Rhallah",    group: "trio1" },
-  { name: "Aymane Chlifane",   nickname: "Chlifane",   group: "trio1" },
-  { name: "Mehdi Ait Jebour",  nickname: "Ait Jebour", group: "trio1" },
-  { name: "Achraf Akhlij",     nickname: "Akhlij",     group: "trio2" },
-  { name: "Islam Elmardi",     nickname: "Elmardi",    group: "trio2" },
-  { name: "Oussama El Atrach", nickname: "El Atrach",  group: "trio2" },
-  { name: "Youssef Derkoui",   nickname: "Derkoui",    group: "trio3" },
-  { name: "Mourad Cherradi",   nickname: "Cherradi",   group: "trio3" },
-  { name: "Ayoub Abssi",       nickname: "Abssi",      group: "trio3" },
-  { name: "Charaf Loummihi",   nickname: "Loummihi",   group: "sale" },
-  { name: "Ayoub Ben Malek",   nickname: "Ben Malek",  group: "sale" },
-  { name: "Hassan Azgoune",    nickname: "Azgoune",    group: "sale" },
-  { name: "Zakariae Benali",   nickname: "Benali",     group: "zakariae", fixedZone: "Technopolis" },
+  { name: "Yahya Rhallah",     nickname: "Rhallah",    group: "trio1", defaultPeriod: "JOUR", defaultOffDay: 1 },
+  { name: "Aymane Chlifane",   nickname: "Chlifane",   group: "trio1", defaultPeriod: "NUIT", defaultOffDay: 2 },
+  { name: "Mehdi Ait Jebour",  nickname: "Ait Jebour", group: "trio1", defaultPeriod: "NUIT", defaultOffDay: 3 },
+  { name: "Achraf Akhlij",     nickname: "Akhlij",     group: "trio2", defaultPeriod: "JOUR", defaultOffDay: 0 },
+  { name: "Islam Elmardi",     nickname: "Elmardi",    group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 2 },
+  { name: "Oussama El Atrach", nickname: "El Atrach",  group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 3 },
+  { name: "Youssef Derkoui",   nickname: "Derkoui",    group: "trio3", defaultPeriod: "JOUR", defaultOffDay: 0 },
+  { name: "Mourad Cherradi",   nickname: "Cherradi",   group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 1 },
+  { name: "Ayoub Abssi",       nickname: "Abssi",      group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 3 },
+  { name: "Charaf Loummihi",   nickname: "Loummihi",   group: "sale",  defaultPeriod: "JOUR", defaultOffDay: 0 },
+  { name: "Ayoub Ben Malek",   nickname: "Ben Malek",  group: "sale",  defaultPeriod: "NUIT", defaultOffDay: 1 },
+  { name: "Hassan Azgoune",    nickname: "Azgoune",    group: "sale",  defaultPeriod: "NUIT", defaultOffDay: 2 },
+  { name: "Zakariae Benali",   nickname: "Benali",     group: "zakariae", fixedZone: "Technopolis", defaultPeriod: "JOUR", defaultOffDay: 0 },
 ];
 
 document.getElementById('importTeamBtn').addEventListener('click', () => {
@@ -1678,6 +1694,8 @@ document.getElementById('importTeamBtn').addEventListener('click', () => {
       zone: null,
       fixedZone: t.fixedZone || null,
       pin,
+      defaultPeriod: t.defaultPeriod || 'JOUR',
+      defaultOffDay: typeof t.defaultOffDay === 'number' ? t.defaultOffDay : 0,
     });
   });
   batch.commit()
@@ -1732,6 +1750,22 @@ document.getElementById('genAllNicknamesBtn').addEventListener('click', () => {
     .catch(err => { console.error(err); alert('Erreur pendant la génération.'); });
 });
 
+document.getElementById('fixDefaultsBtn').addEventListener('click', () => {
+  const missing = AGENTS.filter(a => a.group && (a.defaultPeriod === undefined || a.defaultOffDay === undefined));
+  if(missing.length === 0){ alert('Tous les agents ont déjà une période et un OFF par défaut.'); return; }
+  const weekIdx0 = 0; // valeurs de départ neutres, indépendantes de la semaine actuelle
+  const batch = db.batch();
+  missing.forEach(a => {
+    batch.update(db.collection('agents').doc(a.id), {
+      defaultPeriod: resolveAgentPeriod(a, weekIdx0),
+      defaultOffDay: offDayIndex(a, weekIdx0),
+    });
+  });
+  batch.commit()
+    .then(() => alert(`Période et OFF par défaut réglés pour ${missing.length} agent(s). Tu peux les ajuster un par un dans "Modifier".`))
+    .catch(err => { console.error(err); alert('Erreur pendant la génération.'); });
+});
+
 /* ================= RENAME ZONES ================= */
 document.getElementById('renameZonesBtn').addEventListener('click', () => {
   const container = document.getElementById('zoneRenameInputs');
@@ -1771,6 +1805,8 @@ document.getElementById('saveAgentBtn').addEventListener('click', () => {
   const zone = document.getElementById('agentZoneInput').value;
   const fixedZone = document.getElementById('agentFixedZoneInput').value;
   const pin = document.getElementById('agentPinModalInput').value.trim();
+  const defaultPeriod = document.getElementById('agentDefaultPeriodInput').value;
+  const defaultOffDay = parseInt(document.getElementById('agentDefaultOffDayInput').value, 10);
   const errEl = document.getElementById('agentModalError');
 
   if(!name){ errEl.textContent = 'Entrez le nom de l\'agent.'; return; }
@@ -1780,6 +1816,7 @@ document.getElementById('saveAgentBtn').addEventListener('click', () => {
     nickname: nickname || name.split(' ').slice(-1)[0],
     zone: group ? null : zone,
     fixedZone: group === 'zakariae' ? fixedZone : null,
+    defaultPeriod, defaultOffDay,
   };
   const promise = editingAgentId
     ? db.collection('agents').doc(editingAgentId).update(payload)
