@@ -16,20 +16,20 @@
 
 <style>
 :root{
-  --sand: #EEF1F6;
-  --sand-deep: #E1E7F0;
-  --sky: #2C5480;
-  --sky-deep: #1B3252;
-  --sky-ink: #101D30;
-  --mustard: #F5A623;
-  --mustard-deep: #D98A12;
-  --ink: #202531;
-  --ink-soft: #666F80;
+  --sand: #FAF6F0;
+  --sand-deep: #F0E7D8;
+  --sky: #1B5C5A;
+  --sky-deep: #123F3E;
+  --sky-ink: #0D2E2D;
+  --mustard: #D9643A;
+  --mustard-deep: #BF4F28;
+  --ink: #2A2520;
+  --ink-soft: #7A7166;
   --paper: #FFFFFF;
-  --line: #DDE3ED;
-  --green: #4C8B5C;
-  --red: #C4593A;
-  --radius: 12px;
+  --line: #E8DFD0;
+  --green: #5C8A6B;
+  --red: #B23B3B;
+  --radius: 14px;
   --font-display: 'Manrope', sans-serif;
   --font-mono: 'DM Mono', monospace;
 }
@@ -47,10 +47,10 @@ input, select{font-family: inherit;}
 
 /* ============ LOGIN SCREEN ============ */
 :root{
-  --login-navy: #101D30;
-  --login-navy-2: #1B3252;
-  --login-amber: #F5A623;
-  --login-cream: #F7F9FC;
+  --login-navy: #0D2E2D;
+  --login-navy-2: #163F3D;
+  --login-amber: #D9643A;
+  --login-cream: #FAF6F0;
 }
 #loginScreen{ min-height: 100vh; }
 .login-split{
@@ -256,12 +256,12 @@ input, select{font-family: inherit;}
   background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--sky-ink);
   border-radius: 18px; padding: 18px;
 }
-.stat-card.accent-green{ border-left-color: #2FA860; }
+.stat-card.accent-green{ border-left-color: #3E8F6F; }
 .stat-card.accent-blue{ border-left-color: var(--sky); }
 .stat-card.accent-amber{ border-left-color: var(--mustard); }
-.stat-card.accent-purple{ border-left-color: #8A5FB0; }
-.stat-card.accent-red{ border-left-color: #D8483A; }
-.stat-card.accent-orange{ border-left-color: #E0792E; }
+.stat-card.accent-purple{ border-left-color: #7A5C8A; }
+.stat-card.accent-red{ border-left-color: #B23B3B; }
+.stat-card.accent-orange{ border-left-color: #D4A24C; }
 .stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600; margin-bottom: 8px;}
 .stat-card .value{ font-size: 28px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
 .stat-card .sub{ font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
@@ -289,11 +289,11 @@ tr:last-child td{ border-bottom:none; }
 .badge.var{ background: rgba(217,164,65,0.18); color: var(--mustard-deep); }
 .badge.jour{ background: rgba(76,139,92,0.12); color: var(--green); }
 .badge.nuit{ background: rgba(30,58,90,0.10); color: var(--sky-ink); }
-.badge.abs-maladie{ background: rgba(225,80,61,0.14); color: #E1503D; }
-.badge.abs-injustifiee{ background: rgba(85,96,110,0.14); color: #55606E; }
-.badge.abs-ferie{ background: rgba(63,166,107,0.14); color: #3FA66B; }
-.badge.abs-double{ background: rgba(245,166,35,0.18); color: var(--mustard-deep); }
-.badge.abs-off{ background: rgba(59,111,160,0.14); color: #3B6FA0; }
+.badge.abs-maladie{ background: rgba(178,59,59,0.14); color: #B23B3B; }
+.badge.abs-injustifiee{ background: rgba(122,113,102,0.16); color: #7A7166; }
+.badge.abs-ferie{ background: rgba(62,143,111,0.14); color: #3E8F6F; }
+.badge.abs-double{ background: rgba(217,100,58,0.16); color: var(--mustard-deep); }
+.badge.abs-off{ background: rgba(61,107,138,0.14); color: #3D6B8A; }
 
 .placeholder-view{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -412,9 +412,9 @@ tr:last-child td{ border-bottom:none; }
   letter-spacing: .01em;
 }
 .shift-pill:hover{ filter: brightness(1.08); transform: translateY(-1px); }
-.shift-pill.s-jour{ background: #2E9E83; color: #fff; }
-.shift-pill.s-nuit{ background: #5B4B8A; color: #fff; }
-.shift-pill.s-quiet{ background: #EFEAE3; color: #6B6558; box-shadow: inset 0 0 0 1px #DED6C6; }
+.shift-pill.s-jour{ background: #3E8F6F; color: #fff; }
+.shift-pill.s-nuit{ background: #163F3D; color: #fff; }
+.shift-pill.s-quiet{ background: #F0E7D8; color: #7A7166; box-shadow: inset 0 0 0 1px #E4D9C4; }
 .cell-select{
   width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--sky); font-size: 11px;
   background: #fff; font-weight: 700;
@@ -456,7 +456,7 @@ tr:last-child td{ border-bottom:none; }
 
           <!-- Technopolis : puce / circuit -->
           <g transform="translate(50,50)">
-            <circle r="15" fill="#2FA860"/>
+            <circle r="15" fill="#3E8F6F"/>
             <rect x="-6" y="-6" width="12" height="12" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/>
             <path d="M-6,-2 h-3 M-6,2 h-3 M6,-2 h3 M6,2 h3 M-2,-6 v-3 M2,-6 v-3 M-2,6 v3 M2,6 v3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
             <text x="20" y="4" class="pin-label">Technopolis</text>
@@ -464,7 +464,7 @@ tr:last-child td{ border-bottom:none; }
 
           <!-- Salé - Medina : dôme / croissant -->
           <g transform="translate(280,130)">
-            <circle r="15" fill="#E0792E"/>
+            <circle r="15" fill="#D9643A"/>
             <path d="M-6,4 a6,6 0 1,1 12,0 z" fill="#fff"/>
             <circle cx="0" cy="-4" r="2.2" fill="#fff"/>
             <path d="M-8,4 h16" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
@@ -473,7 +473,7 @@ tr:last-child td{ border-bottom:none; }
 
           <!-- Agdal - Carrousel : grande roue -->
           <g transform="translate(90,230)">
-            <circle r="15" fill="#E0A72E"/>
+            <circle r="15" fill="#D4A24C"/>
             <circle r="6.5" fill="none" stroke="#fff" stroke-width="1.4"/>
             <path d="M0,-6.5 L0,6.5 M-6.5,0 L6.5,0 M-4.6,-4.6 L4.6,4.6 M-4.6,4.6 L4.6,-4.6" stroke="#fff" stroke-width="1.1"/>
             <text x="20" y="4" class="pin-label">Agdal - Carrousel</text>
@@ -481,15 +481,15 @@ tr:last-child td{ border-bottom:none; }
 
           <!-- Hay Riad - Soussi : villa -->
           <g transform="translate(260,330)">
-            <circle r="15" fill="#8A5FB0"/>
+            <circle r="15" fill="#7A5C8A"/>
             <path d="M-7,2 L0,-6 L7,2 V7 H-7 Z" fill="#fff"/>
-            <rect x="-2" y="1" width="4" height="6" fill="#8A5FB0"/>
+            <rect x="-2" y="1" width="4" height="6" fill="#7A5C8A"/>
             <text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text>
           </g>
 
           <!-- Temara - Oulad Mtaa : palmier -->
           <g transform="translate(80,430)">
-            <circle r="15" fill="#2C5AA0"/>
+            <circle r="15" fill="#3D6B8A"/>
             <path d="M0,7 V-2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
             <path d="M0,-2 Q-7,-6 -8,-1 M0,-2 Q7,-6 8,-1 M0,-2 Q-5,-8 -1,-9 M0,-2 Q5,-8 1,-9" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
             <text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text>
@@ -965,11 +965,11 @@ let agentsUnsub = null;
 const ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Salé - Medina", "Technopolis", "Temara - Oulad Mtaa"];
 // Identité couleur par zone (même code couleur que la carte de la page de login)
 const ZONE_COLORS = {
-  "Technopolis": "#2FA860",
-  "Salé - Medina": "#E0792E",
-  "Agdal - Carrousel": "#E0A72E",
-  "Hay Riad - Soussi": "#8A5FB0",
-  "Temara - Oulad Mtaa": "#2C5AA0",
+  "Technopolis": "#3E8F6F",
+  "Salé - Medina": "#D9643A",
+  "Agdal - Carrousel": "#D4A24C",
+  "Hay Riad - Soussi": "#7A5C8A",
+  "Temara - Oulad Mtaa": "#3D6B8A",
 };
 // Noms affichés personnalisés (clé = nom interne fixe ci-dessus, valeur = nom choisi par l'utilisateur).
 // La rotation/couleurs utilisent toujours le nom interne — seul l'affichage change.
@@ -1032,7 +1032,7 @@ function renderProfiles(){
   const loginBtn = document.getElementById('loginBtn');
   grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--ink-soft); padding:10px;">Chargement de l\'équipe...</div>';
 
-  const AVATAR_COLORS = ['#3A6EA5', '#D9A441', '#4C8B5C', '#C4593A', '#8A5FB0', '#2C5480', '#B0793E', '#5C8A8A', '#A0526D', '#6B7A3A', '#7A5C3A', '#5A6B8A', '#9A5A3A'];
+  const AVATAR_COLORS = ['#1B5C5A', '#D9643A', '#5C8A6B', '#B23B3B', '#7A5C8A', '#3D6B8A', '#D4A24C', '#4A7A6E', '#A0526D', '#6B7A3A', '#8A6A3A', '#5A6B7A', '#9A5A3A'];
   const PERSON_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
 
   // Il faut une session (même anonyme) pour lire Firestore selon nos règles de sécurité.
@@ -2029,21 +2029,23 @@ function renderPlanningTable(){
       input.value = '';
       input.dispatchEvent(new Event('input'));
     });
-    input.addEventListener('change', () => {
+    input.addEventListener('blur', () => {
       const newName = input.value.trim();
       const agentId = input.dataset.agentName;
-      const original = AGENTS.find(a => a.id === agentId).name;
-      if(!newName){ input.value = original; return; }
+      const original = input.dataset.original || (AGENTS.find(a => a.id === agentId) || {}).name || '';
+
+      if(!newName || newName === original){
+        input.value = original;
+        return;
+      }
       const collision = AGENTS.find(a => a.id !== agentId && a.name.trim().toLowerCase() === newName.toLowerCase());
       if(collision){
         alert(`"${newName}" est déjà le nom d'un autre agent. Choisis un nom différent (ou modifie l'autre agent séparément).`);
         input.value = original;
         return;
       }
+      input.value = newName;
       db.collection('agents').doc(agentId).update({ name: newName }).catch(err => console.error(err));
-    });
-    input.addEventListener('blur', () => {
-      if(!input.value.trim()) input.value = input.dataset.original || '';
     });
     input.addEventListener('keydown', e => { if(e.key === 'Enter') input.blur(); });
   });
