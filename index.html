@@ -2075,12 +2075,6 @@ function renderPlanningTable(){
         input.value = original;
         return;
       }
-      const collision = AGENTS.find(a => a.id !== agentId && a.name.trim().toLowerCase() === newName.toLowerCase());
-      if(collision){
-        alert(`"${newName}" est déjà le nom d'un autre agent. Choisis un nom différent (ou modifie l'autre agent séparément).`);
-        input.value = original;
-        return;
-      }
       input.value = newName;
       db.collection('agents').doc(agentId).update({ name: newName }).catch(err => console.error(err));
     });
