@@ -790,7 +790,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="section-title">Résumé du cycle (base 26 jours)</div>
         <div class="card" style="margin-bottom:24px; overflow-x:auto;">
           <table>
-            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
+            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Total absences</th><th>Jours présence</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
             <tbody id="absencesSummaryBody"></tbody>
           </table>
         </div>
@@ -2429,12 +2429,16 @@ function renderAbsencesSummary(){
     recs.forEach(r => { if(counts[r.type] !== undefined) counts[r.type]++; });
     const delta = typeKeys.reduce((sum, k) => sum + counts[k] * ABSENCE_TYPES[k].delta, 0);
     const total = CYCLE_BASE_DAYS + delta;
+    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0);
+    const presence = CYCLE_BASE_DAYS - totalAbsences;
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><b>${a.name}</b></td>
       <td>${counts.maladie || ''}</td>
       <td>${counts.injustifiee || ''}</td>
+      <td style="font-weight:700; color:var(--red);">${totalAbsences || ''}</td>
+      <td style="font-weight:700; color:var(--green);">${presence}j</td>
       <td>${counts.ferie || ''}</td>
       <td>${counts.double || ''}</td>
       <td>${counts.off_travaille || ''}</td>
@@ -2575,7 +2579,7 @@ function deleteAbsence(id){
 }
 
 function buildAbsenceExportRows(records, baseDays){
-  const rows = [['Agent', 'Jours de base', 'Maladie', 'Injustifiée', 'Férié travaillé', 'Doublé', 'OFF travaillé', 'Total ajusté']];
+  const rows = [['Agent', 'Jours de base', 'Maladie', 'Injustifiée', 'Total absences', 'Jours présence', 'Férié travaillé', 'Doublé', 'OFF travaillé', 'Total ajusté']];
   const sortedAgents = [...AGENTS].sort((a, b) => a.name.localeCompare(b.name));
   const typeKeys = Object.keys(ABSENCE_TYPES);
   sortedAgents.forEach(a => {
@@ -2584,7 +2588,8 @@ function buildAbsenceExportRows(records, baseDays){
     typeKeys.forEach(k => counts[k] = 0);
     recs.forEach(r => { if(counts[r.type] !== undefined) counts[r.type]++; });
     const delta = typeKeys.reduce((sum, k) => sum + counts[k] * ABSENCE_TYPES[k].delta, 0);
-    rows.push([a.name, baseDays, counts.maladie, counts.injustifiee, counts.ferie, counts.double, counts.off_travaille, baseDays + delta]);
+    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0);
+    rows.push([a.name, baseDays, counts.maladie, counts.injustifiee, totalAbsences, baseDays - totalAbsences, counts.ferie, counts.double, counts.off_travaille, baseDays + delta]);
   });
   return rows;
 }
