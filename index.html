@@ -573,6 +573,7 @@ tr:last-child td{ border-bottom:none; }
       <div class="nav-group">
         <div class="nav-label">Système</div>
         <button class="nav-item" data-view="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
+        <button class="nav-item" data-view="planningnv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2" stroke-dasharray="3 3"/><path d="M8 2v4M16 2v4"/></svg><span>Planning NV</span></button>
       </div>
 
       <div class="sidebar-footer">
@@ -811,6 +812,29 @@ tr:last-child td{ border-bottom:none; }
       <section class="view hidden" id="view-rapports"></section>
       <section class="view hidden" id="view-paie"></section>
       <section class="view hidden" id="view-parametres"></section>
+      <section class="view hidden" id="view-planningnv">
+        <div class="view-header">
+          <p class="view-subtitle">Espace libre et indépendant — aucun lien avec les Agents, Zones ou l'autre Planning.</p>
+          <button class="btn-primary" id="addNvRowBtn">+ Ajouter une ligne</button>
+        </div>
+        <div class="card" style="overflow-x:auto;">
+          <table class="planning-table" id="nvTable">
+            <thead>
+              <tr>
+                <th class="sticky-col">Nom</th>
+                <th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="nvTableBody"></tbody>
+          </table>
+          <div class="placeholder-view hidden" id="nvEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+            <h3>Table vide</h3>
+            <p>Clique sur "+ Ajouter une ligne" pour commencer à construire ton propre planning.</p>
+          </div>
+        </div>
+      </section>
     </main>
   </div>
 </div>
@@ -1303,6 +1327,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     }
     if(view === 'absences'){
       renderAbsencesView();
+    }
+    if(view === 'planningnv'){
+      renderPlanningNV();
     }
   });
 });
@@ -2649,6 +2676,82 @@ document.getElementById('confirmRangeExportBtn').addEventListener('click', () =>
       document.getElementById('rangeExportOverlay').classList.add('hidden');
     })
     .catch(err => { console.error(err); errEl.textContent = 'Erreur lors de la génération.'; });
+});
+
+/* ================= PLANNING NV (espace libre, indépendant de tout) ================= */
+let nvUnsub = null;
+let nvRows = [];
+const NV_DAYS = ['lun', 'mar', 'mer', 'jeu', 'ven', 'sam', 'dim'];
+
+function renderPlanningNV(){
+  if(nvUnsub) nvUnsub();
+  nvUnsub = db.collection('planningNV').doc('main').onSnapshot(doc => {
+    nvRows = doc.exists && Array.isArray(doc.data().rows) ? doc.data().rows : [];
+    renderNvTable();
+  }, err => console.error(err));
+}
+
+function saveNvRows(){
+  db.collection('planningNV').doc('main').set({ rows: nvRows }).catch(err => console.error(err));
+}
+
+function renderNvTable(){
+  const tbody = document.getElementById('nvTableBody');
+  const table = document.getElementById('nvTable');
+  const emptyState = document.getElementById('nvEmptyState');
+  tbody.innerHTML = '';
+
+  if(nvRows.length === 0){
+    table.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  table.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+
+  nvRows.forEach((row, rowIdx) => {
+    const tr = document.createElement('tr');
+    let cellsHtml = '';
+    NV_DAYS.forEach((day, dayIdx) => {
+      cellsHtml += `<td><input type="text" class="nv-cell-input" data-row="${rowIdx}" data-day="${dayIdx}" value="${(row.cells && row.cells[dayIdx]) || ''}" placeholder="—"></td>`;
+    });
+    tr.innerHTML = `
+      <td class="sticky-col agent-name-cell"><input type="text" class="agent-name-edit nv-name-input" data-row="${rowIdx}" value="${row.name || ''}" placeholder="Nom..."></td>
+      ${cellsHtml}
+      <td><button class="icon-btn danger" data-nv-delete="${rowIdx}" title="Supprimer la ligne"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  tbody.querySelectorAll('.nv-name-input').forEach(input => {
+    input.addEventListener('change', () => {
+      const rowIdx = parseInt(input.dataset.row, 10);
+      nvRows[rowIdx].name = input.value.trim();
+      saveNvRows();
+    });
+  });
+  tbody.querySelectorAll('.nv-cell-input').forEach(input => {
+    input.addEventListener('change', () => {
+      const rowIdx = parseInt(input.dataset.row, 10);
+      const dayIdx = parseInt(input.dataset.day, 10);
+      if(!nvRows[rowIdx].cells) nvRows[rowIdx].cells = ['', '', '', '', '', '', ''];
+      nvRows[rowIdx].cells[dayIdx] = input.value;
+      saveNvRows();
+    });
+  });
+  tbody.querySelectorAll('[data-nv-delete]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const rowIdx = parseInt(btn.dataset.nvDelete, 10);
+      if(!confirm('Supprimer cette ligne ?')) return;
+      nvRows.splice(rowIdx, 1);
+      saveNvRows();
+    });
+  });
+}
+
+document.getElementById('addNvRowBtn').addEventListener('click', () => {
+  nvRows.push({ name: '', cells: ['', '', '', '', '', '', ''] });
+  saveNvRows();
 });
 
 renderProfiles();
