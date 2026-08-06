@@ -2856,7 +2856,7 @@ function renderPlanningNV(){
           dayChips += `<span class="nv-day-chip off"><b>${dayLabel}</b> OFF</span>`;
         } else {
           const venue = cluster.length ? cluster[dayIdx % cluster.length] : '—';
-          dayChips += `<span class="nv-day-chip"><b>${dayLabel}</b> ${venue}</span>`;
+          dayChips += `<span class="nv-day-chip"><b>${dayLabel}</b> 📍 ${venue}</span>`;
         }
       });
 
@@ -2872,7 +2872,7 @@ function renderPlanningNV(){
     });
 
     let fullListHtml = slots.map((cluster, i) => `
-      <div class="nv-fulllist-row"><b>#${i + 1}</b> ${cluster.join(' / ')}</div>
+      <div class="nv-fulllist-row"><b>#${i + 1}</b> 📍 ${cluster.join(' / ')}</div>
     `).join('');
 
     card.innerHTML = `
