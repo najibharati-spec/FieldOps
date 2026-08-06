@@ -2741,13 +2741,22 @@ const DEFAULT_HOTSPOTS_NV = {
 let HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
 let hotspotsNvUnsub = null;
 
+function isValidHotspotShapeNv(data){
+  // Doit être { zone: [ [venue,venue,...], [venue,...], ... ], ... } — chaque slot est un tableau.
+  if(!data || typeof data !== 'object') return false;
+  const zones = Object.values(data);
+  if(zones.length === 0) return false;
+  return zones.every(slots => Array.isArray(slots) && slots.every(s => Array.isArray(s)));
+}
+
 function listenHotspotsNv(){
   if(hotspotsNvUnsub) hotspotsNvUnsub();
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
-    if(doc.exists && doc.data() && Object.keys(doc.data()).length > 0){
-      HOTSPOTS_NV = doc.data();
+    const data = doc.exists ? doc.data() : null;
+    if(isValidHotspotShapeNv(data)){
+      HOTSPOTS_NV = data;
     } else {
-      // Premier chargement : on initialise Firestore avec les valeurs par défaut.
+      // Absent, vide, ou ancien format (chaînes au lieu de tableaux) : on réinitialise proprement.
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
       HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
     }
@@ -2827,6 +2836,15 @@ const NV_ZONE_COLORS = {
 };
 
 function renderPlanningNV(){
+  try{
+    renderPlanningNVInner();
+  } catch(err){
+    console.error('renderPlanningNV error:', err);
+    document.getElementById('nvZoneGrid').innerHTML = '<p style="color:var(--red); padding:20px;">Erreur d\'affichage — réessaie de recharger la page.</p>';
+  }
+}
+
+function renderPlanningNVInner(){
   updateWeekHeaderNv();
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
   const zones = buildZoneAssignmentsNv(weekIdx);
