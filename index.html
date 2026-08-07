@@ -303,6 +303,13 @@ input, select{font-family: inherit;}
 .nv-fulllist-title{ font-size: 10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color: var(--ink-soft); margin-bottom: 8px; }
 .nv-fulllist-row{ font-size: 12px; color: var(--ink); padding: 4px 0; line-height:1.5; }
 .nv-fulllist-row b{ color: var(--ink-soft); margin-right: 6px; }
+.nv-loc-badge{
+  display:block; text-align:center; font-size: 11px; font-weight: 700; padding: 6px 10px;
+  border-radius: 8px; margin-top: 8px; text-decoration:none;
+}
+.nv-loc-badge.nv-loc-none{ background: var(--sand); color: var(--ink-soft); font-weight: 500; }
+.nv-loc-badge.nv-loc-fresh{ background: rgba(62,143,111,0.14); color: #3E8F6F; }
+.nv-loc-badge.nv-loc-stale{ background: rgba(217,100,58,0.14); color: var(--mustard-deep); }
 .zone-card{
   background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 16px;
   border-left: 4px solid var(--mustard);
@@ -558,6 +565,15 @@ tr:last-child td{ border-bottom:none; }
         <input type="password" id="passwordInput" class="login-input" placeholder="Mot de passe ou code PIN..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
+
+        <div id="nvLoginLinkWrap" style="text-align:center; margin-top:16px;">
+          <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
+        </div>
+        <div id="nvLoginForm" class="hidden" style="margin-top:12px;">
+          <input type="text" id="nvPinInput" class="login-input" placeholder="Ton code PIN...">
+          <button id="nvLoginBtn" class="login-submit" style="margin-top:10px;">ENTRER</button>
+          <div class="login-error" id="nvLoginError"></div>
+        </div>
       </div>
     </main>
   </div>
@@ -579,6 +595,20 @@ tr:last-child td{ border-bottom:none; }
       <div class="section-title" style="margin-top:22px;">Historique récent</div>
       <div id="portalHistoryList"></div>
     </div>
+  </div>
+</div>
+
+<!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
+<div id="nvAgentPortal" class="hidden">
+  <div class="portal-card">
+    <div class="portal-header">
+      <div>
+        <b id="nvPortalAgentName">—</b>
+        <span id="nvPortalClock">--:--</span>
+      </div>
+      <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
+    </div>
+    <div id="nvPortalContent"></div>
   </div>
 </div>
 
@@ -2742,6 +2772,8 @@ const DEFAULT_HOTSPOTS_NV = {
 // les tableaux imbriqués directement (array of arrays).
 let HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
 let hotspotsNvUnsub = null;
+let nvLocationsUnsub = null;
+let NV_LOCATIONS = {};
 
 function isValidHotspotShapeNv(data){
   if(!data || typeof data !== 'object') return false;
@@ -2761,6 +2793,12 @@ function listenHotspotsNv(){
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
       HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
     }
+    renderPlanningNV();
+  }, err => console.error(err));
+
+  if(nvLocationsUnsub) nvLocationsUnsub();
+  nvLocationsUnsub = db.collection('planningNV').doc('locations').onSnapshot(doc => {
+    NV_LOCATIONS = doc.exists ? (doc.data() || {}) : {};
     renderPlanningNV();
   }, err => console.error(err));
 }
@@ -2883,6 +2921,16 @@ function renderPlanningNVInner(){
         }
       });
 
+      const loc = NV_LOCATIONS[name];
+      let locHtml = '<div class="nv-loc-badge nv-loc-none">📍 Localisation non activée</div>';
+      if(loc && loc.updatedAt){
+        const minsAgo = Math.round((Date.now() - loc.updatedAt) / 60000);
+        const freshness = minsAgo <= 6 ? 'nv-loc-fresh' : 'nv-loc-stale';
+        const timeLabel = minsAgo < 1 ? 'à l\'instant' : `il y a ${minsAgo} min`;
+        const mapUrl = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
+        locHtml = `<a class="nv-loc-badge ${freshness}" href="${mapUrl}" target="_blank" rel="noopener">🟢 Vue sur carte — ${timeLabel}</a>`;
+      }
+
       membersHtml += `
         <div class="nv-member-row" style="flex-direction:column; align-items:stretch;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
@@ -2890,6 +2938,7 @@ function renderPlanningNVInner(){
             <span class="nv-chip ${isJour ? 'shift-jour' : 'shift-nuit'}">${shiftLabel}</span>
           </div>
           <div class="nv-day-strip">${dayChips}</div>
+          ${locHtml}
         </div>
       `;
     });
@@ -2911,6 +2960,140 @@ function renderPlanningNVInner(){
     `;
     grid.appendChild(card);
   });
+}
+
+/* ================= PLANNING NV — accès agent (PIN + localisation live) ================= */
+const NV_ALL_AGENTS = [
+  ...AGDAL_FIXED_NV, ...HAYRIAD_FIXED_NV, ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1],
+];
+
+let NV_PINS = {};
+let currentNvAgent = null;
+let nvGeoIntervalId = null;
+
+function ensureNvPins(){
+  return db.collection('planningNV').doc('pins').get().then(doc => {
+    if(doc.exists && doc.data() && Object.keys(doc.data()).length >= NV_ALL_AGENTS.length){
+      NV_PINS = doc.data();
+    } else {
+      const pins = {};
+      NV_ALL_AGENTS.forEach(name => { pins[name] = String(Math.floor(1000 + Math.random() * 9000)); });
+      NV_PINS = pins;
+      db.collection('planningNV').doc('pins').set(pins).catch(err => console.error(err));
+    }
+  });
+}
+
+document.getElementById('nvLoginLinkBtn').addEventListener('click', () => {
+  document.getElementById('nvLoginForm').classList.toggle('hidden');
+});
+
+document.getElementById('nvLoginBtn').addEventListener('click', () => {
+  const pin = document.getElementById('nvPinInput').value.trim();
+  const errEl = document.getElementById('nvLoginError');
+  errEl.textContent = '';
+  if(!pin){ errEl.textContent = 'Entre ton code PIN.'; return; }
+
+  auth.signInAnonymously()
+    .then(() => ensureNvPins())
+    .then(() => {
+      const match = Object.entries(NV_PINS).find(([name, p]) => p === pin);
+      if(!match){ errEl.textContent = 'Code PIN incorrect.'; return; }
+      currentNvAgent = match[0];
+      document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('nvAgentPortal').classList.remove('hidden');
+      listenHotspotsNv();
+      renderNvPortal();
+    })
+    .catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
+});
+
+document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
+  stopNvLocationTracking();
+  auth.signOut().finally(() => location.reload());
+});
+
+function findNvAgentSlot(agentName){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const zones = buildZoneAssignmentsNv(weekIdx);
+  for(const zone of Object.keys(zones)){
+    const idx = zones[zone].indexOf(agentName);
+    if(idx >= 0) return { zone, memberIdx: idx };
+  }
+  return null;
+}
+
+function renderNvPortal(){
+  document.getElementById('nvPortalAgentName').textContent = currentNvAgent;
+  const content = document.getElementById('nvPortalContent');
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const slot = findNvAgentSlot(currentNvAgent);
+  if(!slot){ content.innerHTML = '<p style="padding:20px;">Aucune affectation cette semaine.</p>'; return; }
+
+  const { zone, memberIdx } = slot;
+  const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+  const offDayIdx = (memberIdx + weekIdx) % 4;
+  const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
+  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
+  const slots = HOTSPOTS_NV[zone] || [];
+  let todayHotspot = 'OFF aujourd\'hui';
+  if(todayIdx !== offDayIdx && slots.length){
+    const slotIdx = (memberIdx + todayIdx) % slots.length;
+    todayHotspot = ((slots[slotIdx] && slots[slotIdx].venues) || []).join(' / ');
+  }
+
+  content.innerHTML = `
+    <div class="portal-status">
+      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Zone cette semaine</div>
+      <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${zone}</div>
+      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Shift</div>
+      <div style="font-size:16px; font-weight:700; margin-bottom:14px;">${shiftLabel}</div>
+      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Hotspot aujourd'hui</div>
+      <div style="font-size:15px; font-weight:700;">📍 ${todayHotspot}</div>
+    </div>
+    <button class="portal-btn" id="nvGeoBtn">📍 Activer la localisation</button>
+    <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
+  `;
+
+  document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+}
+
+function toggleNvLocationTracking(){
+  const btn = document.getElementById('nvGeoBtn');
+  const statusEl = document.getElementById('nvGeoStatus');
+  if(nvGeoIntervalId){
+    stopNvLocationTracking();
+    btn.textContent = '📍 Activer la localisation';
+    statusEl.textContent = 'Localisation désactivée.';
+    return;
+  }
+  if(!navigator.geolocation){
+    statusEl.textContent = "Ton navigateur ne supporte pas la localisation.";
+    return;
+  }
+  const sendPosition = () => {
+    navigator.geolocation.getCurrentPosition(pos => {
+      db.collection('planningNV').doc('locations').set({
+        [currentNvAgent]: {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+          updatedAt: Date.now(),
+        },
+      }, { merge: true }).catch(err => console.error(err));
+      statusEl.textContent = `Position envoyée à ${new Date().toLocaleTimeString('fr-FR')}.`;
+    }, err => {
+      statusEl.textContent = "Permission refusée ou position indisponible.";
+      console.error(err);
+    }, { enableHighAccuracy: true, timeout: 15000 });
+  };
+  sendPosition();
+  nvGeoIntervalId = setInterval(sendPosition, 150000); // toutes les 2.5 min
+  btn.textContent = '⏸️ Désactiver la localisation';
+  statusEl.textContent = 'Localisation activée — garde cette page ouverte.';
+}
+
+function stopNvLocationTracking(){
+  if(nvGeoIntervalId){ clearInterval(nvGeoIntervalId); nvGeoIntervalId = null; }
 }
 
 renderProfiles();
