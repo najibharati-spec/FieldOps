@@ -893,7 +893,9 @@ tr:last-child td{ border-bottom:none; }
             </button>
           </div>
           <p class="view-subtitle" style="margin:0;">Espace indépendant — aucun lien avec les Agents, Zones ou l'autre Planning.</p>
+          <button class="btn-ghost" id="showNvPinsBtn" style="border:1px solid var(--line);">🔑 Voir les PIN</button>
         </div>
+        <div class="card hidden" id="nvPinsPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
         <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
     </main>
@@ -2983,6 +2985,21 @@ function ensureNvPins(){
     }
   });
 }
+
+document.getElementById('showNvPinsBtn').addEventListener('click', () => {
+  const panel = document.getElementById('nvPinsPanel');
+  if(!panel.classList.contains('hidden')){ panel.classList.add('hidden'); return; }
+  panel.innerHTML = '<p style="color:var(--ink-soft); font-size:13px;">Chargement...</p>';
+  panel.classList.remove('hidden');
+  ensureNvPins().then(() => {
+    const rows = NV_ALL_AGENTS.map(name => `
+      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;">
+        <span>${name}</span><b style="font-family:var(--font-mono); letter-spacing:1px;">${NV_PINS[name] || '—'}</b>
+      </div>
+    `).join('');
+    panel.innerHTML = `<div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">PIN des 12 agents Planning NV</div>${rows}`;
+  });
+});
 
 document.getElementById('nvLoginLinkBtn').addEventListener('click', () => {
   document.getElementById('nvLoginForm').classList.toggle('hidden');
