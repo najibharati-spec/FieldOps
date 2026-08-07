@@ -7,7 +7,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- Firebase (compat SDK — single file, no build step) -->
+<!-- Firebase (compat SDK) -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
@@ -43,54 +43,47 @@ body{
 }
 button{font-family: inherit; cursor:pointer; border:none;}
 input, select{font-family: inherit;}
-::selection{background: var(--mustard); color: #fff;}
 
-/* ============ LOGIN SCREEN ============ */
-:root{
-  --login-navy: #0D2E2D;
-  --login-navy-2: #163F3D;
-  --login-amber: #D9643A;
-  --login-cream: #FAF6F0;
-}
+/* LOGIN SCREEN */
 #loginScreen{ min-height: 100vh; }
 .login-split{ min-height: 100vh; display:flex; }
 .login-hero-panel{
   flex: 1 1 46%; min-width: 340px;
-  background: radial-gradient(circle at 20% 10%, rgba(245,166,35,0.14), transparent 40%), linear-gradient(160deg, var(--login-navy), var(--login-navy-2));
+  background: radial-gradient(circle at 20% 10%, rgba(245,166,35,0.14), transparent 40%), linear-gradient(160deg, var(--sky-ink), var(--sky-deep));
   color: #EAF1F9; display:flex; flex-direction:column; justify-content:space-between; padding: 40px 44px; position: relative; overflow:hidden;
 }
 .hero-brand{ display:flex; align-items:center; gap:10px; }
-.hero-brand .login-mark{ width:36px; height:36px; background: var(--login-amber); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff;}
+.hero-brand .login-mark{ width:36px; height:36px; background: var(--mustard); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff;}
 .hero-brand span{ font-size:16px; font-weight:800; }
 .route-map{ flex:1; display:flex; align-items:center; justify-content:center; padding: 10px 0; }
 .route-svg{ width: 100%; max-width: 340px; height: auto; }
 .pin-label{ fill: rgba(234,241,249,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
 .hero-foot{ font-family: var(--font-mono); }
-.hero-foot span{ font-size: 22px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
+.hero-foot span{ font-size: 22px; font-weight: 700; color: var(--mustard); display:block; margin-bottom:6px; }
 .hero-foot p{ font-size: 12px; color: rgba(234,241,249,0.55); max-width: 280px; }
 
-.login-form-panel{ flex: 1 1 54%; background: var(--login-cream); display:flex; align-items:center; justify-content:center; padding: 40px 24px; }
+.login-form-panel{ flex: 1 1 54%; background: var(--sand); display:flex; align-items:center; justify-content:center; padding: 40px 24px; }
 .login-card{ width: 100%; max-width: 440px; }
 .login-brand{ display:flex; flex-direction:column; align-items:flex-start; text-align:left; margin-bottom: 26px; }
 .login-brand h1{ font-size: 24px; font-weight: 800; color: var(--sky-ink); }
 .login-brand p{ font-size: 13px; color: var(--ink-soft); margin-top: 4px; font-family: var(--font-mono); }
 
 .profile-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; max-height: 320px; overflow-y: auto; padding-right: 2px; }
-.profile-btn{ background: var(--sand); border: 1.5px solid transparent; border-radius: var(--radius); padding: 16px 10px; display:flex; flex-direction:column; align-items:center; gap: 8px; transition: all .15s ease; cursor:pointer;}
-.profile-btn:hover{ border-color: var(--sky); background: #fff; transform: translateY(-1px); }
-.profile-btn.selected{ border-color: var(--sky); background: #fff; box-shadow: 0 0 0 3px rgba(58,110,165,0.12); }
+.profile-btn{ background: #fff; border: 1.5px solid var(--line); border-radius: var(--radius); padding: 16px 10px; display:flex; flex-direction:column; align-items:center; gap: 8px; transition: all .15s ease; cursor:pointer;}
+.profile-btn:hover{ border-color: var(--sky); transform: translateY(-1px); }
+.profile-btn.selected{ border-color: var(--sky); background: #fff; box-shadow: 0 0 0 3px rgba(58,110,165,0.18); }
 .profile-avatar{ width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size: 14px; background: var(--sky); }
 .profile-btn span{font-size: 13px; font-weight: 600; color: var(--ink);}
 .profile-btn small{font-size: 10px; color: var(--ink-soft); text-transform:uppercase;}
 
-.login-input{ width:100%; padding: 13px 14px; border-radius: var(--radius); border: 1.5px solid var(--line); background: var(--sand); font-size: 14px; margin-bottom: 12px; color: var(--ink); }
-.login-input:focus{ outline:none; border-color: var(--sky); background:#fff; }
-.login-submit{ width:100%; padding: 14px; border-radius: var(--radius); background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px; }
+.login-input{ width:100%; padding: 13px 14px; border-radius: var(--radius); border: 1.5px solid var(--line); background: #fff; font-size: 14px; margin-bottom: 12px; color: var(--ink); }
+.login-input:focus{ outline:none; border-color: var(--sky); }
+.login-submit{ width:100%; padding: 14px; border-radius: var(--radius); background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px; cursor:pointer; }
 .login-submit:hover{ background: var(--mustard-deep); }
 .login-submit:disabled{ background: var(--line); color: var(--ink-soft); cursor:not-allowed; }
 .login-error{ font-size: 12.5px; color: var(--red); text-align:center; margin-top: 10px; min-height: 16px; }
 
-/* SHELL & MAIN */
+/* SHELL & MAIN APP */
 .shell{ display:flex; min-height: 100vh; }
 .sidebar{ width: 220px; flex-shrink:0; background: linear-gradient(180deg, var(--sky-ink), var(--sky-deep) 60%, var(--sky)); color: #EAF1F9; display:flex; flex-direction:column; padding: 22px 14px; }
 .sidebar-brand{ display:flex; align-items:center; gap: 10px; padding: 0 8px 22px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.12); }
@@ -114,6 +107,7 @@ input, select{font-family: inherit;}
 .sync-pill .dot{ width:6px; height:6px; border-radius:50%; background: var(--green); }
 
 .view{ padding: 28px 32px; }
+.hidden{ display: none !important; }
 
 /* Dashboard cards */
 .stat-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
@@ -121,9 +115,7 @@ input, select{font-family: inherit;}
 .stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; font-weight:600; margin-bottom: 8px;}
 .stat-card .value{ font-size: 28px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
 
-.zone-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
-
-/* ============ PLANNING NV — EXACT MATCH BHL CAPTURE D'ÉCRAN ============ */
+/* PLANNING NV CARDS */
 .nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(270px,1fr)); gap: 18px; }
 .nv-zone-card{ border-radius: 16px; overflow:hidden; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .nv-zone-head{ padding: 12px 18px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
@@ -141,7 +133,7 @@ input, select{font-family: inherit;}
 .nv-venue-list{ margin-top: 8px; display:flex; flex-direction:column; gap:4px; }
 .nv-venue-item{ font-size: 12px; color: var(--ink-soft); display:flex; align-items:center; gap:6px; }
 
-/* ============ PLANNING NORMAL — EXACT MATCH BHL CAPTURE D'ÉCRAN ============ */
+/* PLANNING NORMAL TABLE */
 .planning-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
 .week-nav{ display:flex; align-items:center; gap: 12px; }
 .icon-btn-lg{ width: 34px; height: 34px; border-radius: 9px; background: var(--paper); border: 1px solid var(--line); display:flex; align-items:center; justify-content:center; }
@@ -160,8 +152,6 @@ input, select{font-family: inherit;}
 .shift-pill-real.off{ background: #F0E7D8; color: #7A7166; }
 .shift-pill-real.conge{ background: #F0E7D8; color: #BF4F28; }
 
-.btn-primary{ background: var(--mustard); color: #fff; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius); }
-.btn-ghost{ background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius); }
 .card{ background: var(--paper); border:1px solid var(--line); border-radius: 18px; overflow:hidden; }
 table{ width:100%; border-collapse: collapse; }
 th{ text-align:left; font-size: 11px; text-transform:uppercase; color: var(--ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1px solid var(--line); }
@@ -181,11 +171,7 @@ td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line);
 <div id="loginScreen">
   <div class="login-split">
     <aside class="login-hero-panel">
-      <div class="hero-brand">
-        <div class="login-mark">O</div>
-        <span>OPS HQ</span>
-      </div>
-
+      <div class="hero-brand"><div class="login-mark">O</div><span>OPS HQ</span></div>
       <div class="route-map">
         <svg class="route-svg" viewBox="0 0 340 480">
           <path d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430" fill="none" stroke="rgba(234,241,249,0.22)" stroke-width="2.5" stroke-dasharray="1 9"/>
@@ -196,7 +182,6 @@ td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line);
           <g transform="translate(80,430)"><circle r="15" fill="#3D6B8A"/><text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text></g>
         </svg>
       </div>
-
       <div class="hero-foot"><span id="heroClock">--:--</span><p>Gestion opérationnelle terrain — Rabat &amp; environs</p></div>
     </aside>
 
@@ -258,7 +243,7 @@ td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line);
         </div>
       </section>
 
-      <!-- PLANNING NORMAL (MATCH CAPTURE 2) -->
+      <!-- PLANNING NORMAL -->
       <section class="view hidden" id="view-planning">
         <div class="planning-header">
           <div class="week-nav">
@@ -282,7 +267,7 @@ td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line);
         </div>
       </section>
 
-      <!-- PLANNING NV (MATCH CAPTURE 1) -->
+      <!-- PLANNING NV -->
       <section class="view hidden" id="view-planningnv">
         <div class="planning-header">
           <div class="week-nav">
@@ -322,7 +307,7 @@ td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line);
 </div>
 
 <script>
-/* LISTE DES PROFILS DÉBLOQUÉE EN LOCAL IMMÉDIATEMENT */
+/* LISTE DES PROFILS */
 const DEFAULT_PROFILES = [
   { id: "najib", name: "Najib Harati", role: "Lead Agent", pin: "1234" },
   { id: "oussama", name: "Oussama El Hamali", role: "Controller", pin: "1234" },
@@ -333,7 +318,7 @@ const DEFAULT_PROFILES = [
   { id: "achraf", name: "Achraf Akhlij", role: "Agent", pin: "1234" }
 ];
 
-/* DONNÉES EXACTES DU PLANNING NORMAL (CAPTURE 2) */
+/* DONNÉES PLANNING NORMAL */
 const REAL_PLANNING_ROWS = [
   { name: "Mehdi Ait Jebour", zone: "Agdal - Carrousel", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] },
   { name: "Ayman Chlifane", zone: "Agdal - Carrousel", cells: ["m7", "off", "n7", "n7", "n7", "n7", "n7"] },
@@ -350,7 +335,7 @@ const REAL_PLANNING_ROWS = [
   { name: "Zakariae Benali", zone: "Technopolis", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] }
 ];
 
-/* DONNÉES EXACTES DU PLANNING NV (CAPTURE 1) */
+/* DONNÉES PLANNING NV */
 const REAL_NV_ZONES = [
   {
     name: "Salé-Rabat", color: "#D9643A", agents: "3 agents",
@@ -396,7 +381,6 @@ function updateClocks() {
 setInterval(updateClocks, 1000);
 updateClocks();
 
-/* AFFICHAGE DES PROFILS DE SÉLECTION DÉBLOQUÉS */
 function renderProfiles() {
   const grid = document.getElementById('profileGrid');
   grid.innerHTML = '';
@@ -415,22 +399,27 @@ function renderProfiles() {
       passInput.disabled = false;
       loginBtn.disabled = false;
       passInput.placeholder = `Entrez PIN pour ${p.name}...`;
+      passInput.value = '';
       passInput.focus();
     };
     grid.appendChild(btn);
   });
 }
 
+/* FONCTION CRUCIALE DÉVERROUILLAGE */
 document.getElementById('loginBtn').onclick = () => {
   if(!selectedProfile) return;
   enterApp(selectedProfile);
 };
 
 function enterApp(profile) {
+  // Masque l'écran de login et affiche l'application
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
+  
   document.getElementById('sidebarUserName').textContent = profile.name;
   document.getElementById('sidebarUserRole').textContent = profile.role;
+  
   renderRealPlanningNormal();
   renderRealPlanningNV();
 }
@@ -477,7 +466,7 @@ function renderRealPlanningNV(){
   });
 }
 
-/* NAVIGATION */
+/* NAVIGATION INTERNE */
 document.querySelectorAll('.nav-item').forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
@@ -490,7 +479,10 @@ document.querySelectorAll('.nav-item').forEach(btn => {
   };
 });
 
-document.getElementById('sysLogoutBtn').onclick = () => location.reload();
+document.getElementById('sysLogoutBtn').onclick = () => {
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('loginScreen').classList.remove('hidden');
+};
 
 window.addEventListener('DOMContentLoaded', renderProfiles);
 </script>
