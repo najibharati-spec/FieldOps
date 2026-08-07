@@ -1226,10 +1226,19 @@ function attemptLogin(){
       const nvMatch = NV_ALL_AGENTS.find(n => n.trim().toLowerCase() === (agent.name || '').trim().toLowerCase());
       if(nvMatch){
         currentNvAgent = nvMatch;
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('nvAgentPortal').classList.remove('hidden');
-        listenHotspotsNv();
-        renderNvPortal();
+        // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
+        // elle ne doit jamais rester active en même temps que le portail agent.
+        auth.signOut()
+          .catch(() => {})
+          .then(() => auth.signInAnonymously())
+          .finally(() => {
+            document.getElementById('app').style.display = 'none';
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('agentPortal').classList.add('hidden');
+            document.getElementById('nvAgentPortal').classList.remove('hidden');
+            listenHotspotsNv();
+            renderNvPortal();
+          });
         return;
       }
 
@@ -2416,7 +2425,8 @@ document.getElementById('exportExcelBtn').addEventListener('click', () => {
 
 /* ================= AUTH STATE (persist session on refresh) ================= */
 auth.onAuthStateChanged(user => {
-  if(user && user.email){
+  const nvPortalVisible = !document.getElementById('nvAgentPortal').classList.contains('hidden');
+  if(user && user.email && !nvPortalVisible){
     const uid = user.email.split('@opshq.ma')[0];
     const profile = PROFILES.find(p => p.id === uid);
     if(profile) enterApp(profile);
@@ -3293,13 +3303,17 @@ document.getElementById('nvLoginBtn').addEventListener('click', () => {
   errEl.textContent = '';
   if(!pin){ errEl.textContent = 'Entre ton code PIN.'; return; }
 
-  auth.signInAnonymously()
+  auth.signOut()
+    .catch(() => {})
+    .then(() => auth.signInAnonymously())
     .then(() => ensureNvPins())
     .then(() => {
       const match = Object.entries(NV_PINS).find(([name, p]) => p === pin);
       if(!match){ errEl.textContent = 'Code PIN incorrect.'; return; }
       currentNvAgent = match[0];
+      document.getElementById('app').style.display = 'none';
       document.getElementById('loginScreen').classList.add('hidden');
+      document.getElementById('agentPortal').classList.add('hidden');
       document.getElementById('nvAgentPortal').classList.remove('hidden');
       listenHotspotsNv();
       renderNvPortal();
