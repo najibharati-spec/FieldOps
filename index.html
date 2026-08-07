@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPS HQ — Central Control Platform</title>
+<title>OPS HQ — Central Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- External Libraries (Firebase & Office Tools) -->
+<!-- Firebase & Office Tools -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
@@ -37,8 +37,8 @@
   --radius-md: 12px;
   --radius-lg: 16px;
 
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Manrope', sans-serif;
+  --font-mono: 'DM Mono', monospace;
   --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
 }
 
@@ -61,7 +61,7 @@ input, select { font-family: inherit; outline: none; }
 
 .hidden { display: none !important; }
 
-/* ============ LOGIN SCREEN ============ */
+/* LOGIN SCREEN */
 #loginScreen { min-height: 100vh; }
 .login-split { min-height: 100vh; display: flex; }
 
@@ -71,8 +71,7 @@ input, select { font-family: inherit; outline: none; }
               linear-gradient(160deg, #0F172A, #070A11);
   color: #E2E8F0;
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: 40px 44px; position: relative; overflow: hidden;
-  border-right: 1px solid var(--border-color);
+  padding: 40px 44px; border-right: 1px solid var(--border-color);
 }
 
 .hero-brand { display: flex; align-items: center; gap: 12px; }
@@ -81,7 +80,7 @@ input, select { font-family: inherit; outline: none; }
   border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
   font-weight: 800; color: #0B0F17;
 }
-.hero-brand span { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #FFF; }
+.hero-brand span { font-size: 18px; font-weight: 800; color: #FFF; }
 
 .route-map { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 0; }
 .route-svg { width: 100%; max-width: 340px; height: auto; }
@@ -89,7 +88,7 @@ input, select { font-family: inherit; outline: none; }
 
 .hero-foot { font-family: var(--font-mono); }
 .hero-foot span { font-size: 24px; font-weight: 700; color: var(--primary-cyan); display: block; margin-bottom: 4px; }
-.hero-foot p { font-size: 12px; color: var(--text-muted); max-width: 280px; }
+.hero-foot p { font-size: 12px; color: var(--text-muted); }
 
 .login-form-panel {
   flex: 1 1 54%; background: var(--bg-dark);
@@ -97,7 +96,7 @@ input, select { font-family: inherit; outline: none; }
 }
 .login-card { width: 100%; max-width: 420px; }
 .login-brand { margin-bottom: 24px; }
-.login-brand h1 { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; }
+.login-brand h1 { font-size: 28px; font-weight: 800; color: var(--text-main); }
 .login-brand p { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
 
 .profile-grid {
@@ -110,10 +109,10 @@ input, select { font-family: inherit; outline: none; }
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   transition: all 0.2s ease; cursor: pointer;
 }
-.profile-btn:hover { border-color: var(--primary-cyan); background: var(--bg-card-hover); transform: translateY(-2px); }
+.profile-btn:hover { border-color: var(--primary-cyan); background: var(--bg-card-hover); }
 .profile-btn.selected { border-color: var(--primary-cyan); background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); }
 .profile-avatar {
-  width: 38px; height: 38px; border-radius: 50%; background: var(--primary-cyan);
+  width: 36px; height: 36px; border-radius: 50%; background: var(--primary-cyan);
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0B0F17; font-size: 13px;
 }
 .profile-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center; }
@@ -128,46 +127,16 @@ input, select { font-family: inherit; outline: none; }
 .login-submit {
   width: 100%; padding: 14px; border-radius: var(--radius-md);
   background: var(--primary-cyan); color: #0B0F17; font-weight: 800; font-size: 14px;
-  letter-spacing: 0.02em;
 }
 .login-submit:hover { background: var(--primary-cyan-hover); color: #FFF; }
 .login-submit:disabled { background: var(--border-color); color: var(--text-sub); cursor: not-allowed; }
 .login-error { font-size: 12.5px; color: var(--accent-red); text-align: center; margin-top: 10px; min-height: 16px; }
 
-/* ============ PORTALS ============ */
-#agentPortal, #nvAgentPortal {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--bg-dark); padding: 24px;
-}
-.portal-card {
-  width: 100%; max-width: 420px; background: var(--bg-card); border-radius: var(--radius-lg);
-  padding: 30px; border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
-}
-.portal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.portal-header b { font-size: 16px; color: var(--text-main); }
-.portal-header span { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); }
-.portal-status {
-  text-align: center; padding: 14px; border-radius: var(--radius-md); background: var(--bg-input);
-  font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 18px; border: 1px solid var(--border-color);
-}
-.portal-btn {
-  width: 100%; padding: 18px; border-radius: var(--radius-md); background: var(--accent-green); color: #FFF;
-  font-size: 16px; font-weight: 800; margin-bottom: 12px;
-}
-.portal-btn.is-checkedin { background: var(--accent-red); }
-
-.portal-history-item {
-  display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-color);
-  font-size: 12.5px; color: var(--text-muted);
-}
-.portal-history-item:last-child { border-bottom: none; }
-
-/* ============ SHELL & SIDEBAR ============ */
+/* SHELL & MAIN */
 .shell { display: flex; min-height: 100vh; }
 .sidebar {
   width: 240px; flex-shrink: 0; background: var(--bg-card);
-  border-right: 1px solid var(--border-color); display: flex; flex-direction: column;
-  padding: 24px 16px;
+  border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 24px 16px;
 }
 .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
 .sidebar-brand .mark {
@@ -198,13 +167,12 @@ input, select { font-family: inherit; outline: none; }
 }
 .logout-btn:hover { background: var(--accent-red); color: #FFF; border-color: var(--accent-red); }
 
-/* ============ MAIN CONTENT ============ */
 .main { flex: 1; background: var(--bg-dark); overflow-x: hidden; }
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 32px; border-bottom: 1px solid var(--border-color); background: var(--bg-card);
 }
-.topbar h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.topbar h1 { font-size: 20px; font-weight: 800; }
 .topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono); }
 .sync-pill {
   display: flex; align-items: center; gap: 6px; padding: 6px 12px;
@@ -214,7 +182,7 @@ input, select { font-family: inherit; outline: none; }
 
 .view { padding: 32px; }
 
-/* Dashboard Cards & Layout */
+/* STATS & CARDS */
 .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
 .stat-card {
   background: var(--bg-card); border: 1px solid var(--border-color); border-left: 4px solid var(--primary-cyan);
@@ -237,7 +205,6 @@ input, select { font-family: inherit; outline: none; }
 .zone-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
 .zone-card .count { font-size: 24px; font-weight: 800; color: var(--primary-cyan); font-family: var(--font-mono); }
 .zone-card .count-label { font-size: 11.5px; color: var(--text-muted); }
-.zone-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
 
 /* PLANNING NV CARDS */
 .nv-zone-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
@@ -245,56 +212,23 @@ input, select { font-family: inherit; outline: none; }
   border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-card);
   border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
 }
-.nv-zone-head {
-  padding: 16px 20px; color: #fff; display: flex; align-items: center; justify-content: space-between;
-}
+.nv-zone-head { padding: 16px 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
 .nv-zone-head h3 { font-size: 18px; font-weight: 800; }
 .nv-zone-head span { font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.22); padding: 4px 10px; border-radius: 20px; }
-.nv-member-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 10px;
-  padding: 14px 20px; border-bottom: 1px solid var(--border-color);
-}
+.nv-member-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
 .nv-member-row:last-child { border-bottom: none; }
 .nv-member-name { font-weight: 800; font-size: 15px; color: var(--text-main); }
 .nv-chip { font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
 .nv-chip.shift-jour { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
 .nv-chip.shift-nuit { background: rgba(56, 189, 248, 0.15); color: var(--primary-cyan); }
 .nv-day-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.nv-day-chip {
-  font-size: 11px; color: var(--text-muted); background: var(--bg-input); border-radius: 6px;
-  padding: 4px 8px; border: 1px solid var(--border-color); text-decoration: none;
-}
-.nv-day-chip-link { cursor: pointer; }
-.nv-day-chip-link:hover { border-color: var(--primary-cyan); color: var(--text-main); }
+.nv-day-chip { font-size: 11px; color: var(--text-muted); background: var(--bg-input); border-radius: 6px; padding: 4px 8px; border: 1px solid var(--border-color); text-decoration: none; }
 .nv-day-chip b { color: var(--text-main); margin-right: 4px; }
 .nv-day-chip.off { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-.nv-day-chip.off b { color: var(--accent-red); }
 .nv-fulllist { padding: 14px 20px; background: var(--bg-input); border-top: 1px solid var(--border-color); }
 .nv-fulllist-title { font-size: 10.5px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
 .nv-fulllist-row { font-size: 12px; color: var(--text-main); padding: 8px 0; border-bottom: 1px solid var(--border-color); }
-.nv-fulllist-row:last-of-type { border-bottom: none; }
-.nv-venue-tag {
-  display: inline-flex; align-items: center; gap: 5px; background: var(--bg-card); border: 1px solid var(--border-color);
-  border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px;
-}
-.nv-venue-tag button { border: none; background: none; color: var(--accent-red); cursor: pointer; font-size: 11px; padding: 0; }
-.nv-venue-tag a { color: var(--text-main); text-decoration: none; }
-.nv-venue-tag a:hover { text-decoration: underline; }
-.nv-venue-links { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
-.nv-venue-maplink {
-  display: block; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md);
-  padding: 12px 16px; font-size: 14px; font-weight: 700; color: var(--text-main); text-decoration: none; text-align: left;
-}
-.nv-venue-maplink:hover { border-color: var(--primary-cyan); }
-.nv-mini-link { border: none; background: none; color: var(--primary-cyan); font-size: 11px; font-weight: 700; cursor: pointer; padding: 2px 6px 2px 0; }
-.nv-mini-link.nv-mini-danger { color: var(--accent-red); }
-.nv-loc-badge {
-  display: block; text-align: center; font-size: 11px; font-weight: 700; padding: 6px 10px;
-  border-radius: 8px; margin-top: 8px; text-decoration: none;
-}
-.nv-loc-badge.nv-loc-none { background: var(--bg-input); color: var(--text-muted); border: 1px solid var(--border-color); }
-.nv-loc-badge.nv-loc-fresh { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); border: 1px solid rgba(16, 185, 129, 0.3); }
-.nv-loc-badge.nv-loc-stale { background: rgba(249, 115, 22, 0.15); color: var(--accent-orange); border: 1px solid rgba(249, 115, 22, 0.3); }
+.nv-venue-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px; }
 
 /* TABLES & CARDS */
 .section-title { font-size: 16px; font-weight: 800; margin: 24px 0 14px; color: var(--text-main); }
@@ -314,8 +248,6 @@ tr:hover td { background: var(--bg-card-hover); }
 .badge.abs-maladie { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
 .badge.abs-injustifiee { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
 .badge.abs-ferie { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
-.badge.abs-double { background: rgba(168, 85, 247, 0.2); color: var(--accent-purple); }
-.badge.abs-off { background: rgba(56, 189, 248, 0.2); color: var(--primary-cyan); }
 
 /* BUTTONS */
 .btn-primary { background: var(--primary-cyan); color: #0B0F17; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius-sm); }
@@ -323,24 +255,14 @@ tr:hover td { background: var(--bg-card-hover); }
 .btn-ghost { background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius-sm); }
 .btn-ghost:hover { background: var(--bg-card-hover); color: var(--text-main); }
 
-.icon-btn {
-  width: 28px; height: 28px; border-radius: 6px; background: transparent;
-  display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted);
-}
+.icon-btn { width: 28px; height: 28px; border-radius: 6px; background: transparent; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
 .icon-btn:hover { background: var(--bg-card-hover); color: var(--text-main); }
-.icon-btn svg { width: 15px; height: 15px; }
 .icon-btn.danger:hover { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-.row-actions { display: flex; gap: 4px; justify-content: flex-end; }
 
 /* PLANNING TABLE & SHIFTS */
 .planning-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
 .week-nav { display: flex; align-items: center; gap: 12px; }
-.icon-btn-lg {
-  width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-card); border: 1px solid var(--border-color);
-  display: flex; align-items: center; justify-content: center; color: var(--text-main);
-}
-.icon-btn-lg svg { width: 18px; height: 18px; }
-.icon-btn-lg:hover { background: var(--bg-card-hover); border-color: var(--primary-cyan); }
+.icon-btn-lg { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-main); }
 .week-label { text-align: center; min-width: 190px; }
 .week-label b { display: block; font-size: 15px; font-weight: 800; color: var(--text-main); }
 .week-label span { font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono); }
@@ -349,64 +271,21 @@ tr:hover td { background: var(--bg-card-hover); }
 .planning-tabs { display: flex; gap: 4px; margin-bottom: 14px; }
 .ptab { padding: 8px 16px; border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 700; }
 .ptab.active { background: var(--primary-cyan); color: #0B0F17; }
-.ptab:not(.active):hover { background: var(--bg-card-hover); color: var(--text-main); }
 
 .planning-card { overflow-x: auto; }
 .planning-table { width: 100%; border-collapse: collapse; min-width: 920px; }
 .planning-table th, .planning-table td { padding: 10px 10px; font-size: 12.5px; border-bottom: 1px solid var(--border-color); text-align: center; white-space: nowrap; }
-.planning-table thead th {
-  text-transform: uppercase; font-size: 10px; letter-spacing: .05em; color: var(--text-muted); font-weight: 800;
-  background: var(--bg-input); border-bottom: 2px solid var(--border-color); padding-top: 12px; padding-bottom: 12px;
-}
-.planning-table tbody tr:hover { background: var(--bg-card-hover); }
+.planning-table thead th { text-transform: uppercase; font-size: 10px; letter-spacing: .05em; color: var(--text-muted); font-weight: 800; background: var(--bg-input); border-bottom: 2px solid var(--border-color); }
 .sticky-col { position: sticky; left: 0; background: var(--bg-card); text-align: left !important; z-index: 2; }
 
-.agent-name-edit {
-  border: none; background: transparent; font-weight: 700; font-size: 12.5px; color: var(--text-main);
-  width: 100%; padding: 3px 4px; border-radius: 6px; font-family: var(--font-sans);
-}
-.agent-name-edit:focus { outline: none; background: var(--bg-input); box-shadow: 0 0 0 1.5px var(--primary-cyan); }
-
-.shift-pill {
-  display: inline-flex; align-items: center; justify-content: center; gap: 2px;
-  width: 100%; min-width: 78px; padding: 7px 4px; border-radius: 8px;
-  font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
-  transition: transform .12s, filter .12s;
-}
-.shift-pill:hover { filter: brightness(1.15); transform: translateY(-1px); }
+.shift-pill { display: inline-flex; align-items: center; justify-content: center; gap: 2px; width: 100%; min-width: 78px; padding: 7px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent; }
 .shift-pill.s-jour { background: var(--accent-green); color: #FFF; }
 .shift-pill.s-nuit { background: #1E3A8A; color: var(--primary-cyan); border-color: rgba(56, 189, 248, 0.3); }
 .shift-pill.s-quiet { background: var(--bg-input); color: var(--text-muted); border-color: var(--border-color); }
 
-.cell-select {
-  width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--primary-cyan); font-size: 11px;
-  background: var(--bg-input); color: var(--text-main); font-weight: 700;
-}
-
-.alerts-banner {
-  background: rgba(249, 115, 22, 0.15); border: 1px solid rgba(249, 115, 22, 0.3); border-radius: var(--radius-md);
-  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: var(--accent-orange);
-}
-
-.placeholder-view {
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 60px 20px; text-align: center; color: var(--text-muted);
-}
-
-/* MODAL OVERLAY */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
-  display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px;
-}
-.modal-card {
-  width: 100%; max-width: 440px; background: var(--bg-card);
-  border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
-}
-.modal-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-main); }
-.form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .03em; margin-bottom: 6px; margin-top: 12px; }
-.modal-error { font-size: 12.5px; color: var(--accent-red); min-height: 16px; margin-top: 6px; }
-.modal-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: 16px; }
-.modal-hint { font-size: 12px; color: var(--text-muted); background: var(--bg-input); border-radius: 8px; padding: 8px 10px; margin-top: 10px; line-height: 1.4; border: 1px solid var(--border-color); }
+.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+.modal-card { width: 100%; max-width: 440px; background: var(--bg-card); border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--border-color); }
+.form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; margin-top: 12px; }
 
 @media (max-width: 900px) {
   .stat-grid { grid-template-columns: repeat(2, 1fr); }
@@ -424,16 +303,10 @@ tr:hover td { background: var(--bg-card-hover); }
 <div id="loginScreen">
   <div class="login-split">
     <aside class="login-hero-panel">
-      <div class="hero-brand">
-        <div class="login-mark">O</div>
-        <span>OPS HQ v3</span>
-      </div>
-
+      <div class="hero-brand"><div class="login-mark">O</div><span>OPS HQ v3</span></div>
       <div class="route-map">
         <svg class="route-svg" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
-          <path id="routePath" d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"
-                fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5" stroke-dasharray="1 9" stroke-linecap="round"/>
-
+          <path d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5" stroke-dasharray="1 9"/>
           <g transform="translate(50,50)"><circle r="15" fill="#10B981"/><text x="20" y="4" class="pin-label">Technopolis</text></g>
           <g transform="translate(280,130)"><circle r="15" fill="#F97316"/><text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text></g>
           <g transform="translate(90,230)"><circle r="15" fill="#38BDF8"/><text x="20" y="4" class="pin-label">Agdal - Carrousel</text></g>
@@ -441,26 +314,16 @@ tr:hover td { background: var(--bg-card-hover); }
           <g transform="translate(80,430)"><circle r="15" fill="#EF4444"/><text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text></g>
         </svg>
       </div>
-
-      <div class="hero-foot">
-        <span id="heroClock">--:--</span>
-        <p>Gestion opérationnelle terrain — Rabat &amp; environs</p>
-      </div>
+      <div class="hero-foot"><span id="heroClock">--:--</span><p>Gestion opérationnelle terrain — Rabat &amp; environs</p></div>
     </aside>
 
     <main class="login-form-panel">
       <div class="login-card">
-        <div class="login-brand">
-          <h1>OPS HQ</h1>
-          <p>Système Central de Gestion RH</p>
-        </div>
-
+        <div class="login-brand"><h1>OPS HQ</h1><p>Système Central de Gestion RH</p></div>
         <div class="profile-grid" id="profileGrid"></div>
-
         <input type="password" id="passwordInput" class="login-input" placeholder="Sélectionnez un profil..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
-
         <div id="nvLoginLinkWrap" style="text-align:center; margin-top:16px;">
           <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
         </div>
@@ -474,70 +337,22 @@ tr:hover td { background: var(--bg-card-hover); }
   </div>
 </div>
 
-<!-- PORTAL AGENT STANDARD -->
-<div id="agentPortal" class="hidden">
-  <div class="portal-card">
-    <div class="portal-header">
-      <div>
-        <b id="portalAgentName">—</b>
-        <span id="portalClock">--:--</span>
-      </div>
-      <button class="btn-ghost" id="portalLogoutBtn">Déconnexion</button>
-    </div>
-    <div class="portal-status" id="portalStatus">Chargement...</div>
-    <button class="portal-btn" id="portalCheckBtn">Check-in</button>
-    <div class="portal-history">
-      <div class="section-title" style="margin-top:22px;">Historique récent</div>
-      <div id="portalHistoryList"></div>
-    </div>
-  </div>
-</div>
-
-<!-- PORTAL AGENT NV -->
-<div id="nvAgentPortal" class="hidden">
-  <div class="portal-card">
-    <div class="portal-header">
-      <div>
-        <b id="nvPortalAgentName">—</b>
-        <span id="nvPortalClock">--:--</span>
-      </div>
-      <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
-    </div>
-    <div id="nvPortalContent"></div>
-  </div>
-</div>
-
 <!-- MAIN SYSTEM -->
 <div id="app" class="hidden">
   <div class="shell">
     <aside class="sidebar">
-      <div class="sidebar-brand">
-        <div class="mark">O</div>
-        <h2>OPS HQ</h2>
-      </div>
-
+      <div class="sidebar-brand"><div class="mark">O</div><h2>OPS HQ</h2></div>
       <div class="nav-group">
         <div class="nav-label">Opérations</div>
-        <button class="nav-item active" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Dashboard</span></button>
-        <button class="nav-item" data-view="planning"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span>Planning</span></button>
-        <button class="nav-item" data-view="planningnv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2" stroke-dasharray="3 3"/><path d="M8 2v4M16 2v4"/></svg><span>Planning NV</span></button>
-        <button class="nav-item" data-view="pointage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Pointage</span></button>
-        <button class="nav-item" data-view="absences"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M4 19V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v10"/></svg><span>Absences</span></button>
+        <button class="nav-item active" data-view="dashboard"><span>Dashboard</span></button>
+        <button class="nav-item" data-view="planning"><span>Planning</span></button>
+        <button class="nav-item" data-view="planningnv"><span>Planning NV</span></button>
+        <button class="nav-item" data-view="pointage"><span>Pointage</span></button>
+        <button class="nav-item" data-view="absences"><span>Absences</span></button>
+        <button class="nav-item" data-view="agents"><span>Agents</span></button>
       </div>
-
-      <div class="nav-group">
-        <div class="nav-label">Ressources</div>
-        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg><span>Agents</span></button>
-      </div>
-
       <div class="sidebar-footer">
-        <div class="user-chip">
-          <div class="dot"></div>
-          <div class="user-chip-text">
-            <b id="sidebarUserName">—</b>
-            <span id="sidebarUserRole">—</span>
-          </div>
-        </div>
+        <div class="user-chip"><div class="dot"></div><div class="user-chip-text"><b id="sidebarUserName">—</b><span id="sidebarUserRole">—</span></div></div>
         <button class="logout-btn" id="sysLogoutBtn"><span>Déconnexion</span></button>
       </div>
     </aside>
@@ -545,167 +360,97 @@ tr:hover td { background: var(--bg-card-hover); }
     <main class="main">
       <header class="topbar">
         <h1 id="topbarTitle">Dashboard</h1>
-        <div class="topbar-meta">
-          <div class="sync-pill"><div class="dot"></div> Sync Active</div>
-          <span id="topbarClock">--:--</span>
-        </div>
+        <div class="topbar-meta"><div class="sync-pill"><div class="dot"></div> Sync Active</div><span id="topbarClock">--:--</span></div>
       </header>
 
-      <!-- DASHBOARD VIEW -->
+      <!-- DASHBOARD -->
       <section class="view" id="view-dashboard">
         <div class="stat-grid">
           <div class="stat-card"><div class="label">Agents actifs</div><div class="value" id="statActive">—</div><div class="sub">enregistrés</div></div>
           <div class="stat-card accent-green"><div class="label">En shift JOUR</div><div class="value" id="statJour">—</div><div class="sub">équipe matin</div></div>
           <div class="stat-card accent-amber"><div class="label">En shift NUIT</div><div class="value" id="statNuit">—</div><div class="sub">équipe soir</div></div>
           <div class="stat-card accent-purple"><div class="label">Zones couvertes</div><div class="value" id="statZones">—</div><div class="sub">sur 5 zones</div></div>
-          <div class="stat-card accent-red"><div class="label">OFF aujourd'hui</div><div class="value" id="statOffToday">—</div><div class="sub">agents au repos</div></div>
-          <div class="stat-card accent-orange"><div class="label">Absences (semaine)</div><div class="value" id="statAbsences">—</div><div class="sub">congé / maladie</div></div>
         </div>
-
         <div class="section-title">Zones</div>
         <div class="zone-grid" id="zoneGrid"></div>
-
-        <div class="section-title">🟢 En service maintenant</div>
-        <div class="card" id="liveCard">
-          <table>
-            <thead><tr><th>Agent</th><th>Zone</th><th>Shift</th><th>Fin</th></tr></thead>
-            <tbody id="liveTableBody"></tbody>
-          </table>
-          <div class="placeholder-view hidden" id="liveEmptyState">
-            <h3>Personne en service actuellement</h3>
-          </div>
-        </div>
       </section>
 
-      <!-- AGENTS VIEW -->
+      <!-- AGENTS -->
       <section class="view hidden" id="view-agents">
         <div class="view-header">
-          <p class="view-subtitle" style="color:var(--text-muted);">Gérez la liste des agents de terrain.</p>
+          <p class="view-subtitle" style="color:var(--text-muted);">Gérez l'équipe et la configuration des zones.</p>
           <div style="display:flex; gap:8px; flex-wrap:wrap;">
             <button class="btn-ghost" id="importTeamBtn" style="border:1px solid var(--border-color);">⚡ Importer les 13 agents</button>
             <button class="btn-ghost" id="genAllPinsBtn" style="border:1px solid var(--border-color);">🎲 PINs manquants</button>
-            <button class="btn-ghost" id="renameZonesBtn" style="border:1px solid var(--border-color);">🏷️ Renommer les zones</button>
             <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
           </div>
         </div>
-        <div class="card" id="agentsCard">
+        <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>PIN</th><th>Zone</th><th>Type</th><th>Shift fixe</th><th></th></tr></thead>
+            <thead><tr><th>Agent</th><th>PIN</th><th>Zone</th><th>Groupe</th><th>Shift fixe</th><th></th></tr></thead>
             <tbody id="agentsTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- PLANNING VIEW -->
+      <!-- PLANNING -->
       <section class="view hidden" id="view-planning">
         <div class="planning-header">
           <div class="week-nav">
-            <button class="icon-btn-lg" id="prevWeekBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="icon-btn-lg" id="prevWeekBtn">‹</button>
             <div class="week-label"><b id="weekLabel">Semaine —</b><span id="weekRange">—</span></div>
-            <button class="icon-btn-lg" id="nextWeekBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button class="icon-btn-lg" id="nextWeekBtn">›</button>
           </div>
           <div class="planning-actions">
-            <button class="btn-ghost" id="printPlanningBtn">🖨️ PDF</button>
             <button class="btn-ghost" id="exportExcelBtn">⬇️ Excel</button>
-            <button class="btn-ghost" id="loadRealWeekBtn" style="border:1px solid var(--border-color);">📥 Charger planning réel</button>
             <button class="btn-primary" id="generatePlanningBtn">⚡ Générer Planning</button>
           </div>
         </div>
-
-        <div id="alertsBanner" class="alerts-banner hidden"></div>
-
-        <div class="planning-tabs">
-          <button class="ptab active" data-ptab="grid">Vue Agents</button>
-          <button class="ptab" data-ptab="zones">Vue Zones</button>
-        </div>
-
-        <div class="card planning-card" id="planningGridWrap">
-          <datalist id="agentNamesList"></datalist>
-          <table class="planning-table" id="planningTable">
+        <div class="card planning-card">
+          <table class="planning-table">
             <thead>
-              <tr>
-                <th class="sticky-col">Agent</th>
-                <th>Zone</th>
-                <th id="thLun">Lun</th><th id="thMar">Mar</th><th id="thMer">Mer</th><th id="thJeu">Jeu</th><th id="thVen">Ven</th><th id="thSam">Sam</th><th id="thDim">Dim</th>
-                <th>Total</th>
-                <th></th>
-              </tr>
+              <tr><th class="sticky-col">Agent</th><th>Zone</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th><th>Total</th></tr>
             </thead>
             <tbody id="planningTableBody"></tbody>
           </table>
         </div>
-
-        <div class="card planning-card hidden" id="zonesGridWrap">
-          <table class="planning-table">
-            <thead>
-              <tr><th class="sticky-col">Zone</th><th id="thZLun">Lun</th><th id="thZMar">Mar</th><th id="thZMer">Mer</th><th id="thZJeu">Jeu</th><th id="thZVen">Ven</th><th id="thZSam">Sam</th><th id="thZDim">Dim</th></tr>
-            </thead>
-            <tbody id="zonesTableBody"></tbody>
-          </table>
-        </div>
       </section>
 
-      <!-- POINTAGE VIEW -->
+      <!-- POINTAGE -->
       <section class="view hidden" id="view-pointage">
-        <div class="planning-header">
-          <div class="week-nav">
-            <button class="icon-btn-lg" id="prevDayBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-            <div class="week-label"><b id="pointageDayLabel">—</b><span id="pointageDateSub">—</span></div>
-            <button class="icon-btn-lg" id="nextDayBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-          </div>
-          <button class="btn-ghost" id="pointageTodayBtn" style="border:1px solid var(--border-color);">Aujourd'hui</button>
-        </div>
         <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>Check-in</th><th>Check-out</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Agent</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Statut</th></tr></thead>
             <tbody id="pointageTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- ABSENCES VIEW -->
+      <!-- ABSENCES -->
       <section class="view hidden" id="view-absences">
         <div class="planning-header">
-          <div class="week-nav">
-            <button class="icon-btn-lg" id="prevCycleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
-            <div class="week-label"><b id="cycleLabel">—</b><span id="cycleSub">—</span></div>
-            <button class="icon-btn-lg" id="nextCycleBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
-          </div>
-          <div class="planning-actions">
-            <button class="btn-ghost" id="cycleTodayBtn" style="border:1px solid var(--border-color);">Cycle actuel</button>
-            <button class="btn-ghost" id="exportAbsencesBtn" style="border:1px solid var(--border-color);">⬇️ Excel (cycle)</button>
-            <button class="btn-primary" id="addAbsenceBtn">+ Déclarer</button>
-          </div>
+          <div><h2 id="cycleLabel">Cycle ...</h2><p id="cycleSub" style="font-size:12px; color:var(--text-muted);">Base 26 jours (21 -> 20)</p></div>
+          <button class="btn-primary" id="addAbsenceBtn">+ Déclarer une absence</button>
         </div>
-
-        <div class="section-title">Résumé du cycle (base 26 jours)</div>
-        <div class="card" style="overflow-x:auto;">
-          <table>
-            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Total absences</th><th>Presence</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
-            <tbody id="absencesSummaryBody"></tbody>
-          </table>
-        </div>
-
-        <div class="section-title">Détail du cycle</div>
         <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>Date</th><th>Type</th><th>Note</th><th></th></tr></thead>
+            <thead><tr><th>Agent</th><th>Date</th><th>Type</th><th>Note</th></tr></thead>
             <tbody id="absencesDetailBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- PLANNING NV VIEW -->
+      <!-- PLANNING NV -->
       <section class="view hidden" id="view-planningnv">
         <div class="planning-header">
           <div class="week-nav">
-            <button class="icon-btn-lg" id="prevWeekNvBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <button class="icon-btn-lg" id="prevWeekNvBtn">‹</button>
             <div class="week-label"><b id="weekLabelNv">Semaine —</b><span id="weekRangeNv">—</span></div>
-            <button class="icon-btn-lg" id="nextWeekNvBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg></button>
+            <button class="icon-btn-lg" id="nextWeekNvBtn">›</button>
           </div>
           <button class="btn-ghost" id="showNvPinsBtn" style="border:1px solid var(--border-color);">🔑 Voir PINs NV</button>
         </div>
-        <div class="card hidden" id="nvPinsPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
+        <div class="card hidden" id="nvPinsPanel" style="padding:16px; margin-bottom:16px;"></div>
         <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
     </main>
@@ -715,31 +460,17 @@ tr:hover td { background: var(--bg-card-hover); }
 <!-- MODALS -->
 <div class="modal-overlay hidden" id="absenceModalOverlay">
   <div class="modal-card">
-    <h3 id="absenceModalTitle">Déclarer une absence</h3>
-    <label class="form-label">Agent</label>
-    <select id="absenceAgentInput" class="login-input"></select>
-
+    <h3>Déclarer une absence</h3>
+    <label class="form-label">Agent</label><select id="absenceAgentInput" class="login-input"></select>
     <label class="form-label">Type</label>
     <select id="absenceTypeInput" class="login-input">
       <option value="maladie">Absence maladie (−1j)</option>
       <option value="injustifiee">Absence injustifiée (−1j)</option>
       <option value="ferie">Jour férié travaillé (+1j)</option>
-      <option value="double">Jour doublé (+1j)</option>
-      <option value="off_travaille">Jour OFF travaillé (+1j)</option>
     </select>
-
-    <label class="form-label">Date (début)</label>
-    <input type="date" id="absenceDateInput" class="login-input">
-
-    <label class="form-label">Date de fin (optionnel)</label>
-    <input type="date" id="absenceDateEndInput" class="login-input">
-
-    <label class="form-label">Note</label>
-    <input type="text" id="absenceNoteInput" class="login-input" placeholder="Ex: certificat médical...">
-
-    <div class="modal-error" id="absenceModalError"></div>
-
-    <div class="modal-actions">
+    <label class="form-label">Date</label><input type="date" id="absenceDateInput" class="login-input">
+    <label class="form-label">Note</label><input type="text" id="absenceNoteInput" class="login-input" placeholder="Note...">
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
       <button class="btn-ghost" id="cancelAbsenceBtn">Annuler</button>
       <button class="btn-primary" id="saveAbsenceBtn">Enregistrer</button>
     </div>
@@ -748,31 +479,10 @@ tr:hover td { background: var(--bg-card-hover); }
 
 <div class="modal-overlay hidden" id="agentModalOverlay">
   <div class="modal-card">
-    <h3 id="agentModalTitle">Ajouter un agent</h3>
-    <label class="form-label">Nom complet</label>
-    <input type="text" id="agentNameInput" class="login-input" placeholder="Ex: Achraf Akhlij">
-
-    <label class="form-label">Surnom</label>
-    <input type="text" id="agentNicknameInput" class="login-input" placeholder="Ex: Achraf">
-
-    <label class="form-label">Code PIN</label>
-    <div style="display:flex; gap:8px;">
-      <input type="text" id="agentPinModalInput" class="login-input" placeholder="Ex: 1234">
-      <button type="button" class="btn-ghost" id="genPinBtn" style="border:1px solid var(--border-color);">🎲</button>
-    </div>
-
-    <label class="form-label">Groupe de planification</label>
-    <select id="agentGroupInput" class="login-input">
-      <option value="">Aucun (manuel)</option>
-      <option value="zakariae">Fixe solo</option>
-      <option value="sale">Fixe équipe (Salé)</option>
-      <option value="trio1">Rotation — Groupe 1</option>
-      <option value="trio2">Rotation — Groupe 2</option>
-      <option value="trio3">Rotation — Groupe 3</option>
-    </select>
-
-    <div class="modal-error" id="agentModalError"></div>
-    <div class="modal-actions">
+    <h3>Ajouter un agent</h3>
+    <label class="form-label">Nom complet</label><input type="text" id="agentNameInput" class="login-input">
+    <label class="form-label">Code PIN</label><input type="text" id="agentPinModalInput" class="login-input">
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
       <button class="btn-ghost" id="cancelAgentBtn">Annuler</button>
       <button class="btn-primary" id="saveAgentBtn">Enregistrer</button>
     </div>
@@ -780,7 +490,7 @@ tr:hover td { background: var(--bg-card-hover); }
 </div>
 
 <script>
-/* FIREBASE INIT */
+/* FIREBASE CONFIGURATION */
 const firebaseConfig = {
   apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
   authDomain: "ops-hq-v2-848f6.firebaseapp.com",
@@ -794,61 +504,34 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 let AGENTS = [];
-let agentsUnsub = null;
 const ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Salé - Medina", "Technopolis", "Temara - Oulad Mtaa"];
-const ZONE_COLORS = {
-  "Technopolis": "#10B981",
-  "Salé - Medina": "#F97316",
-  "Agdal - Carrousel": "#38BDF8",
-  "Hay Riad - Soussi": "#A855F7",
-  "Temara - Oulad Mtaa": "#EF4444",
-};
-let ZONE_LABELS = {};
-
-function getZoneLabel(zoneKey){ return (ZONE_LABELS && ZONE_LABELS[zoneKey]) ? ZONE_LABELS[zoneKey] : zoneKey; }
-
-const ROTATING_ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Temara - Oulad Mtaa"];
-const GROUPS = {
-  zakariae: { label: "Fixe solo", mode: "fixed_solo" },
-  sale:     { label: "Fixe équipe (Salé)", mode: "fixed_team", zone: "Salé - Medina" },
-  trio1:    { label: "Rotation — Groupe 1", mode: "rotating_team", offset: 0 },
-  trio2:    { label: "Rotation — Groupe 2", mode: "rotating_team", offset: 1 },
-  trio3:    { label: "Rotation — Groupe 3", mode: "rotating_team", offset: 2 },
-};
-const DAY_KEYS = ["lun","mar","mer","jeu","ven","sam","dim"];
-const DAY_LABELS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
-const SHIFT_CATALOG = {
-  OFF:    { label: "OFF",         hours: 0, cls: "s-quiet" },
-  M7:     { label: "10:00-17:00", hours: 7, cls: "s-jour"  },
-  M8:     { label: "10:00-18:00", hours: 8, cls: "s-jour"  },
-  N7:     { label: "18:00-01:00", hours: 7, cls: "s-nuit"  },
-  N8:     { label: "18:00-02:00", hours: 8, cls: "s-nuit"  },
-  ABS:    { label: "Absent",      hours: 0, cls: "s-quiet" },
-};
-
 const PROFILES = [
-  { id: "najib", name: "Najib", role: "Harati", initials: "NH", authType: "firebase" },
-  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", authType: "firebase" },
+  { id: "najib", name: "Najib", role: "Harati", authType: "firebase" },
+  { id: "oussama_h", name: "Oussama", role: "El Hamali", authType: "firebase" },
 ];
-
 let selectedProfile = null;
 
-function renderProfiles(){
+function updateClocks() {
+  const now = new Date();
+  const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+  document.querySelectorAll('#heroClock, #topbarClock').forEach(el => { if(el) el.textContent = timeStr; });
+}
+setInterval(updateClocks, 1000);
+updateClocks();
+
+/* PROFILES & LOGIN */
+function renderProfiles() {
   const grid = document.getElementById('profileGrid');
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--text-muted);">Chargement...</div>';
-
   auth.signInAnonymously().then(() => db.collection('agents').get()).then(snap => {
-    const agentProfiles = snap.docs.map(d => {
-      const data = d.data();
-      return { id: d.id, name: data.nickname || data.name.split(' ').slice(-1)[0], role: 'Agent', authType: 'pin' };
-    }).sort((a,b) => a.name.localeCompare(b.name));
-
-    const all = [...PROFILES, ...agentProfiles];
+    AGENTS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const agentProfiles = AGENTS.map(data => ({
+      id: data.id, name: data.nickname || data.name.split(' ').slice(-1)[0], role: 'Agent', authType: 'pin'
+    }));
     grid.innerHTML = '';
-    all.forEach(p => {
+    [...PROFILES, ...agentProfiles].forEach(p => {
       const btn = document.createElement('button');
       btn.className = 'profile-btn';
-      btn.innerHTML = `<div class="profile-avatar">${p.initials || p.name.substring(0,2).toUpperCase()}</div><span>${p.name}</span><small>${p.role}</small>`;
+      btn.innerHTML = `<div class="profile-avatar">${p.name.substring(0,2).toUpperCase()}</div><span>${p.name}</span><small>${p.role}</small>`;
       btn.onclick = () => {
         selectedProfile = p;
         document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
@@ -863,45 +546,33 @@ function renderProfiles(){
 
 document.getElementById('loginBtn').onclick = () => {
   const pass = document.getElementById('passwordInput').value.trim();
-  const errEl = document.getElementById('loginError');
-  if(selectedProfile.authType === 'pin'){
+  if(selectedProfile.authType === 'pin') {
     db.collection('agents').doc(selectedProfile.id).get().then(doc => {
-      if(doc.exists && doc.data().pin === pass){
-        enterAgentPortal({ id: doc.id, ...doc.data() });
-      } else { errEl.textContent = 'Code PIN incorrect.'; }
+      if(doc.exists && doc.data().pin === pass) enterApp(selectedProfile);
+      else document.getElementById('loginError').textContent = "PIN Incorrect";
     });
   } else {
     auth.signInWithEmailAndPassword(`${selectedProfile.id}@opshq.ma`, pass)
       .then(() => enterApp(selectedProfile))
-      .catch(() => { errEl.textContent = 'Mot de passe incorrect.'; });
+      .catch(() => document.getElementById('loginError').textContent = "Mot de passe incorrect");
   }
 };
 
-function enterApp(profile){
+function enterApp(profile) {
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('sidebarUserName').textContent = profile.name;
   document.getElementById('sidebarUserRole').textContent = profile.role;
-  listenAgents();
-  loadAbsencesView();
+  loadAllData();
 }
 
-function enterAgentPortal(agent){
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('agentPortal').classList.remove('hidden');
-  document.getElementById('portalAgentName').textContent = agent.nickname || agent.name;
+function loadAllData() {
+  renderAgentsTable();
+  initDashboard();
+  loadAbsencesFromFirestore();
 }
 
-function listenAgents(){
-  if(agentsUnsub) agentsUnsub();
-  agentsUnsub = db.collection('agents').orderBy('name').onSnapshot(snap => {
-    AGENTS = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderAgentsTable();
-    initDashboard();
-  });
-}
-
-function initDashboard(){
+function initDashboard() {
   document.getElementById('statActive').textContent = AGENTS.length;
   const zoneGrid = document.getElementById('zoneGrid');
   zoneGrid.innerHTML = '';
@@ -909,35 +580,26 @@ function initDashboard(){
     const count = AGENTS.filter(a => a.zone === zone).length;
     const card = document.createElement('div');
     card.className = 'zone-card';
-    card.style.borderLeftColor = ZONE_COLORS[zone] || 'var(--primary-cyan)';
-    card.innerHTML = `<h3>${getZoneLabel(zone)}</h3><div class="count">${count}</div><div class="count-label">agents</div>`;
+    card.innerHTML = `<h3>${zone}</h3><div class="count">${count}</div><div class="count-label">agents</div>`;
     zoneGrid.appendChild(card);
   });
 }
 
-function renderAgentsTable(){
+function renderAgentsTable() {
   const tbody = document.getElementById('agentsTableBody');
   tbody.innerHTML = '';
   AGENTS.forEach(a => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><b>${a.name}</b></td>
-      <td style="font-family:var(--font-mono);">${a.pin || '—'}</td>
-      <td>${a.zone || '—'}</td>
-      <td><span class="badge ${a.group ? 'fix' : 'var'}">${a.group || 'Manuel'}</span></td>
-      <td>${a.defaultPeriod || 'JOUR'}</td>
-      <td><button class="icon-btn danger" onclick="deleteAgent('${a.id}')">✕</button></td>
-    `;
+    tr.innerHTML = `<td><b>${a.name}</b></td><td>${a.pin || '—'}</td><td>${a.zone || '—'}</td><td>${a.group || 'Fixe'}</td><td>${a.defaultPeriod || 'JOUR'}</td><td><button class="icon-btn danger" onclick="deleteAgent('${a.id}')">✕</button></td>`;
     tbody.appendChild(tr);
   });
 }
 
-function deleteAgent(id){
-  if(confirm('Supprimer cet agent ?')) db.collection('agents').doc(id).delete();
+function deleteAgent(id) {
+  if(confirm('Supprimer cet agent ?')) db.collection('agents').doc(id).delete().then(loadAllData);
 }
 
-/* ABSENCES CYCLE 21-20 */
-let currentCycleRecords = [];
+/* CYCLE ABSENCES 21-20 */
 function getCycleFor(date){
   const d = new Date(date);
   let year = d.getFullYear(), month = d.getMonth();
@@ -947,22 +609,18 @@ function getCycleFor(date){
   return { start, end, key: `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}` };
 }
 
-function loadAbsencesView(){
+function loadAbsencesFromFirestore() {
   const cycle = getCycleFor(new Date());
   document.getElementById('cycleLabel').textContent = `Cycle ${cycle.key}`;
   db.collection('absences').where('cycleKey', '==', cycle.key).onSnapshot(snap => {
-    currentCycleRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    renderAbsencesTable();
-  });
-}
-
-function renderAbsencesTable(){
-  const tbody = document.getElementById('absencesDetailBody');
-  tbody.innerHTML = '';
-  currentCycleRecords.forEach(r => {
-    const tr = document.createElement('tr');
-    tr.innerHTML = `<td><b>${r.agentName}</b></td><td>${r.date}</td><td><span class="badge abs-${r.type}">${r.type}</span></td><td>${r.note || '—'}</td>`;
-    tbody.appendChild(tr);
+    const records = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    const tbody = document.getElementById('absencesDetailBody');
+    tbody.innerHTML = '';
+    records.forEach(r => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td><b>${r.agentName || 'Agent'}</b></td><td>${r.date}</td><td><span class="badge abs-${r.type}">${r.type}</span></td><td>${r.note || '—'}</td>`;
+      tbody.appendChild(tr);
+    });
   });
 }
 
@@ -1000,7 +658,6 @@ document.querySelectorAll('.nav-item').forEach(btn => {
 });
 
 document.getElementById('sysLogoutBtn').onclick = () => location.reload();
-document.getElementById('portalLogoutBtn').onclick = () => location.reload();
 
 window.addEventListener('DOMContentLoaded', renderProfiles);
 </script>
