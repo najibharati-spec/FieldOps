@@ -308,6 +308,14 @@ input, select{font-family: inherit;}
   border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px;
 }
 .nv-venue-tag button{ border:none; background:none; color: var(--red); cursor:pointer; font-size:11px; padding:0; line-height:1; }
+.nv-venue-tag a{ color: var(--ink); text-decoration:none; }
+.nv-venue-tag a:hover{ text-decoration:underline; }
+.nv-venue-links{ display:flex; flex-direction:column; gap:8px; }
+.nv-venue-maplink{
+  display:block; background: var(--paper); border:1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration:none;
+}
+.nv-venue-maplink:hover{ border-color: var(--sky); }
 .nv-mini-link{
   border:none; background:none; color: var(--sky); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0;
 }
@@ -2998,7 +3006,7 @@ function renderPlanningNVInner(){
 
     let fullListHtml = slots.map((slot, i) => {
       const venuesHtml = (slot.venues || []).map((v, vi) => `
-        <span class="nv-venue-tag">${v} <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
+        <span class="nv-venue-tag"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v + ' Rabat')}" target="_blank" rel="noopener">📍 ${v}</a> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
       `).join('');
       return `
         <div class="nv-fulllist-row">
@@ -3064,6 +3072,7 @@ const NV_ALL_AGENTS = [
 let NV_PINS = {};
 let currentNvAgent = null;
 let nvGeoIntervalId = null;
+let nvUiIntervalId = null;
 
 function stableNvPin(name){
   // PIN dérivé du nom de l'agent, toujours identique (pas de hasard) — évite tout décalage
@@ -3162,17 +3171,16 @@ function renderNvPortal(){
   const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
   const slots = HOTSPOTS_NV[zone] || [];
-  let todayHotspot = 'OFF aujourd\'hui';
-  let hotspotMapUrl = null;
+  let hotspotVenues = [];
   if(todayIdx !== offDayIdx && slots.length){
     const slotIdx = (memberIdx + todayIdx) % slots.length;
-    const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
-    todayHotspot = venues.join(' / ');
-    if(venues.length){
-      hotspotMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venues[0] + ' Rabat')}`;
-    }
+    hotspotVenues = (slots[slotIdx] && slots[slotIdx].venues) || [];
   }
   window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
+
+  const venueLinksHtml = hotspotVenues.length
+    ? hotspotVenues.map(v => `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v + ' Rabat')}" target="_blank" rel="noopener" class="nv-venue-maplink">📍 ${v}</a>`).join('')
+    : `<div style="font-size:15px; font-weight:700;">OFF aujourd'hui</div>`;
 
   content.innerHTML = `
     <div class="portal-status">
@@ -3180,19 +3188,47 @@ function renderNvPortal(){
       <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${getNvZoneLabel(zone)}</div>
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Shift</div>
       <div style="font-size:16px; font-weight:700; margin-bottom:14px;">${shiftLabel}</div>
-      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Hotspot aujourd'hui</div>
-      <div style="font-size:15px; font-weight:700; margin-bottom:${hotspotMapUrl ? '8px' : '0'};">📍 ${todayHotspot}</div>
-      ${hotspotMapUrl ? `<a href="${hotspotMapUrl}" target="_blank" rel="noopener" class="nv-loc-badge nv-loc-fresh" style="display:inline-block;">🧭 Itinéraire vers le hotspot</a>` : ''}
+      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:6px;">Hotspot aujourd'hui — clique pour l'itinéraire</div>
+      <div class="nv-venue-links">${venueLinksHtml}</div>
     </div>
-    <button class="portal-btn" id="nvGeoBtn">📍 Activer la localisation</button>
-    <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
+    <div id="nvGeoArea"></div>
   `;
-
-  document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
 
   // Reprend automatiquement le suivi si l'agent l'avait activé plus tôt (et que son shift n'est pas fini).
   if(localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1'){
     startNvLocationTracking();
+  }
+  updateNvGeoButtonVisibility();
+  if(nvUiIntervalId) clearInterval(nvUiIntervalId);
+  nvUiIntervalId = setInterval(updateNvGeoButtonVisibility, 30000);
+}
+
+function updateNvGeoButtonVisibility(){
+  const area = document.getElementById('nvGeoArea');
+  if(!area) return;
+  const isActive = !!nvGeoIntervalId;
+  const everActivated = localStorage.getItem('nvGeoEverActivated_' + currentNvAgent) === '1';
+  const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftKey);
+  const minsLeft = shiftEnd ? Math.round((shiftEnd.getTime() - Date.now()) / 60000) : null;
+  const nearShiftEnd = isActive && minsLeft !== null && minsLeft <= 10 && minsLeft >= 0;
+
+  if(!isActive){
+    // Jamais activé (ou désactivé) : le bouton reste visible pour pouvoir démarrer.
+    area.innerHTML = `
+      <button class="portal-btn" id="nvGeoBtn">📍 Activer la localisation</button>
+      <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
+    `;
+    document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+  } else if(nearShiftEnd){
+    // Shift bientôt fini : on réaffiche le bouton comme rappel pour désactiver.
+    area.innerHTML = `
+      <button class="portal-btn" id="nvGeoBtn" style="background:var(--mustard-deep);">⏰ Ton shift se termine dans ${minsLeft} min — Désactiver</button>
+      <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;">✅ Localisation active</div>
+    `;
+    document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+  } else {
+    // Actif et loin de la fin du shift : pas besoin d'afficher un bouton, juste un petit indicateur discret.
+    area.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--green); padding:6px;">🟢 Localisation active</div>`;
   }
 }
 
@@ -3215,21 +3251,18 @@ function toggleNvLocationTracking(){
   if(nvGeoIntervalId){
     stopNvLocationTracking();
     localStorage.removeItem('nvGeoActive_' + currentNvAgent);
-    const btn = document.getElementById('nvGeoBtn');
-    const statusEl = document.getElementById('nvGeoStatus');
-    if(btn) btn.textContent = '📍 Activer la localisation';
-    if(statusEl) statusEl.textContent = 'Localisation désactivée.';
   } else {
     localStorage.setItem('nvGeoActive_' + currentNvAgent, '1');
+    localStorage.setItem('nvGeoEverActivated_' + currentNvAgent, '1');
     startNvLocationTracking();
   }
+  updateNvGeoButtonVisibility();
 }
 
 function startNvLocationTracking(){
-  const btn = document.getElementById('nvGeoBtn');
-  const statusEl = document.getElementById('nvGeoStatus');
   if(nvGeoIntervalId) return; // déjà actif
   if(!navigator.geolocation){
+    const statusEl = document.getElementById('nvGeoStatus');
     if(statusEl) statusEl.textContent = "Ton navigateur ne supporte pas la localisation.";
     return;
   }
@@ -3239,8 +3272,7 @@ function startNvLocationTracking(){
     if(shiftEnd && Date.now() > shiftEnd.getTime()){
       stopNvLocationTracking();
       localStorage.removeItem('nvGeoActive_' + currentNvAgent);
-      if(btn) btn.textContent = '📍 Activer la localisation';
-      if(statusEl) statusEl.textContent = 'Shift terminé — localisation arrêtée automatiquement.';
+      updateNvGeoButtonVisibility();
       return;
     }
     navigator.geolocation.getCurrentPosition(pos => {
@@ -3251,16 +3283,12 @@ function startNvLocationTracking(){
           updatedAt: Date.now(),
         },
       }, { merge: true }).catch(err => console.error(err));
-      if(statusEl) statusEl.textContent = `✅ Active — dernière position envoyée à ${new Date().toLocaleTimeString('fr-FR')}.`;
     }, err => {
-      if(statusEl) statusEl.textContent = "Permission refusée ou position indisponible.";
       console.error(err);
     }, { enableHighAccuracy: true, timeout: 15000 });
   };
   sendPosition();
   nvGeoIntervalId = setInterval(sendPosition, 150000); // toutes les 2.5 min
-  if(btn) btn.textContent = '⏸️ Désactiver la localisation';
-  if(statusEl) statusEl.textContent = 'Localisation activée — garde cette page ouverte.';
 }
 
 function stopNvLocationTracking(){
