@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPS HQ v3 — Platform Control</title>
+<title>OPS HQ — Central Control</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<!-- External Libraries (Firebase & Office Tools) -->
+<!-- External Libraries -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
@@ -15,7 +15,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <style>
-/* ================= DESIGN SYSTEM ================= */
 :root {
   --bg-dark: #090D16;
   --bg-card: #111827;
@@ -59,11 +58,10 @@ input, select { font-family: inherit; outline: none; }
 ::-webkit-scrollbar { width: 6px; height: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg-dark); }
 ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: var(--text-sub); }
 
 .hidden { display: none !important; }
 
-/* ============ LOGIN SCREEN ============ */
+/* LOGIN SCREEN */
 #loginScreen { min-height: 100vh; }
 .login-split { min-height: 100vh; display: flex; }
 
@@ -73,8 +71,7 @@ input, select { font-family: inherit; outline: none; }
               linear-gradient(160deg, #0F172A, #070A11);
   color: #E2E8F0;
   display: flex; flex-direction: column; justify-content: space-between;
-  padding: 40px 44px; position: relative; overflow: hidden;
-  border-right: 1px solid var(--border-color);
+  padding: 40px 44px; border-right: 1px solid var(--border-color);
 }
 
 .hero-brand { display: flex; align-items: center; gap: 12px; }
@@ -82,15 +79,11 @@ input, select { font-family: inherit; outline: none; }
   width: 40px; height: 40px; background: var(--primary-cyan);
   border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
 }
-.hero-brand span { font-size: 18px; font-weight: 800; letter-spacing: -0.02em; color: #FFF; }
-
-.route-map { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 0; }
-.route-svg { width: 100%; max-width: 340px; height: auto; }
-.pin-label { fill: #F8FAFC; font-family: var(--font-sans); font-size: 12.5px; font-weight: 700; }
+.hero-brand span { font-size: 18px; font-weight: 800; color: #FFF; }
 
 .hero-foot { font-family: var(--font-mono); }
 .hero-foot span { font-size: 24px; font-weight: 700; color: var(--primary-cyan); display: block; margin-bottom: 4px; }
-.hero-foot p { font-size: 12px; color: var(--text-muted); max-width: 280px; }
+.hero-foot p { font-size: 12px; color: var(--text-muted); }
 
 .login-form-panel {
   flex: 1 1 54%; background: var(--bg-dark);
@@ -98,7 +91,7 @@ input, select { font-family: inherit; outline: none; }
 }
 .login-card { width: 100%; max-width: 420px; }
 .login-brand { margin-bottom: 24px; }
-.login-brand h1 { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.02em; }
+.login-brand h1 { font-size: 28px; font-weight: 800; color: var(--text-main); }
 .login-brand p { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
 
 .profile-grid {
@@ -111,10 +104,10 @@ input, select { font-family: inherit; outline: none; }
   display: flex; flex-direction: column; align-items: center; gap: 6px;
   transition: all 0.2s ease; cursor: pointer;
 }
-.profile-btn:hover { border-color: var(--primary-cyan); background: var(--bg-card-hover); transform: translateY(-2px); }
+.profile-btn:hover { border-color: var(--primary-cyan); background: var(--bg-card-hover); }
 .profile-btn.selected { border-color: var(--primary-cyan); background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); }
 .profile-avatar {
-  width: 38px; height: 38px; border-radius: 50%; background: var(--primary-cyan);
+  width: 36px; height: 36px; border-radius: 50%; background: var(--primary-cyan);
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0B0F17; font-size: 13px;
 }
 .profile-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center; }
@@ -129,39 +122,16 @@ input, select { font-family: inherit; outline: none; }
 .login-submit {
   width: 100%; padding: 14px; border-radius: var(--radius-md);
   background: var(--primary-cyan); color: #0B0F17; font-weight: 800; font-size: 14px;
-  letter-spacing: 0.02em;
 }
 .login-submit:hover { background: var(--primary-cyan-hover); color: #FFF; }
 .login-submit:disabled { background: var(--border-color); color: var(--text-sub); cursor: not-allowed; }
 .login-error { font-size: 12.5px; color: var(--accent-red); text-align: center; margin-top: 10px; min-height: 16px; }
 
-/* ============ PORTALS ============ */
-#agentPortal, #nvAgentPortal {
-  min-height: 100vh; display: flex; align-items: center; justify-content: center;
-  background: var(--bg-dark); padding: 24px;
-}
-.portal-card {
-  width: 100%; max-width: 420px; background: var(--bg-card); border-radius: var(--radius-lg);
-  padding: 30px; border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
-}
-.portal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.portal-header b { font-size: 16px; color: var(--text-main); }
-.portal-header span { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); }
-.portal-status {
-  text-align: center; padding: 14px; border-radius: var(--radius-md); background: var(--bg-input);
-  font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 18px; border: 1px solid var(--border-color);
-}
-.portal-btn {
-  width: 100%; padding: 18px; border-radius: var(--radius-md); background: var(--accent-green); color: #FFF;
-  font-size: 16px; font-weight: 800; margin-bottom: 12px;
-}
-
-/* ============ SHELL & SIDEBAR ============ */
+/* SHELL & MAIN */
 .shell { display: flex; min-height: 100vh; }
 .sidebar {
   width: 240px; flex-shrink: 0; background: var(--bg-card);
-  border-right: 1px solid var(--border-color); display: flex; flex-direction: column;
-  padding: 24px 16px;
+  border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 24px 16px;
 }
 .sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
 .sidebar-brand .mark {
@@ -192,13 +162,12 @@ input, select { font-family: inherit; outline: none; }
 }
 .logout-btn:hover { background: var(--accent-red); color: #FFF; border-color: var(--accent-red); }
 
-/* ============ MAIN CONTENT ============ */
 .main { flex: 1; background: var(--bg-dark); overflow-x: hidden; }
 .topbar {
   display: flex; align-items: center; justify-content: space-between;
   padding: 20px 32px; border-bottom: 1px solid var(--border-color); background: var(--bg-card);
 }
-.topbar h1 { font-size: 20px; font-weight: 800; letter-spacing: -0.01em; }
+.topbar h1 { font-size: 20px; font-weight: 800; }
 .topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono); }
 .sync-pill {
   display: flex; align-items: center; gap: 6px; padding: 6px 12px;
@@ -208,42 +177,39 @@ input, select { font-family: inherit; outline: none; }
 
 .view { padding: 32px; }
 
-.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--bg-card); border: 1px solid var(--border-color); border-left: 4px solid var(--primary-cyan);
-  border-radius: var(--radius-md); padding: 20px;
-}
-.stat-card.accent-green { border-left-color: var(--accent-green); }
-.stat-card.accent-amber { border-left-color: var(--accent-orange); }
-.stat-card.accent-red { border-left-color: var(--accent-red); }
-
-.stat-card .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 8px; }
-.stat-card .value { font-size: 28px; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); }
-.stat-card .sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
-
+/* TABLES & CARDS */
 .card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 20px; }
 table { width: 100%; border-collapse: collapse; }
-th { text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 700; padding: 14px 18px; border-bottom: 1px solid var(--border-color); background: var(--bg-input); }
+th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; padding: 14px 18px; border-bottom: 1px solid var(--border-color); background: var(--bg-input); }
 td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg-card-hover); }
 
+.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge.maladie { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+.badge.injustifiee { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
+.badge.ferie { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+
+.btn-primary { background: var(--primary-cyan); color: #0B0F17; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius-sm); }
+.btn-primary:hover { background: var(--primary-cyan-hover); color: #FFF; }
 .btn-ghost { background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius-sm); }
 .btn-ghost:hover { background: var(--bg-card-hover); color: var(--text-main); }
 
-@media (max-width: 900px) {
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .sidebar { width: 70px; padding: 20px 8px; }
-  .sidebar-brand h2, .nav-item span, .user-chip-text, .logout-btn span { display: none; }
-  .nav-item { justify-content: center; }
-  .login-split { flex-direction: column; }
-  .route-map { display: none; }
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px);
+  display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px;
 }
+.modal-card {
+  width: 100%; max-width: 440px; background: var(--bg-card);
+  border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--border-color);
+}
+.modal-card h3 { font-size: 18px; font-weight: 800; margin-bottom: 16px; color: var(--text-main); }
 </style>
 </head>
 <body>
 
-<!-- ============ LOGIN ============ -->
+<!-- LOGIN -->
 <div id="loginScreen">
   <div class="login-split">
     <aside class="login-hero-panel">
@@ -253,36 +219,6 @@ tr:hover td { background: var(--bg-card-hover); }
         </div>
         <span>OPS HQ v3</span>
       </div>
-
-      <div class="route-map">
-        <svg class="route-svg" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
-          <path id="routePath" d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"
-                fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5" stroke-dasharray="1 9" stroke-linecap="round"/>
-
-          <g transform="translate(50,50)">
-            <circle r="15" fill="#10B981"/>
-            <text x="20" y="4" class="pin-label">Technopolis</text>
-          </g>
-          <g transform="translate(280,130)">
-            <circle r="15" fill="#F97316"/>
-            <text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text>
-          </g>
-          <g transform="translate(90,230)">
-            <circle r="15" fill="#38BDF8"/>
-            <text x="20" y="4" class="pin-label">Agdal - Carrousel</text>
-          </g>
-
-          <g transform="translate(260,330)">
-            <circle r="15" fill="#A855F7"/>
-            <text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text>
-          </g>
-          <g transform="translate(80,430)">
-            <circle r="15" fill="#EF4444"/>
-            <text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text>
-          </g>
-        </svg>
-      </div>
-
       <div class="hero-foot">
         <span id="heroClock">--:--</span>
         <p>Gestion opérationnelle terrain — Rabat &amp; environs</p>
@@ -295,57 +231,16 @@ tr:hover td { background: var(--bg-card-hover); }
           <h1>OPS HQ</h1>
           <p>Système Central de Gestion RH</p>
         </div>
-
         <div class="profile-grid" id="profileGrid"></div>
-
         <input type="password" id="passwordInput" class="login-input" placeholder="Sélectionnez un profil..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
-
-        <div id="nvLoginLinkWrap" style="text-align:center; margin-top:16px;">
-          <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
-        </div>
-        <div id="nvLoginForm" class="hidden" style="margin-top:12px;">
-          <input type="text" id="nvPinInput" class="login-input" placeholder="Ton code PIN...">
-          <button id="nvLoginBtn" class="login-submit">ENTRER</button>
-          <div class="login-error" id="nvLoginError"></div>
-        </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- ============ PORTALS ============ -->
-<div id="agentPortal" class="hidden">
-  <div class="portal-card">
-    <div class="portal-header">
-      <div>
-        <b id="portalAgentName">—</b>
-        <span id="portalClock">--:--</span>
-      </div>
-      <button class="btn-ghost" id="portalLogoutBtn">Déconnexion</button>
-    </div>
-    <div class="portal-status" id="portalStatus">Chargement...</div>
-    <button class="portal-btn" id="portalCheckBtn">Check-in</button>
-  </div>
-</div>
-
-<div id="nvAgentPortal" class="hidden">
-  <div class="portal-card">
-    <div class="portal-header">
-      <div>
-        <b id="nvPortalAgentName">—</b>
-        <span id="nvPortalClock">--:--</span>
-      </div>
-      <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
-    </div>
-    <div id="nvPortalContent" style="margin-top:15px; font-size:14px; text-align:center; color: var(--text-muted);">
-      Bienvenue dans le portail Planning NV.
-    </div>
-  </div>
-</div>
-
-<!-- ============ APP MAIN SYSTEM ============ -->
+<!-- MAIN APP -->
 <div id="app" class="hidden">
   <div class="shell">
     <aside class="sidebar">
@@ -356,34 +251,8 @@ tr:hover td { background: var(--bg-card-hover); }
 
       <div class="nav-group">
         <div class="nav-label">Opérations</div>
-        <button class="nav-item active" data-view="dashboard">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
-          <span>Dashboard</span>
-        </button>
-        <button class="nav-item" data-view="planning">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
-          <span>Planning</span>
-        </button>
-        <button class="nav-item" data-view="planningnv">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2" stroke-dasharray="3 3"/><path d="M8 2v4M16 2v4"/></svg>
-          <span>Planning NV</span>
-        </button>
-        <button class="nav-item" data-view="pointage">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
-          <span>Pointage</span>
-        </button>
-        <button class="nav-item" data-view="absences">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M4 19V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v10"/></svg>
-          <span>Absences</span>
-        </button>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-label">Ressources</div>
-        <button class="nav-item" data-view="agents">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6 7-6s7 2 7 6"/><circle cx="19" cy="8" r="2"/><path d="M22 21c0-3-2-4.5-5-5"/></svg>
-          <span>Agents</span>
-        </button>
+        <button class="nav-item active" data-view="dashboard"><span>Dashboard</span></button>
+        <button class="nav-item" data-view="absences"><span>Absences</span></button>
       </div>
 
       <div class="sidebar-footer">
@@ -400,49 +269,72 @@ tr:hover td { background: var(--bg-card-hover); }
 
     <main class="main">
       <header class="topbar">
-        <h1 id="topbarTitle">Dashboard</h1>
+        <h1 id="topbarTitle">Absences</h1>
         <div class="topbar-meta">
-          <div class="sync-pill"><div class="dot"></div> Connecté (Sync)</div>
+          <div class="sync-pill"><div class="dot"></div> Connecté</div>
           <span id="topbarClock">--:--</span>
         </div>
       </header>
 
-      <div class="view" id="viewDashboard">
-        <div class="stat-grid">
-          <div class="stat-card">
-            <div class="label">Agents Actifs</div>
-            <div class="value" id="statActive">13</div>
-            <div class="sub">enregistrés</div>
+      <!-- VUE ABSENCES (Chargée depuis Firestore) -->
+      <div class="view" id="viewAbsences">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+          <div>
+            <h2 id="cycleLabel" style="font-size:18px; font-weight:800;">Cycle ...</h2>
+            <p id="cycleSub" style="font-size:12px; color:var(--text-muted);">Base 26 jours (21 -> 20)</p>
           </div>
-          <div class="stat-card accent-green">
-            <div class="label">Shift JOUR</div>
-            <div class="value" id="statJour">7</div>
-            <div class="sub">équipe matin</div>
-          </div>
-          <div class="stat-card accent-amber">
-            <div class="label">Shift NUIT</div>
-            <div class="value" id="statNuit">6</div>
-            <div class="sub">équipe soir</div>
-          </div>
-          <div class="stat-card accent-red">
-            <div class="label">Zones Couvertes</div>
-            <div class="value" id="statZones">5</div>
-            <div class="sub">sur 5 zones</div>
-          </div>
+          <button class="btn-primary" id="addAbsenceBtn">+ Déclarer une absence</button>
+        </div>
+
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Agent</th>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Note</th>
+              </tr>
+            </thead>
+            <tbody id="absencesDetailBody">
+              <tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Chargement des données...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
-
-      <div class="view hidden" id="viewPlanning"><div class="card" style="padding:24px;"><h2>Vue Planning</h2></div></div>
-      <div class="view hidden" id="viewPlanningnv"><div class="card" style="padding:24px;"><h2>Vue Planning NV</h2></div></div>
-      <div class="view hidden" id="viewPointage"><div class="card" style="padding:24px;"><h2>Vue Pointage</h2></div></div>
-      <div class="view hidden" id="viewAbsences"><div class="card" style="padding:24px;"><h2>Vue Absences</h2></div></div>
-      <div class="view hidden" id="viewAgents"><div class="card" style="padding:24px;"><h2>Vue Agents</h2></div></div>
     </main>
   </div>
 </div>
 
+<!-- ABSENCE MODAL -->
+<div class="modal-overlay hidden" id="absenceModalOverlay">
+  <div class="modal-card">
+    <h3>Déclarer une absence</h3>
+    <label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:6px;">Agent</label>
+    <select id="absenceAgentInput" class="login-input"></select>
+
+    <label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:6px;">Type</label>
+    <select id="absenceTypeInput" class="login-input">
+      <option value="maladie">Absence maladie (−1j)</option>
+      <option value="injustifiee">Absence injustifiée (−1j)</option>
+      <option value="ferie">Jour férié travaillé (+1j)</option>
+    </select>
+
+    <label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:6px;">Date</label>
+    <input type="date" id="absenceDateInput" class="login-input">
+
+    <label style="font-size:11px; text-transform:uppercase; color:var(--text-muted); display:block; margin-bottom:6px;">Note</label>
+    <input type="text" id="absenceNoteInput" class="login-input" placeholder="Ex: certificat...">
+
+    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
+      <button class="btn-ghost" id="cancelAbsenceBtn">Annuler</button>
+      <button class="btn-primary" id="saveAbsenceBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
 <script>
-/* ================= FIREBASE INIT ================= */
+/* FIREBASE INIT */
 const firebaseConfig = {
   apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
   authDomain: "ops-hq-v2-848f6.firebaseapp.com",
@@ -455,146 +347,144 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-const PROFILES = [
-  { id: "najib", name: "Najib", role: "Harati", initials: "NH", color: "#38BDF8", authType: "firebase" },
-  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", color: "#F97316", authType: "firebase" },
-];
-
-let selectedProfile = null;
+let AGENTS = [];
+let currentCycleRecords = [];
 
 function updateClocks() {
   const now = new Date();
   const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-  document.querySelectorAll('#heroClock, #portalClock, #nvPortalClock, #topbarClock').forEach(el => {
-    if(el) el.textContent = timeStr;
-  });
+  document.querySelectorAll('#heroClock, #topbarClock').forEach(el => { if(el) el.textContent = timeStr; });
 }
 setInterval(updateClocks, 1000);
 updateClocks();
 
+// Cycle 21 -> 20 Calculation
+function getCycleFor(date){
+  const d = new Date(date);
+  let year = d.getFullYear(), month = d.getMonth();
+  if(d.getDate() < 21){
+    month -= 1;
+    if(month < 0){ month = 11; year -= 1; }
+  }
+  const start = new Date(year, month, 21);
+  const end = new Date(year, month + 1, 20);
+  const key = `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}`;
+  return { start, end, key };
+}
+
+// LOGIN & PROFILES
+const PROFILES = [
+  { id: "najib", name: "Najib", role: "Harati", authType: "firebase" },
+  { id: "oussama_h", name: "Oussama", role: "El Hamali", authType: "firebase" },
+];
+let selectedProfile = null;
+
 function renderProfiles() {
   const grid = document.getElementById('profileGrid');
-  const passInput = document.getElementById('passwordInput');
-  grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--text-muted); padding:10px;">Chargement de l\'équipe...</div>';
-
   auth.signInAnonymously()
     .then(() => db.collection('agents').get())
     .then(snap => {
-      const agentProfiles = snap.docs.map(d => {
-        const data = d.data();
+      AGENTS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      const agentProfiles = AGENTS.map(data => {
         const nickname = data.nickname || data.name.split(' ').slice(-1)[0];
-        return { id: d.id, name: nickname, role: 'Agent', authType: 'pin' };
-      }).sort((a, b) => a.name.localeCompare(b.name));
-
+        return { id: data.id, name: nickname, role: 'Agent', authType: 'pin' };
+      });
       const allProfiles = [...PROFILES, ...agentProfiles];
       grid.innerHTML = '';
       allProfiles.forEach(p => {
         const btn = document.createElement('button');
         btn.className = 'profile-btn';
-        btn.innerHTML = `
-          <div class="profile-avatar">${p.initials || p.name.substring(0,2).toUpperCase()}</div>
-          <span>${p.name}</span>
-          <small>${p.role}</small>
-        `;
-        btn.onclick = () => selectProfile(p, btn);
+        btn.innerHTML = `<div class="profile-avatar">${p.name.substring(0,2).toUpperCase()}</div><span>${p.name}</span><small>${p.role}</small>`;
+        btn.onclick = () => {
+          selectedProfile = p;
+          document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
+          btn.classList.add('selected');
+          document.getElementById('passwordInput').disabled = false;
+          document.getElementById('loginBtn').disabled = false;
+        };
         grid.appendChild(btn);
       });
-      passInput.disabled = false;
-    })
-    .catch(err => {
-      console.error(err);
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--accent-red); padding:10px;">Erreur de connexion Firebase.</div>';
-    });
+    }).catch(err => console.error(err));
 }
 
-function selectProfile(profile, btnEl) {
-  selectedProfile = profile;
-  document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
-  btnEl.classList.add('selected');
-  
-  const passInput = document.getElementById('passwordInput');
-  const loginBtn = document.getElementById('loginBtn');
-  
-  passInput.disabled = false;
-  loginBtn.disabled = false;
-  passInput.placeholder = profile.authType === 'pin' ? 'Code PIN Agent...' : 'Mot de passe Admin...';
-  passInput.value = '';
-  document.getElementById('loginError').textContent = '';
-  passInput.focus();
-}
-
-document.getElementById('loginBtn').onclick = attemptLogin;
-document.getElementById('passwordInput').onkeydown = e => { if(e.key === 'Enter') attemptLogin(); };
-
-function attemptLogin() {
+document.getElementById('loginBtn').onclick = () => {
   const pass = document.getElementById('passwordInput').value.trim();
-  const errEl = document.getElementById('loginError');
-  if(!selectedProfile) { errEl.textContent = 'Sélectionnez un profil.'; return; }
-  if(!pass) { errEl.textContent = 'Entrez le code d\'accès.'; return; }
-
   if(selectedProfile.authType === 'pin') {
-    errEl.textContent = 'Vérification...';
     db.collection('agents').doc(selectedProfile.id).get().then(doc => {
-      if(!doc.exists) { errEl.textContent = 'Agent introuvable.'; return; }
-      const agent = { id: doc.id, ...doc.data() };
-      if(!agent.pin || agent.pin !== pass) {
-        errEl.textContent = 'Code PIN incorrect.';
-        return;
-      }
-      errEl.textContent = '';
-      enterAgentPortal(agent);
-    }).catch(err => { console.error(err); errEl.textContent = 'Erreur de vérification PIN.'; });
-    return;
-  }
-
-  errEl.textContent = 'Connexion...';
-  const email = `${selectedProfile.id}@opshq.ma`;
-  auth.signInWithEmailAndPassword(email, pass)
-    .then(() => {
-      errEl.textContent = '';
-      enterApp(selectedProfile);
-    })
-    .catch(err => {
-      errEl.textContent = "Mot de passe incorrect ou compte non configuré.";
-      console.error(err);
+      if(doc.exists && doc.data().pin === pass) enterApp(selectedProfile);
+      else document.getElementById('loginError').textContent = "PIN Incorrect";
     });
-}
+  } else {
+    auth.signInWithEmailAndPassword(`${selectedProfile.id}@opshq.ma`, pass)
+      .then(() => enterApp(selectedProfile))
+      .catch(() => document.getElementById('loginError').textContent = "Mot de passe incorrect");
+  }
+};
 
 function enterApp(profile) {
   document.getElementById('loginScreen').classList.add('hidden');
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('sidebarUserName').textContent = profile.name;
   document.getElementById('sidebarUserRole').textContent = profile.role;
+  loadAbsencesFromFirestore();
 }
 
-function enterAgentPortal(agent) {
-  document.getElementById('loginScreen').classList.add('hidden');
-  document.getElementById('agentPortal').classList.remove('hidden');
-  document.getElementById('portalAgentName').textContent = agent.nickname || agent.name;
+// LOAD REAL ABSENCES FROM FIRESTORE
+function loadAbsencesFromFirestore() {
+  const cycle = getCycleFor(new Date());
+  document.getElementById('cycleLabel').textContent = `Cycle ${cycle.key}`;
+
+  db.collection('absences').where('cycleKey', '==', cycle.key).onSnapshot(snap => {
+    currentCycleRecords = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderAbsencesTable();
+  });
 }
 
-document.getElementById('sysLogoutBtn').onclick = logoutAll;
-document.getElementById('portalLogoutBtn').onclick = logoutAll;
-
-function logoutAll() {
-  auth.signOut().finally(() => location.reload());
+function renderAbsencesTable() {
+  const tbody = document.getElementById('absencesDetailBody');
+  tbody.innerHTML = '';
+  if(currentCycleRecords.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:var(--text-muted);">Aucune absence pour ce cycle.</td></tr>';
+    return;
+  }
+  currentCycleRecords.forEach(r => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${r.agentName || 'Agent'}</b></td>
+      <td>${r.date}</td>
+      <td><span class="badge ${r.type}">${r.type}</span></td>
+      <td>${r.note || '—'}</td>
+    `;
+    tbody.appendChild(tr);
+  });
 }
 
-document.getElementById('nvLoginLinkBtn').onclick = () => {
-  document.getElementById('nvLoginForm').classList.toggle('hidden');
+// MODAL ADD ABSENCE
+document.getElementById('addAbsenceBtn').onclick = () => {
+  const sel = document.getElementById('absenceAgentInput');
+  sel.innerHTML = AGENTS.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+  document.getElementById('absenceDateInput').value = new Date().toISOString().slice(0,10);
+  document.getElementById('absenceModalOverlay').classList.remove('hidden');
 };
 
-document.querySelectorAll('.nav-item').forEach(btn => {
-  btn.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    const view = btn.dataset.view;
-    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
-    const target = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
-    if(target) target.classList.remove('hidden');
-    document.getElementById('topbarTitle').textContent = btn.querySelector('span').textContent;
-  };
-});
+document.getElementById('cancelAbsenceBtn').onclick = () => document.getElementById('absenceModalOverlay').classList.add('hidden');
+
+document.getElementById('saveAbsenceBtn').onclick = () => {
+  const agentId = document.getElementById('absenceAgentInput').value;
+  const agent = AGENTS.find(a => a.id === agentId);
+  const type = document.getElementById('absenceTypeInput').value;
+  const date = document.getElementById('absenceDateInput').value;
+  const note = document.getElementById('absenceNoteInput').value;
+  const cycle = getCycleFor(new Date(date));
+
+  db.collection('absences').add({
+    agentId, agentName: agent ? agent.name : '', type, date, note, cycleKey: cycle.key
+  }).then(() => {
+    document.getElementById('absenceModalOverlay').classList.add('hidden');
+  });
+};
+
+document.getElementById('sysLogoutBtn').onclick = () => location.reload();
 
 window.addEventListener('DOMContentLoaded', renderProfiles);
 </script>
