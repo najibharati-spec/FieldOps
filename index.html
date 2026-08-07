@@ -2717,36 +2717,37 @@ let currentWeekStartNv = getWeekStart(new Date());
 // cette semaine change de hotspot chaque JOUR (rotation quotidienne dans sa liste).
 const DEFAULT_HOTSPOTS_NV = {
   "Salé-Rabat": [
-    ["KFC Rabat Ville", "McDonald's Rabat Ville", "KFC Bab El Had", "Océan"],
-    ["Carrefour Hepar Salé", "Primo Salé", "Burger King Salé", "Centre Salé"],
-    ["McDonald's Bouregreg", "Burger King Bouregreg", "Marjane Hepar Bouregreg", "Pizza Hut Bouregreg"],
+    { venues: ["KFC Rabat Ville", "McDonald's Rabat Ville", "KFC Bab El Had", "Océan"] },
+    { venues: ["Carrefour Hepar Salé", "Primo Salé", "Burger King Salé", "Centre Salé"] },
+    { venues: ["McDonald's Bouregreg", "Burger King Bouregreg", "Marjane Hepar Bouregreg", "Pizza Hut Bouregreg"] },
   ],
   "Agdal": [
-    ["Av. Fal Ould Oumeir", "Pizza Hut Agdal"],
-    ["Mall Rabat Center", "Mall Carrousel Rabat", "McDonald's Gare Rabat Agdal"],
+    { venues: ["Av. Fal Ould Oumeir", "Pizza Hut Agdal"] },
+    { venues: ["Mall Rabat Center", "Mall Carrousel Rabat", "McDonald's Gare Rabat Agdal"] },
   ],
   "Hay Riad": [
-    ["Souissi", "Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat"],
-    ["Marjane Hyper Hay Riad", "McDonald's Hay Riad", "Pizza Hut Marjane Hay Riad", "KFC Marjane Hay Riad"],
-    ["Carrefour Mehdi Ben Barka", "Av. Annakhil"],
-    ["Prestigia", "Polyvalente"],
+    { venues: ["Souissi", "Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat"] },
+    { venues: ["Marjane Hyper Hay Riad", "McDonald's Hay Riad", "Pizza Hut Marjane Hay Riad", "KFC Marjane Hay Riad"] },
+    { venues: ["Carrefour Mehdi Ben Barka", "Av. Annakhil"] },
+    { venues: ["Prestigia", "Polyvalente"] },
   ],
   "Temara": [
-    ["Oulad Mtaa", "Primo Massira 1", "Polyvalente"],
-    ["Harhoura", "Quick", "Agha Cham", "Paul Harhoura", "Wifak"],
-    ["McDonald's Temara", "Chawarma Ibn Acham", "Primo", "Michwat Al Akhawayn", "Qrouch"],
+    { venues: ["Oulad Mtaa", "Primo Massira 1", "Polyvalente"] },
+    { venues: ["Harhoura", "Quick", "Agha Cham", "Paul Harhoura", "Wifak"] },
+    { venues: ["McDonald's Temara", "Chawarma Ibn Acham", "Primo", "Michwat Al Akhawayn", "Qrouch"] },
   ],
 };
 // État en direct (Firestore) — permet d'ajouter des hotspots depuis l'interface, sans toucher au code.
+// NB: chaque slot est un OBJET {venues:[...]} et non un tableau brut, car Firestore interdit
+// les tableaux imbriqués directement (array of arrays).
 let HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
 let hotspotsNvUnsub = null;
 
 function isValidHotspotShapeNv(data){
-  // Doit être { zone: [ [venue,venue,...], [venue,...], ... ], ... } — chaque slot est un tableau.
   if(!data || typeof data !== 'object') return false;
   const zones = Object.values(data);
   if(zones.length === 0) return false;
-  return zones.every(slots => Array.isArray(slots) && slots.every(s => Array.isArray(s)));
+  return zones.every(slots => Array.isArray(slots) && slots.every(s => s && Array.isArray(s.venues)));
 }
 
 function listenHotspotsNv(){
@@ -2756,7 +2757,7 @@ function listenHotspotsNv(){
     if(isValidHotspotShapeNv(data)){
       HOTSPOTS_NV = data;
     } else {
-      // Absent, vide, ou ancien format (chaînes au lieu de tableaux) : on réinitialise proprement.
+      // Absent, vide, ou ancien format : on réinitialise proprement.
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
       HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
     }
@@ -2767,17 +2768,17 @@ function listenHotspotsNv(){
 function addHotspotNv(zone, slotIdx){
   const value = prompt(`Ajouter un lieu au hotspot #${slotIdx + 1} de "${zone}" :`);
   if(!value || !value.trim()) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => [...s]);
-  if(!zoneSlots[slotIdx]) zoneSlots[slotIdx] = [];
-  zoneSlots[slotIdx].push(value.trim());
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  if(!zoneSlots[slotIdx]) zoneSlots[slotIdx] = { venues: [] };
+  zoneSlots[slotIdx].venues.push(value.trim());
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
 function deleteHotspotNv(zone, slotIdx, venueIdx){
   if(!confirm('Supprimer ce lieu ?')) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => [...s]);
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
   if(!zoneSlots[slotIdx]) return;
-  zoneSlots[slotIdx].splice(venueIdx, 1);
+  zoneSlots[slotIdx].venues.splice(venueIdx, 1);
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
@@ -2863,7 +2864,7 @@ function renderPlanningNVInner(){
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
       const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
-      const cluster = slots[memberIdx] || [];
+      const cluster = (slots[memberIdx] && slots[memberIdx].venues) || [];
       const offDayIdx = (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
       const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
@@ -2889,8 +2890,8 @@ function renderPlanningNVInner(){
       `;
     });
 
-    let fullListHtml = slots.map((cluster, i) => `
-      <div class="nv-fulllist-row"><b>#${i + 1}</b> 📍 ${cluster.join(' / ')}</div>
+    let fullListHtml = slots.map((slot, i) => `
+      <div class="nv-fulllist-row"><b>#${i + 1}</b> 📍 ${(slot.venues || []).join(' / ')}</div>
     `).join('');
 
     card.innerHTML = `
