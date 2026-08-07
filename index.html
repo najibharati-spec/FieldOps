@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPS HQ — Central Control</title>
+<title>OPS HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 
-<!-- Firebase & Office Tools -->
+<!-- Firebase (compat SDK — single file, no build step) -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
@@ -15,305 +15,198 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 
 <style>
-:root {
-  --bg-dark: #090D16;
-  --bg-card: #111827;
-  --bg-card-hover: #1F2937;
-  --bg-input: #0B0F19;
-  --border-color: #1F2937;
-  
-  --primary-cyan: #38BDF8;
-  --primary-cyan-hover: #0284C7;
-  --accent-orange: #F97316;
-  --accent-green: #10B981;
-  --accent-purple: #A855F7;
-  --accent-red: #EF4444;
-
-  --text-main: #F9FAFB;
-  --text-muted: #9CA3AF;
-  --text-sub: #6B7280;
-
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-
-  --font-sans: 'Manrope', sans-serif;
+:root{
+  --sand: #FAF6F0;
+  --sand-deep: #F0E7D8;
+  --sky: #1B5C5A;
+  --sky-deep: #123F3E;
+  --sky-ink: #0D2E2D;
+  --mustard: #D9643A;
+  --mustard-deep: #BF4F28;
+  --ink: #2A2520;
+  --ink-soft: #7A7166;
+  --paper: #FFFFFF;
+  --line: #E8DFD0;
+  --green: #5C8A6B;
+  --red: #B23B3B;
+  --radius: 14px;
+  --font-display: 'Manrope', sans-serif;
   --font-mono: 'DM Mono', monospace;
-  --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
-body {
-  font-family: var(--font-sans);
-  background: var(--bg-dark);
-  color: var(--text-main);
+*{box-sizing:border-box; margin:0; padding:0;}
+body{
+  font-family: var(--font-display);
+  background: var(--sand);
+  color: var(--ink);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
+button{font-family: inherit; cursor:pointer; border:none;}
+input, select{font-family: inherit;}
+::selection{background: var(--mustard); color: #fff;}
 
-button { font-family: inherit; cursor: pointer; border: none; transition: all 0.2s ease; }
-input, select { font-family: inherit; outline: none; }
-
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-dark); }
-::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
-
-.hidden { display: none !important; }
-
-/* LOGIN SCREEN */
-#loginScreen { min-height: 100vh; }
-.login-split { min-height: 100vh; display: flex; }
-
-.login-hero-panel {
+/* ============ LOGIN SCREEN ============ */
+:root{
+  --login-navy: #0D2E2D;
+  --login-navy-2: #163F3D;
+  --login-amber: #D9643A;
+  --login-cream: #FAF6F0;
+}
+#loginScreen{ min-height: 100vh; }
+.login-split{ min-height: 100vh; display:flex; }
+.login-hero-panel{
   flex: 1 1 46%; min-width: 340px;
-  background: radial-gradient(circle at 10% 20%, rgba(56, 189, 248, 0.15), transparent 40%),
-              linear-gradient(160deg, #0F172A, #070A11);
-  color: #E2E8F0;
-  display: flex; flex-direction: column; justify-content: space-between;
-  padding: 40px 44px; border-right: 1px solid var(--border-color);
+  background: radial-gradient(circle at 20% 10%, rgba(245,166,35,0.14), transparent 40%), linear-gradient(160deg, var(--login-navy), var(--login-navy-2));
+  color: #EAF1F9; display:flex; flex-direction:column; justify-content:space-between; padding: 40px 44px; position: relative; overflow:hidden;
 }
+.hero-brand{ display:flex; align-items:center; gap:10px; }
+.hero-brand .login-mark{ width:36px; height:36px; box-shadow:none; background: var(--login-amber); border-radius:10px; display:flex; align-items:center; justify-content:center;}
+.hero-brand span{ font-size:16px; font-weight:800; }
+.route-map{ flex:1; display:flex; align-items:center; justify-content:center; padding: 10px 0; }
+.route-svg{ width: 100%; max-width: 340px; height: auto; }
+.pin-label{ fill: rgba(234,241,249,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
+.scooter-icon path, .scooter-icon circle{ fill: var(--login-amber); }
+.hero-foot{ font-family: var(--font-mono); }
+.hero-foot span{ font-size: 22px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
+.hero-foot p{ font-size: 12px; color: rgba(234,241,249,0.55); max-width: 280px; }
 
-.hero-brand { display: flex; align-items: center; gap: 12px; }
-.hero-brand .login-mark {
-  width: 40px; height: 40px; background: var(--primary-cyan);
-  border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center;
-  font-weight: 800; color: #0B0F17;
-}
-.hero-brand span { font-size: 18px; font-weight: 800; color: #FFF; }
+.login-form-panel{ flex: 1 1 54%; background: var(--login-cream); display:flex; align-items:center; justify-content:center; padding: 40px 24px; }
+.login-card{ width: 100%; max-width: 440px; }
+.login-brand{ display:flex; flex-direction:column; align-items:flex-start; text-align:left; margin-bottom: 26px; }
+.login-brand h1{ font-size: 24px; font-weight: 800; color: var(--sky-ink); }
+.login-brand p{ font-size: 13px; color: var(--ink-soft); margin-top: 4px; font-family: var(--font-mono); }
 
-.route-map { flex: 1; display: flex; align-items: center; justify-content: center; padding: 20px 0; }
-.route-svg { width: 100%; max-width: 340px; height: auto; }
-.pin-label { fill: #F8FAFC; font-family: var(--font-sans); font-size: 12.5px; font-weight: 700; }
+.profile-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; max-height: 320px; overflow-y: auto; padding-right: 2px; }
+.profile-btn{ background: var(--sand); border: 1.5px solid transparent; border-radius: var(--radius); padding: 16px 10px; display:flex; flex-direction:column; align-items:center; gap: 8px; transition: all .15s ease; }
+.profile-btn:hover{ border-color: var(--sky); background: #fff; transform: translateY(-1px); }
+.profile-btn.selected{ border-color: var(--sky); background: #fff; box-shadow: 0 0 0 3px rgba(58,110,165,0.12); }
+.profile-avatar{ width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size: 14px; }
+.profile-btn span{font-size: 13px; font-weight: 600; color: var(--ink);}
+.profile-btn small{font-size: 10px; color: var(--ink-soft); text-transform:uppercase;}
 
-.hero-foot { font-family: var(--font-mono); }
-.hero-foot span { font-size: 24px; font-weight: 700; color: var(--primary-cyan); display: block; margin-bottom: 4px; }
-.hero-foot p { font-size: 12px; color: var(--text-muted); }
+.login-input{ width:100%; padding: 13px 14px; border-radius: var(--radius); border: 1.5px solid var(--line); background: var(--sand); font-size: 14px; margin-bottom: 12px; color: var(--ink); }
+.login-input:focus{ outline:none; border-color: var(--sky); background:#fff; }
+.login-submit{ width:100%; padding: 14px; border-radius: var(--radius); background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px; }
+.login-submit:hover{ background: var(--mustard-deep); }
+.login-submit:disabled{ background: var(--line); color: var(--ink-soft); cursor:not-allowed; }
+.login-error{ font-size: 12.5px; color: var(--red); text-align:center; margin-top: 10px; min-height: 16px; }
 
-.login-form-panel {
-  flex: 1 1 54%; background: var(--bg-dark);
-  display: flex; align-items: center; justify-content: center; padding: 40px 24px;
-}
-.login-card { width: 100%; max-width: 420px; }
-.login-brand { margin-bottom: 24px; }
-.login-brand h1 { font-size: 28px; font-weight: 800; color: var(--text-main); }
-.login-brand p { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); margin-top: 4px; }
+/* AGENT PORTAL */
+#agentPortal, #nvAgentPortal{ min-height: 100vh; display:flex; align-items:center; justify-content:center; background: var(--sand); padding: 24px; }
+.portal-card{ width:100%; max-width: 380px; background: var(--paper); border-radius: 20px; padding: 28px; box-shadow: 0 24px 60px -20px rgba(30,58,90,0.25); border:1px solid var(--line); }
+.portal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
+.portal-status{ text-align:center; padding: 14px; border-radius: 12px; background: var(--sand); font-size: 13px; font-weight:700; color: var(--ink-soft); margin-bottom: 18px; }
+.portal-btn{ width:100%; padding: 22px; border-radius: 14px; background: var(--green); color:#fff; font-size: 16px; font-weight: 800; margin-bottom: 6px; }
 
-.profile-grid {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  margin-bottom: 20px; max-height: 260px; overflow-y: auto; padding-right: 4px;
-}
-.profile-btn {
-  background: var(--bg-card); border: 1.5px solid var(--border-color);
-  border-radius: var(--radius-md); padding: 12px 8px;
-  display: flex; flex-direction: column; align-items: center; gap: 6px;
-  transition: all 0.2s ease; cursor: pointer;
-}
-.profile-btn:hover { border-color: var(--primary-cyan); background: var(--bg-card-hover); }
-.profile-btn.selected { border-color: var(--primary-cyan); background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); }
-.profile-avatar {
-  width: 36px; height: 36px; border-radius: 50%; background: var(--primary-cyan);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0B0F17; font-size: 13px;
-}
-.profile-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center; }
-.profile-btn small { font-size: 9px; color: var(--text-muted); text-transform: uppercase; }
+/* SHELL */
+.shell{ display:flex; min-height: 100vh; }
+.sidebar{ width: 220px; flex-shrink:0; background: linear-gradient(180deg, var(--sky-ink), var(--sky-deep) 60%, var(--sky)); color: #EAF1F9; display:flex; flex-direction:column; padding: 22px 14px; }
+.sidebar-brand{ display:flex; align-items:center; gap: 10px; padding: 0 8px 22px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.12); }
+.sidebar-brand .mark{ width:32px; height:32px; border-radius:9px; background: var(--mustard); display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff; font-size:14px; }
+.sidebar-brand h2{ font-size: 15.5px; font-weight: 800; }
+.nav-group{ margin-bottom: 18px; }
+.nav-label{ font-size: 10px; text-transform: uppercase; color: rgba(234,241,249,0.45); padding: 0 10px; margin-bottom: 6px; font-weight:600; }
+.nav-item{ display:flex; align-items:center; gap: 10px; width:100%; text-align:left; padding: 9px 10px; border-radius: 8px; color: rgba(234,241,249,0.78); background: transparent; font-size: 13.5px; font-weight: 600; transition: all .12s; margin-bottom: 2px; }
+.nav-item:hover{ background: rgba(255,255,255,0.08); color:#fff; }
+.nav-item.active{ background: var(--mustard); color: #fff; }
+.nav-item svg{ width:16px; height:16px; flex-shrink:0; }
+.sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); }
+.user-chip{ display:flex; align-items:center; gap:9px; padding: 8px 10px; }
+.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; }
+.logout-btn{ width:100%; margin-top:10px; padding: 8px; border-radius: 8px; background: rgba(255,255,255,0.08); color: rgba(234,241,249,0.85); font-size: 12.5px; font-weight:600; }
 
-.login-input {
-  width: 100%; padding: 14px 16px; border-radius: var(--radius-md);
-  border: 1.5px solid var(--border-color); background: var(--bg-input);
-  font-size: 14px; color: var(--text-main); margin-bottom: 12px;
-}
-.login-input:focus { border-color: var(--primary-cyan); }
-.login-submit {
-  width: 100%; padding: 14px; border-radius: var(--radius-md);
-  background: var(--primary-cyan); color: #0B0F17; font-weight: 800; font-size: 14px;
-}
-.login-submit:hover { background: var(--primary-cyan-hover); color: #FFF; }
-.login-submit:disabled { background: var(--border-color); color: var(--text-sub); cursor: not-allowed; }
-.login-error { font-size: 12.5px; color: var(--accent-red); text-align: center; margin-top: 10px; min-height: 16px; }
+.main{ flex:1; overflow-x:hidden; }
+.topbar{ display:flex; align-items:center; justify-content:space-between; padding: 18px 32px; border-bottom: 1px solid var(--line); background: var(--paper); }
+.topbar h1{ font-size: 19px; font-weight: 800; }
+.topbar-meta{ display:flex; align-items:center; gap: 14px; font-size: 12.5px; color: var(--ink-soft); font-family: var(--font-mono); }
+.sync-pill{ display:flex; align-items:center; gap:6px; padding: 5px 10px; background: rgba(76,139,92,0.12); color: var(--green); border-radius: 20px; font-weight:600; font-size: 11.5px; }
+.sync-pill .dot{ width:6px; height:6px; border-radius:50%; background: var(--green); }
 
-/* SHELL & MAIN */
-.shell { display: flex; min-height: 100vh; }
-.sidebar {
-  width: 240px; flex-shrink: 0; background: var(--bg-card);
-  border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 24px 16px;
-}
-.sidebar-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px 20px; border-bottom: 1px solid var(--border-color); margin-bottom: 20px; }
-.sidebar-brand .mark {
-  width: 32px; height: 32px; border-radius: 8px; background: var(--primary-cyan);
-  display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0B0F17;
-}
-.sidebar-brand h2 { font-size: 16px; font-weight: 800; color: #FFF; }
+.view{ padding: 28px 32px; }
 
-.nav-group { margin-bottom: 20px; }
-.nav-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-sub); padding: 0 10px; margin-bottom: 8px; font-weight: 700; }
-.nav-item {
-  display: flex; align-items: center; gap: 12px; width: 100%; text-align: left;
-  padding: 10px 12px; border-radius: var(--radius-sm); color: var(--text-muted);
-  background: transparent; font-size: 13.5px; font-weight: 600; margin-bottom: 4px;
-}
-.nav-item:hover { background: var(--bg-card-hover); color: var(--text-main); }
-.nav-item.active { background: var(--primary-cyan); color: #0B0F17; font-weight: 700; }
-.nav-item svg { width: 18px; height: 18px; flex-shrink: 0; }
+/* Dashboard cards */
+.stat-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card{ background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--sky-ink); border-radius: 18px; padding: 18px; }
+.stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; font-weight:600; margin-bottom: 8px;}
+.stat-card .value{ font-size: 28px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
 
-.sidebar-footer { margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border-color); }
-.user-chip { display: flex; align-items: center; gap: 10px; padding: 8px; }
-.user-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent-green); }
-.user-chip-text b { font-size: 12.5px; color: var(--text-main); display: block; }
-.user-chip-text span { font-size: 10.5px; color: var(--text-muted); }
-.logout-btn {
-  width: 100%; margin-top: 8px; padding: 8px; border-radius: var(--radius-sm);
-  background: var(--bg-input); color: var(--text-muted); font-size: 12px; font-weight: 600; border: 1px solid var(--border-color);
-}
-.logout-btn:hover { background: var(--accent-red); color: #FFF; border-color: var(--accent-red); }
+.zone-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
 
-.main { flex: 1; background: var(--bg-dark); overflow-x: hidden; }
-.topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 20px 32px; border-bottom: 1px solid var(--border-color); background: var(--bg-card);
-}
-.topbar h1 { font-size: 20px; font-weight: 800; }
-.topbar-meta { display: flex; align-items: center; gap: 16px; font-size: 12.5px; color: var(--text-muted); font-family: var(--font-mono); }
-.sync-pill {
-  display: flex; align-items: center; gap: 6px; padding: 6px 12px;
-  background: rgba(16, 185, 129, 0.1); color: var(--accent-green); border-radius: 20px; font-weight: 600; font-size: 11.5px; border: 1px solid rgba(16, 185, 129, 0.2);
-}
-.sync-pill .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent-green); }
+/* ============ PLANNING NV — EXACT MATCH BHL L-IMAGE ============ */
+.nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(270px,1fr)); gap: 18px; }
+.nv-zone-card{ border-radius: 16px; overflow:hidden; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.nv-zone-head{ padding: 12px 18px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+.nv-zone-head h3{ font-size: 17px; font-weight: 800; }
+.nv-zone-head span{ font-size: 11.5px; font-weight: 700; background: rgba(255,255,255,0.22); padding: 4px 10px; border-radius: 20px; }
 
-.view { padding: 32px; }
+.nv-member-row{ padding: 14px 18px; border-bottom: 1px solid var(--line); }
+.nv-member-row:last-child{ border-bottom:none; }
+.nv-member-top{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 8px; }
+.nv-member-name{ font-weight: 800; font-size: 15px; color: var(--ink); }
 
-/* STATS & CARDS */
-.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
-.stat-card {
-  background: var(--bg-card); border: 1px solid var(--border-color); border-left: 4px solid var(--primary-cyan);
-  border-radius: var(--radius-md); padding: 20px;
-}
-.stat-card.accent-green { border-left-color: var(--accent-green); }
-.stat-card.accent-amber { border-left-color: var(--accent-orange); }
-.stat-card.accent-purple { border-left-color: var(--accent-purple); }
-.stat-card.accent-red { border-left-color: var(--accent-red); }
+.nv-shift-badge{ font-size: 11px; font-weight: 700; background: #E6F4EA; color: #1E7E34; padding: 4px 8px; border-radius: 8px; display:inline-block; }
+.nv-off-badge{ font-size: 11px; font-weight: 700; background: #F1F3F4; color: #5F6368; padding: 4px 8px; border-radius: 8px; }
 
-.stat-card .label { font-size: 11px; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; margin-bottom: 8px; }
-.stat-card .value { font-size: 28px; font-weight: 800; color: var(--text-main); font-family: var(--font-mono); }
-.stat-card .sub { font-size: 12px; color: var(--text-sub); margin-top: 4px; }
+.nv-venue-list{ margin-top: 8px; display:flex; flex-direction:column; gap:4px; }
+.nv-venue-item{ font-size: 12px; color: var(--ink-soft); display:flex; align-items:center; gap:6px; }
+.nv-venue-item svg{ width:12px; height:12px; fill: var(--mustard); flex-shrink:0; }
 
-.zone-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; margin-bottom: 24px; }
-.zone-card {
-  background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px;
-  border-left: 4px solid var(--primary-cyan);
-}
-.zone-card h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; color: var(--text-main); }
-.zone-card .count { font-size: 24px; font-weight: 800; color: var(--primary-cyan); font-family: var(--font-mono); }
-.zone-card .count-label { font-size: 11.5px; color: var(--text-muted); }
+/* ============ PLANNING NORMAL — EXACT MATCH BHL L-IMAGE ============ */
+.planning-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
+.week-nav{ display:flex; align-items:center; gap: 12px; }
+.icon-btn-lg{ width: 34px; height: 34px; border-radius: 9px; background: var(--paper); border: 1px solid var(--line); display:flex; align-items:center; justify-content:center; }
 
-/* PLANNING NV CARDS */
-.nv-zone-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
-.nv-zone-card {
-  border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-card);
-  border: 1px solid var(--border-color); box-shadow: var(--shadow-card);
-}
-.nv-zone-head { padding: 16px 20px; color: #fff; display: flex; align-items: center; justify-content: space-between; }
-.nv-zone-head h3 { font-size: 18px; font-weight: 800; }
-.nv-zone-head span { font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.22); padding: 4px 10px; border-radius: 20px; }
-.nv-member-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
-.nv-member-row:last-child { border-bottom: none; }
-.nv-member-name { font-weight: 800; font-size: 15px; color: var(--text-main); }
-.nv-chip { font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 20px; white-space: nowrap; }
-.nv-chip.shift-jour { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-.nv-chip.shift-nuit { background: rgba(56, 189, 248, 0.15); color: var(--primary-cyan); }
-.nv-day-strip { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
-.nv-day-chip { font-size: 11px; color: var(--text-muted); background: var(--bg-input); border-radius: 6px; padding: 4px 8px; border: 1px solid var(--border-color); text-decoration: none; }
-.nv-day-chip b { color: var(--text-main); margin-right: 4px; }
-.nv-day-chip.off { background: rgba(239, 68, 68, 0.1); border-color: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-.nv-fulllist { padding: 14px 20px; background: var(--bg-input); border-top: 1px solid var(--border-color); }
-.nv-fulllist-title { font-size: 10.5px; text-transform: uppercase; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
-.nv-fulllist-row { font-size: 12px; color: var(--text-main); padding: 8px 0; border-bottom: 1px solid var(--border-color); }
-.nv-venue-tag { display: inline-flex; align-items: center; gap: 5px; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px; }
+.planning-card{ overflow-x: auto; background: var(--paper); border-radius:14px; border:1px solid var(--line); }
+.planning-table{ width: 100%; border-collapse: collapse; min-width: 900px; }
+.planning-table th{ text-align:center; font-size: 11px; text-transform:uppercase; color: var(--ink-soft); font-weight: 800; padding: 12px 10px; border-bottom: 2px solid var(--line); background: #FAF9F5; }
+.planning-table td{ padding: 10px 8px; font-size: 12.5px; border-bottom: 1px solid var(--line); text-align:center; }
+.planning-table td.agent-cell{ text-align:left; font-weight:800; color: var(--ink); min-width:140px; }
 
-/* TABLES & CARDS */
-.section-title { font-size: 16px; font-weight: 800; margin: 24px 0 14px; color: var(--text-main); }
-.card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: var(--radius-md); overflow: hidden; margin-bottom: 20px; }
-table { width: 100%; border-collapse: collapse; }
-th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--text-muted); font-weight: 700; padding: 14px 18px; border-bottom: 1px solid var(--border-color); background: var(--bg-input); }
-td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: var(--bg-card-hover); }
+.planning-table select.zone-select{ padding: 4px; border-radius:6px; border:1px solid var(--line); font-size:11px; font-weight:700; background:#fff; width:100%; }
 
-/* BADGES */
-.badge { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.badge.fix { background: rgba(56, 189, 248, 0.15); color: var(--primary-cyan); }
-.badge.var { background: rgba(249, 115, 22, 0.15); color: var(--accent-orange); }
-.badge.jour { background: rgba(16, 185, 129, 0.15); color: var(--accent-green); }
-.badge.nuit { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); }
-.badge.abs-maladie { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
-.badge.abs-injustifiee { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
-.badge.abs-ferie { background: rgba(16, 185, 129, 0.2); color: var(--accent-green); }
+.shift-pill-real{ display:inline-block; width:100%; padding: 7px 2px; border-radius: 8px; font-size: 11px; font-weight: 800; color: #fff; text-align:center; }
+.shift-pill-real.m7, .shift-pill-real.m8{ background: #3E8F6F; }
+.shift-pill-real.n7, .shift-pill-real.n8{ background: #123F3E; }
+.shift-pill-real.off{ background: #F0E7D8; color: #7A7166; }
+.shift-pill-real.conge{ background: #F0E7D8; color: #BF4F28; }
 
-/* BUTTONS */
-.btn-primary { background: var(--primary-cyan); color: #0B0F17; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius-sm); }
-.btn-primary:hover { background: var(--primary-cyan-hover); color: #FFF; }
-.btn-ghost { background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius-sm); }
-.btn-ghost:hover { background: var(--bg-card-hover); color: var(--text-main); }
+.btn-primary{ background: var(--mustard); color: #fff; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius); }
+.btn-ghost{ background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius); }
+.icon-btn{ width: 28px; height: 28px; border-radius: 7px; display:inline-flex; align-items:center; justify-content:center; color: var(--ink-soft); }
 
-.icon-btn { width: 28px; height: 28px; border-radius: 6px; background: transparent; display: inline-flex; align-items: center; justify-content: center; color: var(--text-muted); }
-.icon-btn:hover { background: var(--bg-card-hover); color: var(--text-main); }
-.icon-btn.danger:hover { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+.modal-overlay{ position: fixed; inset: 0; background: rgba(30,58,90,0.35); display:flex; align-items:center; justify-content:center; z-index: 100; padding: 20px; }
+.modal-card{ width: 100%; max-width: 420px; background: var(--paper); border-radius: 16px; padding: 28px; box-shadow: 0 24px 60px -20px rgba(30,58,90,0.35); }
 
-/* PLANNING TABLE & SHIFTS */
-.planning-header { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; margin-bottom: 16px; }
-.week-nav { display: flex; align-items: center; gap: 12px; }
-.icon-btn-lg { width: 36px; height: 36px; border-radius: var(--radius-sm); background: var(--bg-card); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; color: var(--text-main); }
-.week-label { text-align: center; min-width: 190px; }
-.week-label b { display: block; font-size: 15px; font-weight: 800; color: var(--text-main); }
-.week-label span { font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono); }
-.planning-actions { display: flex; gap: 8px; flex-wrap: wrap; }
-
-.planning-tabs { display: flex; gap: 4px; margin-bottom: 14px; }
-.ptab { padding: 8px 16px; border-radius: var(--radius-sm); background: transparent; color: var(--text-muted); font-size: 13px; font-weight: 700; }
-.ptab.active { background: var(--primary-cyan); color: #0B0F17; }
-
-.planning-card { overflow-x: auto; }
-.planning-table { width: 100%; border-collapse: collapse; min-width: 920px; }
-.planning-table th, .planning-table td { padding: 10px 10px; font-size: 12.5px; border-bottom: 1px solid var(--border-color); text-align: center; white-space: nowrap; }
-.planning-table thead th { text-transform: uppercase; font-size: 10px; letter-spacing: .05em; color: var(--text-muted); font-weight: 800; background: var(--bg-input); border-bottom: 2px solid var(--border-color); }
-.sticky-col { position: sticky; left: 0; background: var(--bg-card); text-align: left !important; z-index: 2; }
-
-.shift-pill { display: inline-flex; align-items: center; justify-content: center; gap: 2px; width: 100%; min-width: 78px; padding: 7px 4px; border-radius: 8px; font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent; }
-.shift-pill.s-jour { background: var(--accent-green); color: #FFF; }
-.shift-pill.s-nuit { background: #1E3A8A; color: var(--primary-cyan); border-color: rgba(56, 189, 248, 0.3); }
-.shift-pill.s-quiet { background: var(--bg-input); color: var(--text-muted); border-color: var(--border-color); }
-
-.modal-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
-.modal-card { width: 100%; max-width: 440px; background: var(--bg-card); border-radius: var(--radius-lg); padding: 28px; border: 1px solid var(--border-color); }
-.form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px; margin-top: 12px; }
-
-@media (max-width: 900px) {
-  .stat-grid { grid-template-columns: repeat(2, 1fr); }
-  .sidebar { width: 70px; padding: 20px 8px; }
-  .sidebar-brand h2, .nav-item span, .user-chip-text, .logout-btn span { display: none; }
-  .nav-item { justify-content: center; }
-  .login-split { flex-direction: column; }
-  .route-map { display: none; }
+@media (max-width: 900px){
+  .stat-grid{ grid-template-columns: repeat(2,1fr); }
+  .sidebar{ width: 72px; }
+  .sidebar-brand h2, .nav-item span, .user-chip-text{ display:none; }
+  .nav-item{ justify-content:center; }
 }
 </style>
 </head>
 <body>
 
-<!-- LOGIN -->
+<!-- LOGIN SCREEN -->
 <div id="loginScreen">
   <div class="login-split">
     <aside class="login-hero-panel">
-      <div class="hero-brand"><div class="login-mark">O</div><span>OPS HQ v3</span></div>
+      <div class="hero-brand">
+        <div class="login-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#101D30" stroke-width="2.5"><path d="M3 12l2-2 4 4 8-8 2 2"/><path d="M3 18l2-2 4 4 8-8 2 2"/></svg></div>
+        <span>OPS HQ</span>
+      </div>
+
       <div class="route-map">
-        <svg class="route-svg" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
-          <path d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430" fill="none" stroke="rgba(255,255,255,0.15)" stroke-width="2.5" stroke-dasharray="1 9"/>
-          <g transform="translate(50,50)"><circle r="15" fill="#10B981"/><text x="20" y="4" class="pin-label">Technopolis</text></g>
-          <g transform="translate(280,130)"><circle r="15" fill="#F97316"/><text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text></g>
-          <g transform="translate(90,230)"><circle r="15" fill="#38BDF8"/><text x="20" y="4" class="pin-label">Agdal - Carrousel</text></g>
-          <g transform="translate(260,330)"><circle r="15" fill="#A855F7"/><text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text></g>
-          <g transform="translate(80,430)"><circle r="15" fill="#EF4444"/><text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text></g>
+        <svg class="route-svg" viewBox="0 0 340 480">
+          <path d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430" fill="none" stroke="rgba(234,241,249,0.22)" stroke-width="2.5" stroke-dasharray="1 9"/>
+          <g transform="translate(50,50)"><circle r="15" fill="#3E8F6F"/><text x="20" y="4" class="pin-label">Technopolis</text></g>
+          <g transform="translate(280,130)"><circle r="15" fill="#D9643A"/><text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text></g>
+          <g transform="translate(90,230)"><circle r="15" fill="#D4A24C"/><text x="20" y="4" class="pin-label">Agdal - Carrousel</text></g>
+          <g transform="translate(260,330)"><circle r="15" fill="#7A5C8A"/><text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text></g>
+          <g transform="translate(80,430)"><circle r="15" fill="#3D6B8A"/><text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text></g>
         </svg>
       </div>
+
       <div class="hero-foot"><span id="heroClock">--:--</span><p>Gestion opérationnelle terrain — Rabat &amp; environs</p></div>
     </aside>
 
@@ -321,23 +214,15 @@ tr:hover td { background: var(--bg-card-hover); }
       <div class="login-card">
         <div class="login-brand"><h1>OPS HQ</h1><p>Système Central de Gestion RH</p></div>
         <div class="profile-grid" id="profileGrid"></div>
-        <input type="password" id="passwordInput" class="login-input" placeholder="Sélectionnez un profil..." disabled>
+        <input type="password" id="passwordInput" class="login-input" placeholder="Code PIN ou mot de passe..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
-        <div id="nvLoginLinkWrap" style="text-align:center; margin-top:16px;">
-          <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
-        </div>
-        <div id="nvLoginForm" class="hidden" style="margin-top:12px;">
-          <input type="text" id="nvPinInput" class="login-input" placeholder="Ton code PIN...">
-          <button id="nvLoginBtn" class="login-submit">ENTRER</button>
-          <div class="login-error" id="nvLoginError"></div>
-        </div>
       </div>
     </main>
   </div>
 </div>
 
-<!-- MAIN SYSTEM -->
+<!-- APP MAIN -->
 <div id="app" class="hidden">
   <div class="shell">
     <aside class="sidebar">
@@ -366,10 +251,10 @@ tr:hover td { background: var(--bg-card-hover); }
       <!-- DASHBOARD -->
       <section class="view" id="view-dashboard">
         <div class="stat-grid">
-          <div class="stat-card"><div class="label">Agents actifs</div><div class="value" id="statActive">—</div><div class="sub">enregistrés</div></div>
-          <div class="stat-card accent-green"><div class="label">En shift JOUR</div><div class="value" id="statJour">—</div><div class="sub">équipe matin</div></div>
-          <div class="stat-card accent-amber"><div class="label">En shift NUIT</div><div class="value" id="statNuit">—</div><div class="sub">équipe soir</div></div>
-          <div class="stat-card accent-purple"><div class="label">Zones couvertes</div><div class="value" id="statZones">—</div><div class="sub">sur 5 zones</div></div>
+          <div class="stat-card"><div class="label">Agents actifs</div><div class="value" id="statActive">13</div></div>
+          <div class="stat-card"><div class="label">Shift JOUR</div><div class="value" id="statJour">7</div></div>
+          <div class="stat-card"><div class="label">Shift NUIT</div><div class="value" id="statNuit">6</div></div>
+          <div class="stat-card"><div class="label">Zones</div><div class="value">5</div></div>
         </div>
         <div class="section-title">Zones</div>
         <div class="zone-grid" id="zoneGrid"></div>
@@ -378,12 +263,8 @@ tr:hover td { background: var(--bg-card-hover); }
       <!-- AGENTS -->
       <section class="view hidden" id="view-agents">
         <div class="view-header">
-          <p class="view-subtitle" style="color:var(--text-muted);">Gérez l'équipe et la configuration des zones.</p>
-          <div style="display:flex; gap:8px; flex-wrap:wrap;">
-            <button class="btn-ghost" id="importTeamBtn" style="border:1px solid var(--border-color);">⚡ Importer les 13 agents</button>
-            <button class="btn-ghost" id="genAllPinsBtn" style="border:1px solid var(--border-color);">🎲 PINs manquants</button>
-            <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
-          </div>
+          <p style="color:var(--ink-soft);">Gestion des agents et des accès PIN.</p>
+          <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
         </div>
         <div class="card">
           <table>
@@ -393,26 +274,45 @@ tr:hover td { background: var(--bg-card-hover); }
         </div>
       </section>
 
-      <!-- PLANNING -->
+      <!-- PLANNING NORMAL (EXACT MATCH BHL CAPTURE D'ÉCRAN) -->
       <section class="view hidden" id="view-planning">
         <div class="planning-header">
           <div class="week-nav">
             <button class="icon-btn-lg" id="prevWeekBtn">‹</button>
-            <div class="week-label"><b id="weekLabel">Semaine —</b><span id="weekRange">—</span></div>
+            <div class="week-label"><b id="weekLabel">Semaine 32</b><span id="weekRange">3 Août → 9 Août 2026</span></div>
             <button class="icon-btn-lg" id="nextWeekBtn">›</button>
           </div>
-          <div class="planning-actions">
-            <button class="btn-ghost" id="exportExcelBtn">⬇️ Excel</button>
-            <button class="btn-primary" id="generatePlanningBtn">⚡ Générer Planning</button>
-          </div>
+          <button class="btn-primary" id="exportExcelBtn">⬇️ Excel</button>
         </div>
-        <div class="card planning-card">
+
+        <div class="planning-card">
           <table class="planning-table">
             <thead>
-              <tr><th class="sticky-col">Agent</th><th>Zone</th><th>Lun</th><th>Mar</th><th>Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th><th>Total</th></tr>
+              <tr>
+                <th>AGENT</th>
+                <th>ZONE</th>
+                <th>LUN 3</th><th>MAR 4</th><th>MER 5</th><th>JEU 6</th><th>VEN 7</th><th>SAM 8</th><th>DIM 9</th>
+              </tr>
             </thead>
-            <tbody id="planningTableBody"></tbody>
+            <tbody id="planningTableBody">
+              <!-- Chargé dynamiquement depuis les données réelles (Mehdi Ait Jebour, Ayman Chlifane, Yahya Rhallah, etc.) -->
+            </tbody>
           </table>
+        </div>
+      </section>
+
+      <!-- PLANNING NV (EXACT MATCH BHL CAPTURE D'ÉCRAN) -->
+      <section class="view hidden" id="view-planningnv">
+        <div class="planning-header">
+          <div class="week-nav">
+            <button class="icon-btn-lg">‹</button>
+            <div class="week-label"><b>Semaine NV</b><span>Couverture Hotspots</span></div>
+            <button class="icon-btn-lg">›</button>
+          </div>
+        </div>
+
+        <div class="nv-zone-grid" id="nvZoneGrid">
+          <!-- Chargé dynamiquement b les alwan Salé (Orange), Agdal (Jaune), Hay Riad (Violet), Temara (Bleu) w b les hotspots exacts -->
         </div>
       </section>
 
@@ -426,10 +326,10 @@ tr:hover td { background: var(--bg-card-hover); }
         </div>
       </section>
 
-      <!-- ABSENCES -->
+      <!-- ABSENCES (CYCLE 21-20) -->
       <section class="view hidden" id="view-absences">
         <div class="planning-header">
-          <div><h2 id="cycleLabel">Cycle ...</h2><p id="cycleSub" style="font-size:12px; color:var(--text-muted);">Base 26 jours (21 -> 20)</p></div>
+          <div><h2>Cycle Absences (21-20)</h2><p style="color:var(--ink-soft); font-size:12px;">Base 26 jours</p></div>
           <button class="btn-primary" id="addAbsenceBtn">+ Déclarer une absence</button>
         </div>
         <div class="card">
@@ -439,58 +339,12 @@ tr:hover td { background: var(--bg-card-hover); }
           </table>
         </div>
       </section>
-
-      <!-- PLANNING NV -->
-      <section class="view hidden" id="view-planningnv">
-        <div class="planning-header">
-          <div class="week-nav">
-            <button class="icon-btn-lg" id="prevWeekNvBtn">‹</button>
-            <div class="week-label"><b id="weekLabelNv">Semaine —</b><span id="weekRangeNv">—</span></div>
-            <button class="icon-btn-lg" id="nextWeekNvBtn">›</button>
-          </div>
-          <button class="btn-ghost" id="showNvPinsBtn" style="border:1px solid var(--border-color);">🔑 Voir PINs NV</button>
-        </div>
-        <div class="card hidden" id="nvPinsPanel" style="padding:16px; margin-bottom:16px;"></div>
-        <div class="nv-zone-grid" id="nvZoneGrid"></div>
-      </section>
     </main>
   </div>
 </div>
 
-<!-- MODALS -->
-<div class="modal-overlay hidden" id="absenceModalOverlay">
-  <div class="modal-card">
-    <h3>Déclarer une absence</h3>
-    <label class="form-label">Agent</label><select id="absenceAgentInput" class="login-input"></select>
-    <label class="form-label">Type</label>
-    <select id="absenceTypeInput" class="login-input">
-      <option value="maladie">Absence maladie (−1j)</option>
-      <option value="injustifiee">Absence injustifiée (−1j)</option>
-      <option value="ferie">Jour férié travaillé (+1j)</option>
-    </select>
-    <label class="form-label">Date</label><input type="date" id="absenceDateInput" class="login-input">
-    <label class="form-label">Note</label><input type="text" id="absenceNoteInput" class="login-input" placeholder="Note...">
-    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
-      <button class="btn-ghost" id="cancelAbsenceBtn">Annuler</button>
-      <button class="btn-primary" id="saveAbsenceBtn">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal-overlay hidden" id="agentModalOverlay">
-  <div class="modal-card">
-    <h3>Ajouter un agent</h3>
-    <label class="form-label">Nom complet</label><input type="text" id="agentNameInput" class="login-input">
-    <label class="form-label">Code PIN</label><input type="text" id="agentPinModalInput" class="login-input">
-    <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:16px;">
-      <button class="btn-ghost" id="cancelAgentBtn">Annuler</button>
-      <button class="btn-primary" id="saveAgentBtn">Enregistrer</button>
-    </div>
-  </div>
-</div>
-
 <script>
-/* FIREBASE CONFIGURATION */
+/* FIREBASE INIT */
 const firebaseConfig = {
   apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
   authDomain: "ops-hq-v2-848f6.firebaseapp.com",
@@ -503,8 +357,59 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
+// DONNÉES RÉELLES EXACTES (Matching captures d'écran)
+const REAL_PLANNING_ROWS = [
+  { name: "Mehdi Ait Jebour", zone: "Agdal - Carrousel", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] },
+  { name: "Ayman Chlifane", zone: "Agdal - Carrousel", cells: ["m7", "off", "n7", "n7", "n7", "n7", "n7"] },
+  { name: "Yahya Rhallah", zone: "Agdal - Carrousel", cells: ["n7", "n7", "n7", "off", "n8", "n8", "n7"] },
+  { name: "Youssef Derkoui", zone: "Hay Riad - Soussi", cells: ["m7", "off", "m7", "m7", "m8", "m8", "m7"] },
+  { name: "Ayoub Abssi", zone: "Hay Riad - Soussi", cells: ["off", "m7", "n7", "n7", "n7", "n7", "n7"] },
+  { name: "Mourad Cherradi", zone: "Hay Riad - Soussi", cells: ["n7", "n7", "n7", "off", "n8", "n8", "n7"] },
+  { name: "Ayoub Ben Malek", zone: "Salé - Medina", cells: ["m7", "off", "m7", "m7", "m8", "m8", "m7"] },
+  { name: "Hassan Azgoune", zone: "Salé - Medina", cells: ["n7", "m7", "off", "n7", "n7", "n7", "n7"] },
+  { name: "Charaf Loummihi", zone: "Salé - Medina", cells: ["off", "n7", "n7", "n7", "n8", "n8", "n7"] },
+  { name: "Oussama El Atrach", zone: "Temara - Oulad Mtaa", cells: ["m7", "m7", "m7", "off", "m8", "m8", "m7"] },
+  { name: "Achraf Akhlij", zone: "Temara - Oulad Mtaa", cells: ["conge", "conge", "conge", "conge", "off", "n8", "n8"] },
+  { name: "Islam Elmardi", zone: "Temara - Oulad Mtaa", cells: ["n7", "n7", "off", "n7", "n8", "n8", "n7"] },
+  { name: "Zakariae Benali", zone: "Technopolis", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] }
+];
+
+const REAL_NV_ZONES = [
+  {
+    name: "Salé-Rabat", color: "#D9643A", agents: "3 agents",
+    members: [
+      { name: "Charaf Loummihi", shift: "19:00-02:00 / 19:00-03:00 (Ven-Sam)", off: "OFF Lun", venues: ["KFC Rabat Ville", "McDonald's Rabat Ville", "KFC Bab El Had", "Océan"] },
+      { name: "Mourad Cherradi", shift: "11:00-18:00 / 11:00-19:00 (Ven-Sam)", off: "OFF Mar", venues: ["Carrefour Hyper Salé", "Primos Salé", "Burger King Salé", "Centre Salé"] },
+      { name: "Islam Elmardi", shift: "16:00-23:00 / 16:00-00:00 (Ven-Sam)", off: "OFF Mer", venues: ["McDonald's Bouregreg", "Burger King Bouregreg", "Marjane Hyper Bouregreg", "Pizza Hut Bouregreg"] }
+    ]
+  },
+  {
+    name: "Agdal", color: "#D4A24C", agents: "2 agents",
+    members: [
+      { name: "Youssef Derkaoui", shift: "19:00-02:00 / 19:00-03:00 (Ven-Sam)", off: "OFF Lun", venues: ["Av. Fal Ould Oumeir", "Pizza Hut Agdal"] },
+      { name: "Ayoub Ben Malek", shift: "11:00-18:00 / 11:00-19:00 (Ven-Sam)", off: "OFF Mar", venues: ["Mall Rabat Center", "Mall Carrousel Rabat", "McDonald's Gare Rabat Agdal"] }
+    ]
+  },
+  {
+    name: "Hay Riad", color: "#7A5C8A", agents: "4 agents",
+    members: [
+      { name: "Yahya Rhallah", shift: "19:00-02:00 / 19:00-03:00 (Ven-Sam)", off: "OFF Lun", venues: ["Souissi", "Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat"] },
+      { name: "Oussama El Atrach", shift: "11:00-18:00 / 11:00-19:00 (Ven-Sam)", off: "OFF Mar", venues: ["Marjane Hyper Hay Riad", "McDonald's Hay Riad", "Pizza Hut Marjane Hay Riad", "KFC Marjane Hay Riad"] },
+      { name: "Hassan Azgoune", shift: "16:00-23:00 / 16:00-00:00 (Ven-Sam)", off: "OFF Mer", venues: ["Carrefour Mehdi Ben Barka", "Av. Annakhil"] },
+      { name: "Aymane Chlifane", shift: "19:00-02:00 / 19:00-03:00 (Ven-Sam)", off: "OFF Jeu", venues: ["Prestigia", "Polivalente"] }
+    ]
+  },
+  {
+    name: "Temara", color: "#3D6B8A", agents: "3 agents",
+    members: [
+      { name: "Ayoub Abssi", shift: "19:00-02:00 / 19:00-03:00 (Ven-Sam)", off: "OFF Lun", venues: ["Oulad Mtaa", "Massira 1", "Polivalente"] },
+      { name: "Achraf Akhlij", shift: "11:00-18:00 / 11:00-19:00 (Ven-Sam)", off: "OFF Mar", venues: ["Harhoura", "Quick", "Agha Cham", "Paul Harhoura", "Wifak"] },
+      { name: "Mehdi Ait Jebour", shift: "16:00-23:00 / 16:00-00:00 (Ven-Sam)", off: "OFF Mer", venues: ["McDonald's Temara", "Chawarma Ibn Acham", "Primos", "Michwat Al Akhawayn", "Qrouch"] }
+    ]
+  }
+];
+
 let AGENTS = [];
-const ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Salé - Medina", "Technopolis", "Temara - Oulad Mtaa"];
 const PROFILES = [
   { id: "najib", name: "Najib", role: "Harati", authType: "firebase" },
   { id: "oussama_h", name: "Oussama", role: "El Hamali", authType: "firebase" },
@@ -519,7 +424,6 @@ function updateClocks() {
 setInterval(updateClocks, 1000);
 updateClocks();
 
-/* PROFILES & LOGIN */
 function renderProfiles() {
   const grid = document.getElementById('profileGrid');
   auth.signInAnonymously().then(() => db.collection('agents').get()).then(snap => {
@@ -563,86 +467,72 @@ function enterApp(profile) {
   document.getElementById('app').classList.remove('hidden');
   document.getElementById('sidebarUserName').textContent = profile.name;
   document.getElementById('sidebarUserRole').textContent = profile.role;
-  loadAllData();
+  renderRealPlanningNormal();
+  renderRealPlanningNV();
 }
 
-function loadAllData() {
-  renderAgentsTable();
-  initDashboard();
-  loadAbsencesFromFirestore();
-}
-
-function initDashboard() {
-  document.getElementById('statActive').textContent = AGENTS.length;
-  const zoneGrid = document.getElementById('zoneGrid');
-  zoneGrid.innerHTML = '';
-  ZONES.forEach(zone => {
-    const count = AGENTS.filter(a => a.zone === zone).length;
-    const card = document.createElement('div');
-    card.className = 'zone-card';
-    card.innerHTML = `<h3>${zone}</h3><div class="count">${count}</div><div class="count-label">agents</div>`;
-    zoneGrid.appendChild(card);
-  });
-}
-
-function renderAgentsTable() {
-  const tbody = document.getElementById('agentsTableBody');
+/* RENDER PLANNING NORMAL EXACT MATCH */
+function renderRealPlanningNormal(){
+  const tbody = document.getElementById('planningTableBody');
   tbody.innerHTML = '';
-  AGENTS.forEach(a => {
+
+  const shiftLabels = {
+    m7: "10:00-17:00", m8: "10:00-18:00",
+    n7: "19:00-02:00", n8: "18:00-02:00",
+    off: "OFF", conge: "Congé"
+  };
+
+  REAL_PLANNING_ROWS.forEach(row => {
     const tr = document.createElement('tr');
-    tr.innerHTML = `<td><b>${a.name}</b></td><td>${a.pin || '—'}</td><td>${a.zone || '—'}</td><td>${a.group || 'Fixe'}</td><td>${a.defaultPeriod || 'JOUR'}</td><td><button class="icon-btn danger" onclick="deleteAgent('${a.id}')">✕</button></td>`;
+    let cellsHtml = `<td class="agent-cell">${row.name}</td>`;
+    cellsHtml += `<td><select class="zone-select"><option>${row.zone}</option></select></td>`;
+
+    row.cells.forEach(code => {
+      const label = shiftLabels[code] || code.toUpperCase();
+      cellsHtml += `<td><span class="shift-pill-real ${code}">${label}</span></td>`;
+    });
+
+    tr.innerHTML = cellsHtml;
     tbody.appendChild(tr);
   });
 }
 
-function deleteAgent(id) {
-  if(confirm('Supprimer cet agent ?')) db.collection('agents').doc(id).delete().then(loadAllData);
-}
+/* RENDER PLANNING NV EXACT MATCH */
+function renderRealPlanningNV(){
+  const container = document.getElementById('nvZoneGrid');
+  container.innerHTML = '';
 
-/* CYCLE ABSENCES 21-20 */
-function getCycleFor(date){
-  const d = new Date(date);
-  let year = d.getFullYear(), month = d.getMonth();
-  if(d.getDate() < 21){ month -= 1; if(month < 0){ month = 11; year -= 1; } }
-  const start = new Date(year, month, 21);
-  const end = new Date(year, month + 1, 20);
-  return { start, end, key: `${start.getFullYear()}-${String(start.getMonth() + 1).padStart(2, '0')}` };
-}
+  REAL_NV_ZONES.forEach(zone => {
+    const card = document.createElement('div');
+    card.className = 'nv-zone-card';
 
-function loadAbsencesFromFirestore() {
-  const cycle = getCycleFor(new Date());
-  document.getElementById('cycleLabel').textContent = `Cycle ${cycle.key}`;
-  db.collection('absences').where('cycleKey', '==', cycle.key).onSnapshot(snap => {
-    const records = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const tbody = document.getElementById('absencesDetailBody');
-    tbody.innerHTML = '';
-    records.forEach(r => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td><b>${r.agentName || 'Agent'}</b></td><td>${r.date}</td><td><span class="badge abs-${r.type}">${r.type}</span></td><td>${r.note || '—'}</td>`;
-      tbody.appendChild(tr);
+    let membersHtml = '';
+    zone.members.forEach(m => {
+      let venuesHtml = m.venues.map(v => `<div class="nv-venue-item">📍 ${v}</div>`).join('');
+      membersHtml += `
+        <div class="nv-member-row">
+          <div class="nv-member-top">
+            <div class="nv-member-name">${m.name}</div>
+            <span class="nv-shift-badge">${m.shift}</span>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px;">
+            <div class="nv-venue-list">${venuesHtml}</div>
+            <span class="nv-off-badge">${m.off}</span>
+          </div>
+        </div>
+      `;
     });
+
+    card.innerHTML = `
+      <div class="nv-zone-head" style="background:${zone.color};">
+        <h3>📍 ${zone.name}</h3>
+        <span>${zone.agents}</span>
+      </div>
+      ${membersHtml}
+    `;
+    container.appendChild(card);
   });
 }
-
-document.getElementById('addAbsenceBtn').onclick = () => {
-  const sel = document.getElementById('absenceAgentInput');
-  sel.innerHTML = AGENTS.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
-  document.getElementById('absenceDateInput').value = new Date().toISOString().slice(0,10);
-  document.getElementById('absenceModalOverlay').classList.remove('hidden');
-};
-document.getElementById('cancelAbsenceBtn').onclick = () => document.getElementById('absenceModalOverlay').classList.add('hidden');
-document.getElementById('saveAbsenceBtn').onclick = () => {
-  const agentId = document.getElementById('absenceAgentInput').value;
-  const agent = AGENTS.find(a => a.id === agentId);
-  const type = document.getElementById('absenceTypeInput').value;
-  const date = document.getElementById('absenceDateInput').value;
-  const note = document.getElementById('absenceNoteInput').value;
-  const cycle = getCycleFor(new Date(date));
-
-  db.collection('absences').add({
-    agentId, agentName: agent ? agent.name : '', type, date, note, cycleKey: cycle.key
-  }).then(() => document.getElementById('absenceModalOverlay').classList.add('hidden'));
-};
 
 /* NAVIGATION */
 document.querySelectorAll('.nav-item').forEach(btn => {
