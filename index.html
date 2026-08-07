@@ -2832,7 +2832,7 @@ function listenHotspotsNv(){
 function addHotspotNv(zone, slotIdx){
   const value = prompt(`Ajouter un lieu au hotspot #${slotIdx + 1} de "${zone}" :`);
   if(!value || !value.trim()) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
   if(!zoneSlots[slotIdx]) zoneSlots[slotIdx] = { venues: [] };
   zoneSlots[slotIdx].venues.push(value.trim());
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
@@ -2866,7 +2866,7 @@ function setVenueLinkNv(venueName){
 
 function deleteHotspotNv(zone, slotIdx, venueIdx){
   if(!confirm('Supprimer ce lieu ?')) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
   if(!zoneSlots[slotIdx]) return;
   zoneSlots[slotIdx].venues.splice(venueIdx, 1);
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
@@ -2876,7 +2876,7 @@ function deleteHotspotNv(zone, slotIdx, venueIdx){
 function addHotspotSlotNv(zone){
   const value = prompt(`Nom du premier lieu pour ce nouveau hotspot à "${getNvZoneLabel(zone)}" :`);
   if(!value || !value.trim()) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
   zoneSlots.push({ venues: [value.trim()] });
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
@@ -2884,8 +2884,37 @@ function addHotspotSlotNv(zone){
 
 function deleteHotspotSlotNv(zone, slotIdx){
   if(!confirm(`Supprimer le hotspot #${slotIdx + 1} en entier (tous ses lieux) ?`)) return;
-  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
   zoneSlots.splice(slotIdx, 1);
+  const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
+  db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+}
+
+function moveHotspotSlotNv(zone, slotIdx){
+  const otherZones = Object.keys(HOTSPOTS_NV).filter(z => z !== zone);
+  const choice = prompt(`Déplacer le hotspot #${slotIdx + 1} de "${getNvZoneLabel(zone)}" vers quelle zone ?\n\n${otherZones.map((z, i) => `${i + 1}. ${getNvZoneLabel(z)}`).join('\n')}\n\nTape le numéro :`);
+  if(!choice) return;
+  const targetZone = otherZones[parseInt(choice, 10) - 1];
+  if(!targetZone){ alert('Choix invalide.'); return; }
+
+  const sourceSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
+  const movedSlot = sourceSlots[slotIdx];
+  if(!movedSlot) return;
+  sourceSlots.splice(slotIdx, 1);
+  const targetSlots = (HOTSPOTS_NV[targetZone] || []).map(s => ({ ...s, venues: [...s.venues] }));
+  targetSlots.push(movedSlot);
+
+  const updated = { ...HOTSPOTS_NV, [zone]: sourceSlots, [targetZone]: targetSlots };
+  db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+}
+
+function renameHotspotSlotNv(zone, slotIdx){
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
+  if(!zoneSlots[slotIdx]) return;
+  const current = zoneSlots[slotIdx].label || `#${slotIdx + 1}`;
+  const value = prompt(`Nom de ce hotspot :`, current);
+  if(value === null) return;
+  zoneSlots[slotIdx].label = value.trim() || null;
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
@@ -3009,7 +3038,8 @@ function renderPlanningNVInner(){
           const venueChips = venues.length
             ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
             : `<span class="nv-day-chip">—</span>`;
-          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel} · Hotspot ${slotIdx + 1}</div><div class="nv-day-venues">${venueChips}</div></div>`;
+          const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel} · ${slotLabel}</div><div class="nv-day-venues">${venueChips}</div></div>`;
         } else {
           dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel}</div><span class="nv-day-chip">—</span></div>`;
         }
@@ -3041,12 +3071,14 @@ function renderPlanningNVInner(){
       const venuesHtml = (slot.venues || []).map((v, vi) => `
         <span class="nv-venue-tag"><a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a> <button data-edit-link="${v.replace(/"/g, '&quot;')}" title="Lien Maps personnalisé">🔗</button> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
       `).join('');
+      const slotLabel = slot.label || `#${i + 1}`;
       return `
         <div class="nv-fulllist-row">
-          <div><b>#${i + 1}</b> ${venuesHtml}</div>
+          <div><b>${slotLabel}</b> <button class="nv-mini-link" data-rename-slot="${zone}::${i}" style="padding:0; font-size:10px;">✏️</button> ${venuesHtml}</div>
           <div style="margin-top:4px;">
             <button class="nv-mini-link" data-add-venue="${zone}::${i}">+ lieu</button>
-            <button class="nv-mini-link nv-mini-danger" data-del-slot="${zone}::${i}">✕ supprimer hotspot #${i + 1}</button>
+            <button class="nv-mini-link" data-move-slot="${zone}::${i}">➡️ déplacer vers une autre zone</button>
+            <button class="nv-mini-link nv-mini-danger" data-del-slot="${zone}::${i}">✕ supprimer hotspot ${slotLabel}</button>
           </div>
         </div>
       `;
@@ -3081,6 +3113,18 @@ function renderPlanningNVInner(){
     btn.addEventListener('click', () => {
       const [zone, slotIdx] = btn.dataset.delSlot.split('::');
       deleteHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-move-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.moveSlot.split('::');
+      moveHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-rename-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.renameSlot.split('::');
+      renameHotspotSlotNv(zone, parseInt(slotIdx, 10));
     });
   });
   grid.querySelectorAll('[data-add-venue]').forEach(btn => {
