@@ -2864,7 +2864,6 @@ function renderPlanningNVInner(){
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
       const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
-      const cluster = (slots[memberIdx] && slots[memberIdx].venues) || [];
       const offDayIdx = (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
       const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
@@ -2873,9 +2872,14 @@ function renderPlanningNVInner(){
       ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
         if(dayIdx === offDayIdx){
           dayChips += `<span class="nv-day-chip off"><b>${dayLabel}</b> OFF</span>`;
+        } else if(slots.length){
+          // Le hotspot ENTIER (zone/slot) tourne chaque jour entre les membres de l'équipe :
+          // aujourd'hui c'est Charaf qui y est, demain ce sera Islam, etc.
+          const slotIdx = (memberIdx + dayIdx) % slots.length;
+          const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+          dayChips += `<span class="nv-day-chip"><b>${dayLabel}</b> 📍 Hotspot ${slotIdx + 1} — ${venues.join(' / ')}</span>`;
         } else {
-          const venue = cluster.length ? cluster[dayIdx % cluster.length] : '—';
-          dayChips += `<span class="nv-day-chip"><b>${dayLabel}</b> 📍 ${venue}</span>`;
+          dayChips += `<span class="nv-day-chip"><b>${dayLabel}</b> —</span>`;
         }
       });
 
