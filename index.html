@@ -293,6 +293,8 @@ input, select{font-family: inherit;}
 .nv-chip.off{ background: rgba(122,113,102,0.14); color: #7A7166; }
 .nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
 .nv-day-block{ border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.nv-day-today{ background: rgba(217,100,58,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
+.nv-today-tag{ background: var(--mustard); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-day-block:last-child{ border-bottom: none; padding-bottom: 0; }
 .nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
@@ -635,7 +637,7 @@ tr:last-child td{ border-bottom:none; }
 </div>
 
 <!-- ============ APP ============ -->
-<div id="app">
+<div id="app" class="hidden" style="display:none;">
   <div class="shell">
     <aside class="sidebar">
       <div class="sidebar-brand">
@@ -3350,25 +3352,39 @@ function renderNvPortal(){
   const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
   const slots = HOTSPOTS_NV[zone] || [];
-  let hotspotVenues = [];
-  if(todayIdx !== offDayIdx && slots.length){
-    const slotIdx = (memberIdx + todayIdx) % slots.length;
-    hotspotVenues = (slots[slotIdx] && slots[slotIdx].venues) || [];
-  }
+  const ALL_DAY_LABELS_NV = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+
   window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
 
-  const venueLinksHtml = hotspotVenues.length
-    ? hotspotVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener" class="nv-venue-maplink">📍 ${v}</a>`).join('')
-    : `<div style="font-size:15px; font-weight:700;">OFF aujourd'hui</div>`;
+  let weekHtml = '';
+  ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
+    const isToday = dayIdx === todayIdx;
+    const todayTag = isToday ? ' <span class="nv-today-tag">Aujourd\'hui</span>' : '';
+    if(dayIdx === offDayIdx){
+      weekHtml += `<div class="nv-day-block${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag}</div><span class="nv-day-chip off">OFF</span></div>`;
+    } else if(slots.length){
+      const slotIdx = (memberIdx + dayIdx) % slots.length;
+      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+      const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+      const venueChips = venues.length
+        ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
+        : `<span class="nv-day-chip">—</span>`;
+      weekHtml += `<div class="nv-day-block${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag} · ${slotLabel}</div><div class="nv-day-venues">${venueChips}</div></div>`;
+    } else {
+      weekHtml += `<div class="nv-day-block${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag}</div><span class="nv-day-chip">—</span></div>`;
+    }
+  });
 
   content.innerHTML = `
     <div class="portal-status">
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Zone cette semaine</div>
       <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${getNvZoneLabel(zone)}</div>
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Shift</div>
-      <div style="font-size:16px; font-weight:700; margin-bottom:14px;">${shiftLabel}</div>
-      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:6px;">Hotspot aujourd'hui — clique pour l'itinéraire</div>
-      <div class="nv-venue-links">${venueLinksHtml}</div>
+      <div style="font-size:16px; font-weight:700;">${shiftLabel}</div>
+    </div>
+    <div class="portal-status" style="margin-top:14px;">
+      <div style="font-size:13px; color:var(--ink-soft); margin-bottom:8px;">Ma semaine complète</div>
+      <div class="nv-day-strip">${weekHtml}</div>
     </div>
     <div id="nvGeoArea"></div>
   `;
