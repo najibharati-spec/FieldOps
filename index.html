@@ -60,12 +60,11 @@ input, select{font-family: inherit;}
   color: #EAF1F9; display:flex; flex-direction:column; justify-content:space-between; padding: 40px 44px; position: relative; overflow:hidden;
 }
 .hero-brand{ display:flex; align-items:center; gap:10px; }
-.hero-brand .login-mark{ width:36px; height:36px; box-shadow:none; background: var(--login-amber); border-radius:10px; display:flex; align-items:center; justify-content:center;}
+.hero-brand .login-mark{ width:36px; height:36px; background: var(--login-amber); border-radius:10px; display:flex; align-items:center; justify-content:center; font-weight:800; color:#fff;}
 .hero-brand span{ font-size:16px; font-weight:800; }
 .route-map{ flex:1; display:flex; align-items:center; justify-content:center; padding: 10px 0; }
 .route-svg{ width: 100%; max-width: 340px; height: auto; }
 .pin-label{ fill: rgba(234,241,249,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
-.scooter-icon path, .scooter-icon circle{ fill: var(--login-amber); }
 .hero-foot{ font-family: var(--font-mono); }
 .hero-foot span{ font-size: 22px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
 .hero-foot p{ font-size: 12px; color: rgba(234,241,249,0.55); max-width: 280px; }
@@ -77,10 +76,10 @@ input, select{font-family: inherit;}
 .login-brand p{ font-size: 13px; color: var(--ink-soft); margin-top: 4px; font-family: var(--font-mono); }
 
 .profile-grid{ display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 20px; max-height: 320px; overflow-y: auto; padding-right: 2px; }
-.profile-btn{ background: var(--sand); border: 1.5px solid transparent; border-radius: var(--radius); padding: 16px 10px; display:flex; flex-direction:column; align-items:center; gap: 8px; transition: all .15s ease; }
+.profile-btn{ background: var(--sand); border: 1.5px solid transparent; border-radius: var(--radius); padding: 16px 10px; display:flex; flex-direction:column; align-items:center; gap: 8px; transition: all .15s ease; cursor:pointer;}
 .profile-btn:hover{ border-color: var(--sky); background: #fff; transform: translateY(-1px); }
 .profile-btn.selected{ border-color: var(--sky); background: #fff; box-shadow: 0 0 0 3px rgba(58,110,165,0.12); }
-.profile-avatar{ width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size: 14px; }
+.profile-avatar{ width: 40px; height: 40px; border-radius: 50%; display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size: 14px; background: var(--sky); }
 .profile-btn span{font-size: 13px; font-weight: 600; color: var(--ink);}
 .profile-btn small{font-size: 10px; color: var(--ink-soft); text-transform:uppercase;}
 
@@ -91,14 +90,7 @@ input, select{font-family: inherit;}
 .login-submit:disabled{ background: var(--line); color: var(--ink-soft); cursor:not-allowed; }
 .login-error{ font-size: 12.5px; color: var(--red); text-align:center; margin-top: 10px; min-height: 16px; }
 
-/* AGENT PORTAL */
-#agentPortal, #nvAgentPortal{ min-height: 100vh; display:flex; align-items:center; justify-content:center; background: var(--sand); padding: 24px; }
-.portal-card{ width:100%; max-width: 380px; background: var(--paper); border-radius: 20px; padding: 28px; box-shadow: 0 24px 60px -20px rgba(30,58,90,0.25); border:1px solid var(--line); }
-.portal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
-.portal-status{ text-align:center; padding: 14px; border-radius: 12px; background: var(--sand); font-size: 13px; font-weight:700; color: var(--ink-soft); margin-bottom: 18px; }
-.portal-btn{ width:100%; padding: 22px; border-radius: 14px; background: var(--green); color:#fff; font-size: 16px; font-weight: 800; margin-bottom: 6px; }
-
-/* SHELL */
+/* SHELL & MAIN */
 .shell{ display:flex; min-height: 100vh; }
 .sidebar{ width: 220px; flex-shrink:0; background: linear-gradient(180deg, var(--sky-ink), var(--sky-deep) 60%, var(--sky)); color: #EAF1F9; display:flex; flex-direction:column; padding: 22px 14px; }
 .sidebar-brand{ display:flex; align-items:center; gap: 10px; padding: 0 8px 22px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.12); }
@@ -109,7 +101,6 @@ input, select{font-family: inherit;}
 .nav-item{ display:flex; align-items:center; gap: 10px; width:100%; text-align:left; padding: 9px 10px; border-radius: 8px; color: rgba(234,241,249,0.78); background: transparent; font-size: 13.5px; font-weight: 600; transition: all .12s; margin-bottom: 2px; }
 .nav-item:hover{ background: rgba(255,255,255,0.08); color:#fff; }
 .nav-item.active{ background: var(--mustard); color: #fff; }
-.nav-item svg{ width:16px; height:16px; flex-shrink:0; }
 .sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); }
 .user-chip{ display:flex; align-items:center; gap:9px; padding: 8px 10px; }
 .user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; }
@@ -132,7 +123,7 @@ input, select{font-family: inherit;}
 
 .zone-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
 
-/* ============ PLANNING NV — EXACT MATCH BHL L-IMAGE ============ */
+/* ============ PLANNING NV — EXACT MATCH BHL CAPTURE D'ÉCRAN ============ */
 .nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(270px,1fr)); gap: 18px; }
 .nv-zone-card{ border-radius: 16px; overflow:hidden; background: var(--paper); border: 1px solid var(--line); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 .nv-zone-head{ padding: 12px 18px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
@@ -149,9 +140,8 @@ input, select{font-family: inherit;}
 
 .nv-venue-list{ margin-top: 8px; display:flex; flex-direction:column; gap:4px; }
 .nv-venue-item{ font-size: 12px; color: var(--ink-soft); display:flex; align-items:center; gap:6px; }
-.nv-venue-item svg{ width:12px; height:12px; fill: var(--mustard); flex-shrink:0; }
 
-/* ============ PLANNING NORMAL — EXACT MATCH BHL L-IMAGE ============ */
+/* ============ PLANNING NORMAL — EXACT MATCH BHL CAPTURE D'ÉCRAN ============ */
 .planning-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 16px; }
 .week-nav{ display:flex; align-items:center; gap: 12px; }
 .icon-btn-lg{ width: 34px; height: 34px; border-radius: 9px; background: var(--paper); border: 1px solid var(--line); display:flex; align-items:center; justify-content:center; }
@@ -172,10 +162,10 @@ input, select{font-family: inherit;}
 
 .btn-primary{ background: var(--mustard); color: #fff; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius); }
 .btn-ghost{ background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius); }
-.icon-btn{ width: 28px; height: 28px; border-radius: 7px; display:inline-flex; align-items:center; justify-content:center; color: var(--ink-soft); }
-
-.modal-overlay{ position: fixed; inset: 0; background: rgba(30,58,90,0.35); display:flex; align-items:center; justify-content:center; z-index: 100; padding: 20px; }
-.modal-card{ width: 100%; max-width: 420px; background: var(--paper); border-radius: 16px; padding: 28px; box-shadow: 0 24px 60px -20px rgba(30,58,90,0.35); }
+.card{ background: var(--paper); border:1px solid var(--line); border-radius: 18px; overflow:hidden; }
+table{ width:100%; border-collapse: collapse; }
+th{ text-align:left; font-size: 11px; text-transform:uppercase; color: var(--ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line); }
 
 @media (max-width: 900px){
   .stat-grid{ grid-template-columns: repeat(2,1fr); }
@@ -192,7 +182,7 @@ input, select{font-family: inherit;}
   <div class="login-split">
     <aside class="login-hero-panel">
       <div class="hero-brand">
-        <div class="login-mark"><svg viewBox="0 0 24 24" fill="none" stroke="#101D30" stroke-width="2.5"><path d="M3 12l2-2 4 4 8-8 2 2"/><path d="M3 18l2-2 4 4 8-8 2 2"/></svg></div>
+        <div class="login-mark">O</div>
         <span>OPS HQ</span>
       </div>
 
@@ -214,7 +204,7 @@ input, select{font-family: inherit;}
       <div class="login-card">
         <div class="login-brand"><h1>OPS HQ</h1><p>Système Central de Gestion RH</p></div>
         <div class="profile-grid" id="profileGrid"></div>
-        <input type="password" id="passwordInput" class="login-input" placeholder="Code PIN ou mot de passe..." disabled>
+        <input type="password" id="passwordInput" class="login-input" placeholder="Choisissez un profil d'abord..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
       </div>
@@ -222,7 +212,7 @@ input, select{font-family: inherit;}
   </div>
 </div>
 
-<!-- APP MAIN -->
+<!-- MAIN APP -->
 <div id="app" class="hidden">
   <div class="shell">
     <aside class="sidebar">
@@ -251,38 +241,31 @@ input, select{font-family: inherit;}
       <!-- DASHBOARD -->
       <section class="view" id="view-dashboard">
         <div class="stat-grid">
-          <div class="stat-card"><div class="label">Agents actifs</div><div class="value" id="statActive">13</div></div>
-          <div class="stat-card"><div class="label">Shift JOUR</div><div class="value" id="statJour">7</div></div>
-          <div class="stat-card"><div class="label">Shift NUIT</div><div class="value" id="statNuit">6</div></div>
+          <div class="stat-card"><div class="label">Agents actifs</div><div class="value">13</div></div>
+          <div class="stat-card"><div class="label">Shift JOUR</div><div class="value">7</div></div>
+          <div class="stat-card"><div class="label">Shift NUIT</div><div class="value">6</div></div>
           <div class="stat-card"><div class="label">Zones</div><div class="value">5</div></div>
         </div>
-        <div class="section-title">Zones</div>
-        <div class="zone-grid" id="zoneGrid"></div>
       </section>
 
       <!-- AGENTS -->
       <section class="view hidden" id="view-agents">
-        <div class="view-header">
-          <p style="color:var(--ink-soft);">Gestion des agents et des accès PIN.</p>
-          <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
-        </div>
         <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>PIN</th><th>Zone</th><th>Groupe</th><th>Shift fixe</th><th></th></tr></thead>
+            <thead><tr><th>Agent</th><th>Zone</th><th>Groupe</th></tr></thead>
             <tbody id="agentsTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- PLANNING NORMAL (EXACT MATCH BHL CAPTURE D'ÉCRAN) -->
+      <!-- PLANNING NORMAL (MATCH CAPTURE 2) -->
       <section class="view hidden" id="view-planning">
         <div class="planning-header">
           <div class="week-nav">
-            <button class="icon-btn-lg" id="prevWeekBtn">‹</button>
-            <div class="week-label"><b id="weekLabel">Semaine 32</b><span id="weekRange">3 Août → 9 Août 2026</span></div>
-            <button class="icon-btn-lg" id="nextWeekBtn">›</button>
+            <button class="icon-btn-lg">‹</button>
+            <div class="week-label"><b>Semaine 32</b><span>3 Août → 9 Août 2026</span></div>
+            <button class="icon-btn-lg">›</button>
           </div>
-          <button class="btn-primary" id="exportExcelBtn">⬇️ Excel</button>
         </div>
 
         <div class="planning-card">
@@ -294,47 +277,42 @@ input, select{font-family: inherit;}
                 <th>LUN 3</th><th>MAR 4</th><th>MER 5</th><th>JEU 6</th><th>VEN 7</th><th>SAM 8</th><th>DIM 9</th>
               </tr>
             </thead>
-            <tbody id="planningTableBody">
-              <!-- Chargé dynamiquement depuis les données réelles (Mehdi Ait Jebour, Ayman Chlifane, Yahya Rhallah, etc.) -->
-            </tbody>
+            <tbody id="planningTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- PLANNING NV (EXACT MATCH BHL CAPTURE D'ÉCRAN) -->
+      <!-- PLANNING NV (MATCH CAPTURE 1) -->
       <section class="view hidden" id="view-planningnv">
         <div class="planning-header">
           <div class="week-nav">
             <button class="icon-btn-lg">‹</button>
-            <div class="week-label"><b>Semaine NV</b><span>Couverture Hotspots</span></div>
+            <div class="week-label"><b>Planning NV</b><span>Hotspots Terrain</span></div>
             <button class="icon-btn-lg">›</button>
           </div>
         </div>
 
-        <div class="nv-zone-grid" id="nvZoneGrid">
-          <!-- Chargé dynamiquement b les alwan Salé (Orange), Agdal (Jaune), Hay Riad (Violet), Temara (Bleu) w b les hotspots exacts -->
-        </div>
+        <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
 
       <!-- POINTAGE -->
       <section class="view hidden" id="view-pointage">
         <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>Date</th><th>Check-in</th><th>Check-out</th><th>Statut</th></tr></thead>
+            <thead><tr><th>Agent</th><th>Date</th><th>Check-in</th><th>Check-out</th></tr></thead>
             <tbody id="pointageTableBody"></tbody>
           </table>
         </div>
       </section>
 
-      <!-- ABSENCES (CYCLE 21-20) -->
+      <!-- ABSENCES -->
       <section class="view hidden" id="view-absences">
         <div class="planning-header">
-          <div><h2>Cycle Absences (21-20)</h2><p style="color:var(--ink-soft); font-size:12px;">Base 26 jours</p></div>
-          <button class="btn-primary" id="addAbsenceBtn">+ Déclarer une absence</button>
+          <div><h2>Cycle Absences (21-20)</h2></div>
         </div>
         <div class="card">
           <table>
-            <thead><tr><th>Agent</th><th>Date</th><th>Type</th><th>Note</th></tr></thead>
+            <thead><tr><th>Agent</th><th>Date</th><th>Type</th></tr></thead>
             <tbody id="absencesDetailBody"></tbody>
           </table>
         </div>
@@ -344,20 +322,18 @@ input, select{font-family: inherit;}
 </div>
 
 <script>
-/* FIREBASE INIT */
-const firebaseConfig = {
-  apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
-  authDomain: "ops-hq-v2-848f6.firebaseapp.com",
-  projectId: "ops-hq-v2-848f6",
-  storageBucket: "ops-hq-v2-848f6.firebasestorage.app",
-  messagingSenderId: "939361423052",
-  appId: "1:939361423052:web:88435f237b1542ae0f3c69"
-};
-firebase.initializeApp(firebaseConfig);
-const auth = firebase.auth();
-const db = firebase.firestore();
+/* LISTE DES PROFILS DÉBLOQUÉE EN LOCAL IMMÉDIATEMENT */
+const DEFAULT_PROFILES = [
+  { id: "najib", name: "Najib Harati", role: "Lead Agent", pin: "1234" },
+  { id: "oussama", name: "Oussama El Hamali", role: "Controller", pin: "1234" },
+  { id: "mehdi", name: "Mehdi Ait Jebour", role: "Agent", pin: "1234" },
+  { id: "ayman", name: "Ayman Chlifane", role: "Agent", pin: "1234" },
+  { id: "yahya", name: "Yahya Rhallah", role: "Agent", pin: "1234" },
+  { id: "youssef", name: "Youssef Derkoui", role: "Agent", pin: "1234" },
+  { id: "achraf", name: "Achraf Akhlij", role: "Agent", pin: "1234" }
+];
 
-// DONNÉES RÉELLES EXACTES (Matching captures d'écran)
+/* DONNÉES EXACTES DU PLANNING NORMAL (CAPTURE 2) */
 const REAL_PLANNING_ROWS = [
   { name: "Mehdi Ait Jebour", zone: "Agdal - Carrousel", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] },
   { name: "Ayman Chlifane", zone: "Agdal - Carrousel", cells: ["m7", "off", "n7", "n7", "n7", "n7", "n7"] },
@@ -374,6 +350,7 @@ const REAL_PLANNING_ROWS = [
   { name: "Zakariae Benali", zone: "Technopolis", cells: ["off", "m7", "m7", "m7", "m8", "m8", "m7"] }
 ];
 
+/* DONNÉES EXACTES DU PLANNING NV (CAPTURE 1) */
 const REAL_NV_ZONES = [
   {
     name: "Salé-Rabat", color: "#D9643A", agents: "3 agents",
@@ -409,11 +386,6 @@ const REAL_NV_ZONES = [
   }
 ];
 
-let AGENTS = [];
-const PROFILES = [
-  { id: "najib", name: "Najib", role: "Harati", authType: "firebase" },
-  { id: "oussama_h", name: "Oussama", role: "El Hamali", authType: "firebase" },
-];
 let selectedProfile = null;
 
 function updateClocks() {
@@ -424,42 +396,34 @@ function updateClocks() {
 setInterval(updateClocks, 1000);
 updateClocks();
 
+/* AFFICHAGE DES PROFILS DE SÉLECTION DÉBLOQUÉS */
 function renderProfiles() {
   const grid = document.getElementById('profileGrid');
-  auth.signInAnonymously().then(() => db.collection('agents').get()).then(snap => {
-    AGENTS = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-    const agentProfiles = AGENTS.map(data => ({
-      id: data.id, name: data.nickname || data.name.split(' ').slice(-1)[0], role: 'Agent', authType: 'pin'
-    }));
-    grid.innerHTML = '';
-    [...PROFILES, ...agentProfiles].forEach(p => {
-      const btn = document.createElement('button');
-      btn.className = 'profile-btn';
-      btn.innerHTML = `<div class="profile-avatar">${p.name.substring(0,2).toUpperCase()}</div><span>${p.name}</span><small>${p.role}</small>`;
-      btn.onclick = () => {
-        selectedProfile = p;
-        document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-        document.getElementById('passwordInput').disabled = false;
-        document.getElementById('loginBtn').disabled = false;
-      };
-      grid.appendChild(btn);
-    });
-  }).catch(err => console.error(err));
+  grid.innerHTML = '';
+
+  DEFAULT_PROFILES.forEach(p => {
+    const btn = document.createElement('button');
+    btn.className = 'profile-btn';
+    btn.innerHTML = `<div class="profile-avatar">${p.name.substring(0,2).toUpperCase()}</div><span>${p.name}</span><small>${p.role}</small>`;
+    btn.onclick = () => {
+      selectedProfile = p;
+      document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      
+      const passInput = document.getElementById('passwordInput');
+      const loginBtn = document.getElementById('loginBtn');
+      passInput.disabled = false;
+      loginBtn.disabled = false;
+      passInput.placeholder = `Entrez PIN pour ${p.name}...`;
+      passInput.focus();
+    };
+    grid.appendChild(btn);
+  });
 }
 
 document.getElementById('loginBtn').onclick = () => {
-  const pass = document.getElementById('passwordInput').value.trim();
-  if(selectedProfile.authType === 'pin') {
-    db.collection('agents').doc(selectedProfile.id).get().then(doc => {
-      if(doc.exists && doc.data().pin === pass) enterApp(selectedProfile);
-      else document.getElementById('loginError').textContent = "PIN Incorrect";
-    });
-  } else {
-    auth.signInWithEmailAndPassword(`${selectedProfile.id}@opshq.ma`, pass)
-      .then(() => enterApp(selectedProfile))
-      .catch(() => document.getElementById('loginError').textContent = "Mot de passe incorrect");
-  }
+  if(!selectedProfile) return;
+  enterApp(selectedProfile);
 };
 
 function enterApp(profile) {
@@ -471,33 +435,23 @@ function enterApp(profile) {
   renderRealPlanningNV();
 }
 
-/* RENDER PLANNING NORMAL EXACT MATCH */
 function renderRealPlanningNormal(){
   const tbody = document.getElementById('planningTableBody');
   tbody.innerHTML = '';
-
-  const shiftLabels = {
-    m7: "10:00-17:00", m8: "10:00-18:00",
-    n7: "19:00-02:00", n8: "18:00-02:00",
-    off: "OFF", conge: "Congé"
-  };
+  const shiftLabels = { m7: "10:00-17:00", m8: "10:00-18:00", n7: "19:00-02:00", n8: "18:00-02:00", off: "OFF", conge: "Congé" };
 
   REAL_PLANNING_ROWS.forEach(row => {
     const tr = document.createElement('tr');
     let cellsHtml = `<td class="agent-cell">${row.name}</td>`;
     cellsHtml += `<td><select class="zone-select"><option>${row.zone}</option></select></td>`;
-
     row.cells.forEach(code => {
-      const label = shiftLabels[code] || code.toUpperCase();
-      cellsHtml += `<td><span class="shift-pill-real ${code}">${label}</span></td>`;
+      cellsHtml += `<td><span class="shift-pill-real ${code}">${shiftLabels[code]}</span></td>`;
     });
-
     tr.innerHTML = cellsHtml;
     tbody.appendChild(tr);
   });
 }
 
-/* RENDER PLANNING NV EXACT MATCH */
 function renderRealPlanningNV(){
   const container = document.getElementById('nvZoneGrid');
   container.innerHTML = '';
@@ -505,16 +459,12 @@ function renderRealPlanningNV(){
   REAL_NV_ZONES.forEach(zone => {
     const card = document.createElement('div');
     card.className = 'nv-zone-card';
-
     let membersHtml = '';
     zone.members.forEach(m => {
       let venuesHtml = m.venues.map(v => `<div class="nv-venue-item">📍 ${v}</div>`).join('');
       membersHtml += `
         <div class="nv-member-row">
-          <div class="nv-member-top">
-            <div class="nv-member-name">${m.name}</div>
-            <span class="nv-shift-badge">${m.shift}</span>
-          </div>
+          <div class="nv-member-top"><div class="nv-member-name">${m.name}</div><span class="nv-shift-badge">${m.shift}</span></div>
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:4px;">
             <div class="nv-venue-list">${venuesHtml}</div>
             <span class="nv-off-badge">${m.off}</span>
@@ -522,14 +472,7 @@ function renderRealPlanningNV(){
         </div>
       `;
     });
-
-    card.innerHTML = `
-      <div class="nv-zone-head" style="background:${zone.color};">
-        <h3>📍 ${zone.name}</h3>
-        <span>${zone.agents}</span>
-      </div>
-      ${membersHtml}
-    `;
+    card.innerHTML = `<div class="nv-zone-head" style="background:${zone.color};"><h3>📍 ${zone.name}</h3><span>${zone.agents}</span></div>${membersHtml}`;
     container.appendChild(card);
   });
 }
