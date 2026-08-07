@@ -2804,6 +2804,7 @@ function isValidHotspotShapeNv(data){
 
 function listenHotspotsNv(){
   listenNvZoneLabels();
+  listenNvVenueLinks();
   if(hotspotsNvUnsub) hotspotsNvUnsub();
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
     const data = doc.exists ? doc.data() : null;
@@ -2833,6 +2834,32 @@ function addHotspotNv(zone, slotIdx){
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
+// Liens Google Maps personnalisés par lieu — si absent, on utilise une recherche Maps automatique.
+let NV_VENUE_LINKS = {};
+let nvVenueLinksUnsub = null;
+
+function listenNvVenueLinks(){
+  if(nvVenueLinksUnsub) nvVenueLinksUnsub();
+  nvVenueLinksUnsub = db.collection('planningNV').doc('venueLinks').onSnapshot(doc => {
+    NV_VENUE_LINKS = (doc.exists && doc.data()) || {};
+    renderPlanningNV();
+  }, err => console.error(err));
+}
+
+function getVenueMapUrl(venueName){
+  return NV_VENUE_LINKS[venueName] || `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venueName + ' Rabat')}`;
+}
+
+function setVenueLinkNv(venueName){
+  const current = NV_VENUE_LINKS[venueName] || '';
+  const value = prompt(`Lien Google Maps pour "${venueName}" (laisse vide pour revenir à la recherche automatique) :`, current);
+  if(value === null) return;
+  const updated = { ...NV_VENUE_LINKS };
+  if(value.trim()) updated[venueName] = value.trim();
+  else delete updated[venueName];
+  db.collection('planningNV').doc('venueLinks').set(updated).catch(err => console.error(err));
+}
+
 function deleteHotspotNv(zone, slotIdx, venueIdx){
   if(!confirm('Supprimer ce lieu ?')) return;
   const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
@@ -3006,7 +3033,7 @@ function renderPlanningNVInner(){
 
     let fullListHtml = slots.map((slot, i) => {
       const venuesHtml = (slot.venues || []).map((v, vi) => `
-        <span class="nv-venue-tag"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v + ' Rabat')}" target="_blank" rel="noopener">📍 ${v}</a> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
+        <span class="nv-venue-tag"><a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a> <button data-edit-link="${v.replace(/"/g, '&quot;')}" title="Lien Maps personnalisé">🔗</button> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
       `).join('');
       return `
         <div class="nv-fulllist-row">
@@ -3061,6 +3088,9 @@ function renderPlanningNVInner(){
       const [zone, slotIdx, venueIdx] = btn.dataset.delVenue.split('::');
       deleteHotspotNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
     });
+  });
+  grid.querySelectorAll('[data-edit-link]').forEach(btn => {
+    btn.addEventListener('click', () => setVenueLinkNv(btn.dataset.editLink));
   });
 }
 
@@ -3179,7 +3209,7 @@ function renderNvPortal(){
   window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
 
   const venueLinksHtml = hotspotVenues.length
-    ? hotspotVenues.map(v => `<a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(v + ' Rabat')}" target="_blank" rel="noopener" class="nv-venue-maplink">📍 ${v}</a>`).join('')
+    ? hotspotVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener" class="nv-venue-maplink">📍 ${v}</a>`).join('')
     : `<div style="font-size:15px; font-weight:700;">OFF aujourd'hui</div>`;
 
   content.innerHTML = `
