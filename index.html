@@ -2873,6 +2873,26 @@ function deleteHotspotNv(zone, slotIdx, venueIdx){
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
 
+function editVenueNameNv(zone, slotIdx, venueIdx){
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
+  if(!zoneSlots[slotIdx] || !zoneSlots[slotIdx].venues[venueIdx]) return;
+  const oldName = zoneSlots[slotIdx].venues[venueIdx];
+  const value = prompt('Corriger le nom du lieu :', oldName);
+  if(!value || !value.trim() || value.trim() === oldName) return;
+  const newName = value.trim();
+  zoneSlots[slotIdx].venues[venueIdx] = newName;
+  const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
+  db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+
+  // Si un lien Maps personnalisé existait pour l'ancien nom, on le transfère au nouveau nom.
+  if(NV_VENUE_LINKS[oldName]){
+    const updatedLinks = { ...NV_VENUE_LINKS };
+    updatedLinks[newName] = updatedLinks[oldName];
+    delete updatedLinks[oldName];
+    db.collection('planningNV').doc('venueLinks').set(updatedLinks).catch(err => console.error(err));
+  }
+}
+
 function addHotspotSlotNv(zone){
   const value = prompt(`Nom du premier lieu pour ce nouveau hotspot à "${getNvZoneLabel(zone)}" :`);
   if(!value || !value.trim()) return;
@@ -3069,7 +3089,7 @@ function renderPlanningNVInner(){
 
     let fullListHtml = slots.map((slot, i) => {
       const venuesHtml = (slot.venues || []).map((v, vi) => `
-        <span class="nv-venue-tag"><a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a> <button data-edit-link="${v.replace(/"/g, '&quot;')}" title="Lien Maps personnalisé">🔗</button> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
+        <span class="nv-venue-tag"><a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a> <button data-edit-venue-name="${zone}::${i}::${vi}" title="Modifier le nom">✏️</button> <button data-edit-link="${v.replace(/"/g, '&quot;')}" title="Lien Maps personnalisé">🔗</button> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
       `).join('');
       const slotLabel = slot.label || `#${i + 1}`;
       return `
@@ -3141,6 +3161,12 @@ function renderPlanningNVInner(){
   });
   grid.querySelectorAll('[data-edit-link]').forEach(btn => {
     btn.addEventListener('click', () => setVenueLinkNv(btn.dataset.editLink));
+  });
+  grid.querySelectorAll('[data-edit-venue-name]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx, venueIdx] = btn.dataset.editVenueName.split('::');
+      editVenueNameNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
+    });
   });
 }
 
