@@ -96,7 +96,7 @@ input, select { font-family: inherit; outline: none; }
 
 .profile-grid {
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
-  margin-bottom: 20px; max-height: 250px; overflow-y: auto; padding-right: 4px;
+  margin-bottom: 20px; max-height: 260px; overflow-y: auto; padding-right: 4px;
 }
 .profile-btn {
   background: var(--bg-card); border: 1.5px solid var(--border-line);
@@ -107,7 +107,7 @@ input, select { font-family: inherit; outline: none; }
 .profile-btn:hover { border-color: var(--primary); background: var(--bg-card-hover); transform: translateY(-2px); }
 .profile-btn.selected { border-color: var(--primary); background: var(--bg-card-hover); box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25); }
 .profile-avatar {
-  width: 36px; height: 36px; border-radius: 50%; background: var(--primary);
+  width: 38px; height: 38px; border-radius: 50%; background: var(--primary);
   display: flex; align-items: center; justify-content: center; font-weight: 800; color: #0B0F17; font-size: 13px;
 }
 .profile-btn span { font-size: 12px; font-weight: 700; color: var(--text-main); text-align: center; }
@@ -225,7 +225,6 @@ td { padding: 14px 18px; font-size: 13.5px; border-bottom: 1px solid var(--borde
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--bg-card-hover); }
 
-/* Buttons & Views */
 .btn-primary { background: var(--primary); color: #0B0F17; font-weight: 700; font-size: 13px; padding: 10px 18px; border-radius: var(--radius-sm); }
 .btn-primary:hover { background: var(--primary-hover); color: #FFF; }
 .btn-ghost { background: transparent; color: var(--text-muted); font-weight: 600; font-size: 13px; padding: 10px 16px; border-radius: var(--radius-sm); }
@@ -297,7 +296,7 @@ tr:hover td { background: var(--bg-card-hover); }
 
         <div class="profile-grid" id="profileGrid"></div>
 
-        <input type="password" id="passwordInput" class="login-input" placeholder="Sélectionnez un profil ci-dessus..." disabled>
+        <input type="password" id="passwordInput" class="login-input" placeholder="Sélectionnez un profil..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
 
@@ -305,7 +304,7 @@ tr:hover td { background: var(--bg-card-hover); }
           <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
         </div>
         <div id="nvLoginForm" class="hidden" style="margin-top:12px;">
-          <input type="text" id="nvPinInput" class="login-input" placeholder="Code PIN Agent NV...">
+          <input type="text" id="nvPinInput" class="login-input" placeholder="Ton code PIN...">
           <button id="nvLoginBtn" class="login-submit">ENTRER</button>
           <div class="login-error" id="nvLoginError"></div>
         </div>
@@ -324,8 +323,8 @@ tr:hover td { background: var(--bg-card-hover); }
       </div>
       <button class="btn-ghost" id="portalLogoutBtn">Déconnexion</button>
     </div>
-    <div class="portal-status" id="portalStatus">Status: En attente de check-in</div>
-    <button class="portal-btn" id="portalCheckBtn">CHECK-IN TERRAIN</button>
+    <div class="portal-status" id="portalStatus">Chargement...</div>
+    <button class="portal-btn" id="portalCheckBtn">Check-in</button>
   </div>
 </div>
 
@@ -339,7 +338,7 @@ tr:hover td { background: var(--bg-card-hover); }
       <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
     </div>
     <div id="nvPortalContent" style="margin-top:15px; font-size:14px; text-align:center; color: var(--text-muted);">
-      Bienvenue dans le portail d'accès aux plannings NV.
+      Bienvenue dans le portail Planning NV.
     </div>
   </div>
 </div>
@@ -389,8 +388,8 @@ tr:hover td { background: var(--bg-card-hover); }
         <div class="user-chip">
           <div class="dot"></div>
           <div class="user-chip-text">
-            <b id="sidebarUserName">Lead Agent</b>
-            <span>Connecté</span>
+            <b id="sidebarUserName">—</b>
+            <span id="sidebarUserRole">—</span>
           </div>
         </div>
         <button class="logout-btn" id="sysLogoutBtn"><span>Déconnexion</span></button>
@@ -406,85 +405,62 @@ tr:hover td { background: var(--bg-card-hover); }
         </div>
       </header>
 
-      <!-- VUE DASHBOARD -->
       <div class="view" id="viewDashboard">
         <div class="stat-grid">
           <div class="stat-card">
-            <div class="label">Total Agents</div>
-            <div class="value" id="statTotalAgents">12</div>
-            <div class="sub">Effectif actif</div>
+            <div class="label">Agents Actifs</div>
+            <div class="value" id="statActive">—</div>
+            <div class="sub">enregistrés</div>
           </div>
           <div class="stat-card accent-green">
-            <div class="label">Présents Aujourd'hui</div>
-            <div class="value" id="statPresents">10</div>
-            <div class="sub">Taux d'assiduité OK</div>
+            <div class="label">Shift JOUR</div>
+            <div class="value" id="statJour">—</div>
+            <div class="sub">équipe matin</div>
           </div>
           <div class="stat-card accent-amber">
-            <div class="label">Shift Nuit</div>
-            <div class="value" id="statNightShift">3</div>
-            <div class="sub">Couverture nocturne</div>
+            <div class="label">Shift NUIT</div>
+            <div class="value" id="statNuit">—</div>
+            <div class="sub">équipe soir</div>
           </div>
           <div class="stat-card accent-red">
-            <div class="label">Absences / Retards</div>
-            <div class="value" id="statAbsences">2</div>
-            <div class="sub">Nécessite suivi</div>
+            <div class="label">Zones Couvertes</div>
+            <div class="value" id="statZones">—</div>
+            <div class="sub">sur 5 zones</div>
           </div>
-        </div>
-
-        <div class="card">
-          <table>
-            <thead>
-              <tr>
-                <th>Agent</th>
-                <th>Zone</th>
-                <th>Statut</th>
-                <th>Heure Check-in</th>
-              </tr>
-            </thead>
-            <tbody id="dashboardTable">
-              <tr>
-                <td>Najib Harati</td>
-                <td>Témara - Oulad Mtaa</td>
-                <td><span style="color:var(--accent-green); font-weight:700;">Présent</span></td>
-                <td>10:00</td>
-              </tr>
-              <tr>
-                <td>Agent 2</td>
-                <td>Agdal - Carrousel</td>
-                <td><span style="color:var(--accent-green); font-weight:700;">Présent</span></td>
-                <td>10:15</td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
 
-      <!-- VUES SUPPLÉMENTAIRES -->
-      <div class="view hidden" id="viewPlanning"><div class="card" style="padding:24px;"><h2>Vue Planning</h2><p style="margin-top:8px; color:var(--text-muted);">Planning hebdomadaire des équipes terrain.</p></div></div>
-      <div class="view hidden" id="viewPlanningnv"><div class="card" style="padding:24px;"><h2>Vue Planning NV</h2><p style="margin-top:8px; color:var(--text-muted);">Gestion des shifts spécifiques NV.</p></div></div>
-      <div class="view hidden" id="viewPointage"><div class="card" style="padding:24px;"><h2>Vue Pointage</h2><p style="margin-top:8px; color:var(--text-muted);">Historique global des pointages et heures effectives.</p></div></div>
-      <div class="view hidden" id="viewAbsences"><div class="card" style="padding:24px;"><h2>Vue Absences</h2><p style="margin-top:8px; color:var(--text-muted);">Suivi des justifications et congés.</p></div></div>
-      <div class="view hidden" id="viewAgents"><div class="card" style="padding:24px;"><h2>Vue Agents</h2><p style="margin-top:8px; color:var(--text-muted);">Répertoire et fiches individuelles des agents.</p></div></div>
-
+      <div class="view hidden" id="viewPlanning"><div class="card" style="padding:24px;"><h2>Vue Planning</h2></div></div>
+      <div class="view hidden" id="viewPlanningnv"><div class="card" style="padding:24px;"><h2>Vue Planning NV</h2></div></div>
+      <div class="view hidden" id="viewPointage"><div class="card" style="padding:24px;"><h2>Vue Pointage</h2></div></div>
+      <div class="view hidden" id="viewAbsences"><div class="card" style="padding:24px;"><h2>Vue Absences</h2></div></div>
+      <div class="view hidden" id="viewAgents"><div class="card" style="padding:24px;"><h2>Vue Agents</h2></div></div>
     </main>
   </div>
 </div>
 
 <script>
-// =============== LOGIQUE SYSTÈME ET SÉCURITÉ ===============
+/* ================= FIREBASE INIT ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
+  authDomain: "ops-hq-v2-848f6.firebaseapp.com",
+  projectId: "ops-hq-v2-848f6",
+  storageBucket: "ops-hq-v2-848f6.firebasestorage.app",
+  messagingSenderId: "939361423052",
+  appId: "1:939361423052:web:88435f237b1542ae0f3c69"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
 
-// Données de secours (Fallback) pour que l'interface s'affiche en TOUTES circonstances
-const fallbackAgents = [
-  { id: '1', name: 'Najib Harati', role: 'Lead Agent', pass: '1234' },
-  { id: '2', name: 'Agent Témara', role: 'Field Agent', pass: '1234' },
-  { id: '3', name: 'Agent Agdal', role: 'Field Agent', pass: '1234' },
-  { id: '4', name: 'Agent Salé', role: 'Field Agent', pass: '1234' },
-  { id: '5', name: 'Agent Technopolis', role: 'Field Agent', pass: '1234' }
+// Profils Admin/Lead fixes
+const PROFILES = [
+  { id: "najib", name: "Najib", role: "Harati", initials: "NH", color: "#38BDF8", authType: "firebase" },
+  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", color: "#F97316", authType: "firebase" },
 ];
 
 let selectedProfile = null;
 
-// Horloge temps réel
 function updateClocks() {
   const now = new Date();
   const timeStr = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
@@ -495,123 +471,132 @@ function updateClocks() {
 setInterval(updateClocks, 1000);
 updateClocks();
 
-// Affichage dynamique des cartes agents dans l'écran de login
-function renderProfiles(list) {
+function renderProfiles() {
   const grid = document.getElementById('profileGrid');
-  if(!grid) return;
-  grid.innerHTML = '';
+  const passInput = document.getElementById('passwordInput');
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--text-muted); padding:10px;">Chargement de l\'équipe...</div>';
 
-  list.forEach(agent => {
-    const btn = document.createElement('button');
-    btn.className = 'profile-btn';
-    btn.innerHTML = `
-      <div class="profile-avatar">${agent.name.substring(0, 2).toUpperCase()}</div>
-      <span>${agent.name}</span>
-      <small>${agent.role || 'Agent'}</small>
-    `;
-    btn.onclick = () => selectProfile(agent, btn);
-    grid.appendChild(btn);
-  });
+  auth.signInAnonymously()
+    .then(() => db.collection('agents').get())
+    .then(snap => {
+      const agentProfiles = snap.docs.map(d => {
+        const data = d.data();
+        const nickname = data.nickname || data.name.split(' ').slice(-1)[0];
+        return { id: d.id, name: nickname, role: 'Agent', authType: 'pin' };
+      }).sort((a, b) => a.name.localeCompare(b.name));
+
+      const allProfiles = [...PROFILES, ...agentProfiles];
+      grid.innerHTML = '';
+      allProfiles.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'profile-btn';
+        btn.innerHTML = `
+          <div class="profile-avatar">${p.initials || p.name.substring(0,2).toUpperCase()}</div>
+          <span>${p.name}</span>
+          <small>${p.role}</small>
+        `;
+        btn.onclick = () => selectProfile(p, btn);
+        grid.appendChild(btn);
+      });
+      passInput.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--accent-red); padding:10px;">Erreur de connexion Firebase.</div>';
+    });
 }
 
-function selectProfile(agent, element) {
+function selectProfile(profile, btnEl) {
+  selectedProfile = profile;
   document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
-  element.classList.add('selected');
-  selectedProfile = agent;
-
+  btnEl.classList.add('selected');
+  
   const passInput = document.getElementById('passwordInput');
   const loginBtn = document.getElementById('loginBtn');
   
   passInput.disabled = false;
   loginBtn.disabled = false;
-  passInput.placeholder = `Mot de passe pour ${agent.name}...`;
+  passInput.placeholder = profile.authType === 'pin' ? 'Code PIN Agent...' : 'Mot de passe Admin...';
   passInput.value = '';
+  document.getElementById('loginError').textContent = '';
   passInput.focus();
 }
 
-// Navigation entre les onglets
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.onclick = () => {
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-    item.classList.add('active');
+document.getElementById('loginBtn').onclick = attemptLogin;
+document.getElementById('passwordInput').onkeydown = e => { if(e.key === 'Enter') attemptLogin(); };
 
-    const viewName = item.getAttribute('data-view');
-    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+function attemptLogin() {
+  const pass = document.getElementById('passwordInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  if(!selectedProfile) { errEl.textContent = 'Sélectionnez un profil.'; return; }
+  if(!pass) { errEl.textContent = 'Entrez le code d\'accès.'; return; }
 
-    const targetView = document.getElementById('view' + viewName.charAt(0).toUpperCase() + viewName.slice(1));
-    if(targetView) {
-      targetView.classList.remove('hidden');
-      document.getElementById('topbarTitle').textContent = item.querySelector('span').textContent;
-    }
-  };
-});
-
-// Connexion Admin / Lead Agent
-document.getElementById('loginBtn').onclick = () => {
-  const inputPass = document.getElementById('passwordInput').value;
-  const errDiv = document.getElementById('loginError');
-
-  if(!selectedProfile) {
-    errDiv.textContent = "Veuillez d'abord sélectionner un profil.";
+  if(selectedProfile.authType === 'pin') {
+    errEl.textContent = 'Vérification...';
+    db.collection('agents').doc(selectedProfile.id).get().then(doc => {
+      if(!doc.exists) { errEl.textContent = 'Agent introuvable.'; return; }
+      const agent = { id: doc.id, ...doc.data() };
+      if(!agent.pin || agent.pin !== pass) {
+        errEl.textContent = 'Code PIN incorrect.';
+        return;
+      }
+      errEl.textContent = '';
+      enterAgentPortal(agent);
+    }).catch(err => { console.error(err); errEl.textContent = 'Erreur de vérification PIN.'; });
     return;
   }
 
-  // Vérification basique du mot de passe
-  if(inputPass === (selectedProfile.pass || '1234') || inputPass === 'admin') {
-    if(selectedProfile.role === 'Lead Agent' || inputPass === 'admin') {
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('app').classList.remove('hidden');
-      document.getElementById('sidebarUserName').textContent = selectedProfile.name;
-    } else {
-      // Portail simple agent
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('agentPortal').classList.remove('hidden');
-      document.getElementById('portalAgentName').textContent = selectedProfile.name;
-    }
-    errDiv.textContent = '';
-  } else {
-    errDiv.textContent = "Mot de passe incorrect.";
-  }
-};
+  errEl.textContent = 'Connexion...';
+  const email = `${selectedProfile.id}@opshq.ma`;
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(() => {
+      errEl.textContent = '';
+      enterApp(selectedProfile);
+    })
+    .catch(err => {
+      errEl.textContent = "Mot de passe incorrect ou compte non configuré.";
+      console.error(err);
+    });
+}
 
-// Toggle du formulaire Agent NV
+function enterApp(profile) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('sidebarUserName').textContent = profile.name;
+  document.getElementById('sidebarUserRole').textContent = profile.role;
+}
+
+function enterAgentPortal(agent) {
+  document.getElementById('loginScreen').classList.add('hidden');
+  document.getElementById('agentPortal').classList.remove('hidden');
+  document.getElementById('portalAgentName').textContent = agent.nickname || agent.name;
+}
+
+document.getElementById('sysLogoutBtn').onclick = logoutAll;
+document.getElementById('portalLogoutBtn').onclick = logoutAll;
+
+function logoutAll() {
+  auth.signOut().finally(() => location.reload());
+}
+
 document.getElementById('nvLoginLinkBtn').onclick = () => {
   document.getElementById('nvLoginForm').classList.toggle('hidden');
 };
 
-// Connexion Agent NV
-document.getElementById('nvLoginBtn').onclick = () => {
-  const pin = document.getElementById('nvPinInput').value;
-  if(pin.trim() !== '') {
-    document.getElementById('loginScreen').classList.add('hidden');
-    document.getElementById('nvAgentPortal').classList.remove('hidden');
-    document.getElementById('nvPortalAgentName').textContent = "Agent NV (" + pin + ")";
-  } else {
-    document.getElementById('nvLoginError').textContent = "Entrez un code PIN valide.";
-  }
-};
-
-// Boutons de déconnexion
-document.getElementById('sysLogoutBtn').onclick = logoutAll;
-document.getElementById('portalLogoutBtn').onclick = logoutAll;
-document.getElementById('nvPortalLogoutBtn').onclick = logoutAll;
-
-function logoutAll() {
-  document.getElementById('app').classList.add('hidden');
-  document.getElementById('agentPortal').classList.add('hidden');
-  document.getElementById('nvAgentPortal').classList.add('hidden');
-  document.getElementById('loginScreen').classList.remove('hidden');
-  selectedProfile = null;
-  document.getElementById('passwordInput').disabled = true;
-  document.getElementById('loginBtn').disabled = true;
-  document.getElementById('passwordInput').value = '';
-}
-
-// Initialisation au chargement du DOM
-window.addEventListener('DOMContentLoaded', () => {
-  // Chargement direct des profils pour débloquer l'interface immédiatement
-  renderProfiles(fallbackAgents);
+// Application
+document.querySelectorAll('.nav-item').forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    const target = document.getElementById('view' + view.charAt(0).toUpperCase() + view.slice(1));
+    if(target) target.classList.remove('hidden');
+    document.getElementById('topbarTitle').textContent = btn.querySelector('span').textContent;
+  };
 });
+
+window.addEventListener('DOMContentLoaded', renderProfiles);
 </script>
 </body>
 </html>
