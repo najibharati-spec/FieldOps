@@ -1220,6 +1220,19 @@ function attemptLogin(){
         return;
       }
       errEl.textContent = '';
+
+      // Si cet agent fait partie des 12 de Planning NV, il n'accède qu'à son portail Planning NV —
+      // aucun lien avec le reste de l'app (Dashboard, Planning, Absences...).
+      const nvMatch = NV_ALL_AGENTS.find(n => n.trim().toLowerCase() === (agent.name || '').trim().toLowerCase());
+      if(nvMatch){
+        currentNvAgent = nvMatch;
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('nvAgentPortal').classList.remove('hidden');
+        listenHotspotsNv();
+        renderNvPortal();
+        return;
+      }
+
       enterAgentPortal(agent);
     }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
     return;
@@ -2765,6 +2778,8 @@ document.getElementById('confirmRangeExportBtn').addEventListener('click', () =>
 
 /* ================= PLANNING NV (système indépendant : 12 agents, 4 zones, hotspots, 3 shifts) ================= */
 let currentWeekStartNv = getWeekStart(new Date());
+let NV_OVERRIDES = {};
+let nvOverridesUnsub = null;
 
 // Chaque zone a une liste de "slots" (dans le même ordre que les membres de l'équipe).
 // Chaque slot a sa propre liste de hotspots individuels — l'agent qui occupe ce slot
@@ -2809,6 +2824,7 @@ function isValidHotspotShapeNv(data){
 function listenHotspotsNv(){
   listenNvZoneLabels();
   listenNvVenueLinks();
+  listenNvOverrides();
   if(hotspotsNvUnsub) hotspotsNvUnsub();
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
     const data = doc.exists ? doc.data() : null;
@@ -2989,13 +3005,43 @@ function updateWeekHeaderNv(){
 document.getElementById('prevWeekNvBtn').addEventListener('click', () => {
   const d = new Date(currentWeekStartNv); d.setDate(d.getDate() - 7);
   currentWeekStartNv = d;
-  renderPlanningNV();
+  listenNvOverrides();
 });
 document.getElementById('nextWeekNvBtn').addEventListener('click', () => {
   const d = new Date(currentWeekStartNv); d.setDate(d.getDate() + 7);
   currentWeekStartNv = d;
-  renderPlanningNV();
+  listenNvOverrides();
 });
+
+function listenNvOverrides(){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  if(nvOverridesUnsub) nvOverridesUnsub();
+  nvOverridesUnsub = db.collection('planningNV').doc('overrides_W' + weekIdx).onSnapshot(doc => {
+    NV_OVERRIDES = (doc.exists && doc.data()) || {};
+    renderPlanningNV();
+  }, err => console.error(err));
+}
+
+function editNvShift(agentName){
+  const choice = prompt(`Shift de "${agentName}" cette semaine :\n\n1. ${SHIFTS_NV.S1.label7} (Shift 1)\n2. ${SHIFTS_NV.S2.label7} (Shift 2)\n3. ${SHIFTS_NV.S3.label7} (Shift 3)\n\nTape 1, 2 ou 3 :`);
+  if(!choice) return;
+  const map = { '1': 'S1', '2': 'S2', '3': 'S3' };
+  const shiftKey = map[choice.trim()];
+  if(!shiftKey){ alert('Choix invalide.'); return; }
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), shiftKey } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
+
+function editNvOffDay(agentName){
+  const choice = prompt(`Jour OFF de "${agentName}" cette semaine :\n\n1. Lundi\n2. Mardi\n3. Mercredi\n4. Jeudi\n\nTape 1, 2, 3 ou 4 :`);
+  if(!choice) return;
+  const offDayIdx = parseInt(choice.trim(), 10) - 1;
+  if(isNaN(offDayIdx) || offDayIdx < 0 || offDayIdx > 3){ alert('Choix invalide.'); return; }
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), offDayIdx } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
 
 function buildZoneAssignmentsNv(weekIdx){
   const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [] };
@@ -3041,8 +3087,9 @@ function renderPlanningNVInner(){
 
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
-      const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
-      const offDayIdx = (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
+      const override = NV_OVERRIDES[name] || {};
+      const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+      const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
       const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
 
@@ -3079,7 +3126,12 @@ function renderPlanningNVInner(){
         <div class="nv-member-row" style="flex-direction:column; align-items:stretch;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
             <div class="nv-member-name">${name}</div>
-            <span class="nv-chip ${isJour ? 'shift-jour' : 'shift-nuit'}">${shiftLabel}</span>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="nv-chip ${isJour ? 'shift-jour' : 'shift-nuit'}" data-edit-shift="${name}" style="border:none; cursor:pointer;" title="Modifier le shift">${shiftLabel} ✏️</button>
+            </div>
+          </div>
+          <div style="text-align:right; margin-bottom:6px;">
+            <button class="nv-mini-link" data-edit-off="${name}">✏️ Changer le jour OFF (actuellement ${NV_DAY_LABELS[offDayIdx]})</button>
           </div>
           <div class="nv-day-strip">${dayChips}</div>
           ${locHtml}
@@ -3167,6 +3219,12 @@ function renderPlanningNVInner(){
       const [zone, slotIdx, venueIdx] = btn.dataset.editVenueName.split('::');
       editVenueNameNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
     });
+  });
+  grid.querySelectorAll('[data-edit-shift]').forEach(btn => {
+    btn.addEventListener('click', () => editNvShift(btn.dataset.editShift));
+  });
+  grid.querySelectorAll('[data-edit-off]').forEach(btn => {
+    btn.addEventListener('click', () => editNvOffDay(btn.dataset.editOff));
   });
 }
 
@@ -3272,8 +3330,9 @@ function renderNvPortal(){
   if(!slot){ content.innerHTML = '<p style="padding:20px;">Aucune affectation cette semaine.</p>'; return; }
 
   const { zone, memberIdx } = slot;
-  const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
-  const offDayIdx = (memberIdx + weekIdx) % 4;
+  const override = NV_OVERRIDES[currentNvAgent] || {};
+  const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+  const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
   const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
   const slots = HOTSPOTS_NV[zone] || [];
