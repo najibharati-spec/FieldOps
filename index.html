@@ -301,7 +301,17 @@ input, select{font-family: inherit;}
 .nv-day-chip.off b{ color: #7A7166; }
 .nv-fulllist{ padding: 12px 20px 16px; background: var(--sand); border-top: 1px solid var(--line); }
 .nv-fulllist-title{ font-size: 10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color: var(--ink-soft); margin-bottom: 8px; }
-.nv-fulllist-row{ font-size: 12px; color: var(--ink); padding: 4px 0; line-height:1.5; }
+.nv-fulllist-row{ font-size: 12px; color: var(--ink); padding: 8px 0; line-height:1.5; border-bottom: 1px solid var(--line); }
+.nv-fulllist-row:last-of-type{ border-bottom: none; }
+.nv-venue-tag{
+  display:inline-flex; align-items:center; gap:5px; background: var(--paper); border:1px solid var(--line);
+  border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px;
+}
+.nv-venue-tag button{ border:none; background:none; color: var(--red); cursor:pointer; font-size:11px; padding:0; line-height:1; }
+.nv-mini-link{
+  border:none; background:none; color: var(--sky); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0;
+}
+.nv-mini-link.nv-mini-danger{ color: var(--red); }
 .nv-fulllist-row b{ color: var(--ink-soft); margin-right: 6px; }
 .nv-loc-badge{
   display:block; text-align:center; font-size: 11px; font-weight: 700; padding: 6px 10px;
@@ -2785,6 +2795,7 @@ function isValidHotspotShapeNv(data){
 }
 
 function listenHotspotsNv(){
+  listenNvZoneLabels();
   if(hotspotsNvUnsub) hotspotsNvUnsub();
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
     const data = doc.exists ? doc.data() : null;
@@ -2821,6 +2832,46 @@ function deleteHotspotNv(zone, slotIdx, venueIdx){
   zoneSlots[slotIdx].venues.splice(venueIdx, 1);
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+}
+
+function addHotspotSlotNv(zone){
+  const value = prompt(`Nom du premier lieu pour ce nouveau hotspot à "${getNvZoneLabel(zone)}" :`);
+  if(!value || !value.trim()) return;
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  zoneSlots.push({ venues: [value.trim()] });
+  const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
+  db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+}
+
+function deleteHotspotSlotNv(zone, slotIdx){
+  if(!confirm(`Supprimer le hotspot #${slotIdx + 1} en entier (tous ses lieux) ?`)) return;
+  const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ venues: [...s.venues] }));
+  zoneSlots.splice(slotIdx, 1);
+  const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
+  db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
+}
+
+// Noms d'affichage personnalisés pour les zones Planning NV (ne change pas la clé interne / la logique).
+let NV_ZONE_LABELS = {};
+let nvZoneLabelsUnsub = null;
+
+function getNvZoneLabel(zone){
+  return NV_ZONE_LABELS[zone] || zone;
+}
+
+function listenNvZoneLabels(){
+  if(nvZoneLabelsUnsub) nvZoneLabelsUnsub();
+  nvZoneLabelsUnsub = db.collection('planningNV').doc('zoneLabels').onSnapshot(doc => {
+    NV_ZONE_LABELS = (doc.exists && doc.data()) || {};
+    renderPlanningNV();
+  }, err => console.error(err));
+}
+
+function renameNvZone(zone){
+  const value = prompt(`Nouveau nom affiché pour "${getNvZoneLabel(zone)}" :`, getNvZoneLabel(zone));
+  if(!value || !value.trim()) return;
+  const updated = { ...NV_ZONE_LABELS, [zone]: value.trim() };
+  db.collection('planningNV').doc('zoneLabels').set(updated).catch(err => console.error(err));
 }
 
 const SHIFTS_NV = {
@@ -2945,22 +2996,63 @@ function renderPlanningNVInner(){
       `;
     });
 
-    let fullListHtml = slots.map((slot, i) => `
-      <div class="nv-fulllist-row"><b>#${i + 1}</b> 📍 ${(slot.venues || []).join(' / ')}</div>
-    `).join('');
+    let fullListHtml = slots.map((slot, i) => {
+      const venuesHtml = (slot.venues || []).map((v, vi) => `
+        <span class="nv-venue-tag">${v} <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
+      `).join('');
+      return `
+        <div class="nv-fulllist-row">
+          <div><b>#${i + 1}</b> ${venuesHtml}</div>
+          <div style="margin-top:4px;">
+            <button class="nv-mini-link" data-add-venue="${zone}::${i}">+ lieu</button>
+            <button class="nv-mini-link nv-mini-danger" data-del-slot="${zone}::${i}">✕ supprimer hotspot #${i + 1}</button>
+          </div>
+        </div>
+      `;
+    }).join('');
 
     card.innerHTML = `
       <div class="nv-zone-head" style="background:${color};">
-        <h3>${zone}</h3>
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3>${getNvZoneLabel(zone)}</h3>
+          <button class="icon-btn" data-rename-zone="${zone}" title="Renommer" style="background:rgba(255,255,255,0.22); color:#fff; width:26px; height:26px;">✏️</button>
+        </div>
         <span>${members.length} agent${members.length > 1 ? 's' : ''}</span>
       </div>
       ${membersHtml}
       <div class="nv-fulllist">
         <div class="nv-fulllist-title">Tous les hotspots de la zone</div>
         ${fullListHtml}
+        <button class="btn-ghost" data-add-slot="${zone}" style="border:1px solid var(--line); margin-top:8px; width:100%; font-size:12px; padding:8px;">+ Nouveau hotspot</button>
+      </div>
       </div>
     `;
     grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('[data-rename-zone]').forEach(btn => {
+    btn.addEventListener('click', () => renameNvZone(btn.dataset.renameZone));
+  });
+  grid.querySelectorAll('[data-add-slot]').forEach(btn => {
+    btn.addEventListener('click', () => addHotspotSlotNv(btn.dataset.addSlot));
+  });
+  grid.querySelectorAll('[data-del-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.delSlot.split('::');
+      deleteHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-add-venue]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.addVenue.split('::');
+      addHotspotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-del-venue]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx, venueIdx] = btn.dataset.delVenue.split('::');
+      deleteHotspotNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
+    });
   });
 }
 
@@ -3071,41 +3163,86 @@ function renderNvPortal(){
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
   const slots = HOTSPOTS_NV[zone] || [];
   let todayHotspot = 'OFF aujourd\'hui';
+  let hotspotMapUrl = null;
   if(todayIdx !== offDayIdx && slots.length){
     const slotIdx = (memberIdx + todayIdx) % slots.length;
-    todayHotspot = ((slots[slotIdx] && slots[slotIdx].venues) || []).join(' / ');
+    const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+    todayHotspot = venues.join(' / ');
+    if(venues.length){
+      hotspotMapUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(venues[0] + ' Rabat')}`;
+    }
   }
+  window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
 
   content.innerHTML = `
     <div class="portal-status">
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Zone cette semaine</div>
-      <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${zone}</div>
+      <div style="font-size:20px; font-weight:800; margin-bottom:14px;">${getNvZoneLabel(zone)}</div>
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Shift</div>
       <div style="font-size:16px; font-weight:700; margin-bottom:14px;">${shiftLabel}</div>
       <div style="font-size:13px; color:var(--ink-soft); margin-bottom:4px;">Hotspot aujourd'hui</div>
-      <div style="font-size:15px; font-weight:700;">📍 ${todayHotspot}</div>
+      <div style="font-size:15px; font-weight:700; margin-bottom:${hotspotMapUrl ? '8px' : '0'};">📍 ${todayHotspot}</div>
+      ${hotspotMapUrl ? `<a href="${hotspotMapUrl}" target="_blank" rel="noopener" class="nv-loc-badge nv-loc-fresh" style="display:inline-block;">🧭 Itinéraire vers le hotspot</a>` : ''}
     </div>
     <button class="portal-btn" id="nvGeoBtn">📍 Activer la localisation</button>
     <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
   `;
 
   document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+
+  // Reprend automatiquement le suivi si l'agent l'avait activé plus tôt (et que son shift n'est pas fini).
+  if(localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1'){
+    startNvLocationTracking();
+  }
+}
+
+function getShiftEndDateNv(shiftKey){
+  if(!shiftKey) return null;
+  const day = new Date().getDay(); // 0=Dim..6=Sam
+  const isWeekendShift = (day === 5 || day === 6); // Ven=5, Sam=6
+  const label = isWeekendShift ? SHIFTS_NV[shiftKey].label8 : SHIFTS_NV[shiftKey].label7;
+  const endStr = label.split('-')[1]; // "01:00" etc.
+  const [h, m] = endStr.split(':').map(Number);
+  const start = new Date();
+  const end = new Date();
+  end.setHours(h, m, 0, 0);
+  // Si l'heure de fin est "plus petite" que maintenant de nuit (ex: fin 02:00 après minuit), elle tombe demain.
+  if(end < start && h < 12) end.setDate(end.getDate() + 1);
+  return end;
 }
 
 function toggleNvLocationTracking(){
-  const btn = document.getElementById('nvGeoBtn');
-  const statusEl = document.getElementById('nvGeoStatus');
   if(nvGeoIntervalId){
     stopNvLocationTracking();
-    btn.textContent = '📍 Activer la localisation';
-    statusEl.textContent = 'Localisation désactivée.';
-    return;
+    localStorage.removeItem('nvGeoActive_' + currentNvAgent);
+    const btn = document.getElementById('nvGeoBtn');
+    const statusEl = document.getElementById('nvGeoStatus');
+    if(btn) btn.textContent = '📍 Activer la localisation';
+    if(statusEl) statusEl.textContent = 'Localisation désactivée.';
+  } else {
+    localStorage.setItem('nvGeoActive_' + currentNvAgent, '1');
+    startNvLocationTracking();
   }
+}
+
+function startNvLocationTracking(){
+  const btn = document.getElementById('nvGeoBtn');
+  const statusEl = document.getElementById('nvGeoStatus');
+  if(nvGeoIntervalId) return; // déjà actif
   if(!navigator.geolocation){
-    statusEl.textContent = "Ton navigateur ne supporte pas la localisation.";
+    if(statusEl) statusEl.textContent = "Ton navigateur ne supporte pas la localisation.";
     return;
   }
   const sendPosition = () => {
+    // Arrêt automatique si le shift du jour est terminé.
+    const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftKey);
+    if(shiftEnd && Date.now() > shiftEnd.getTime()){
+      stopNvLocationTracking();
+      localStorage.removeItem('nvGeoActive_' + currentNvAgent);
+      if(btn) btn.textContent = '📍 Activer la localisation';
+      if(statusEl) statusEl.textContent = 'Shift terminé — localisation arrêtée automatiquement.';
+      return;
+    }
     navigator.geolocation.getCurrentPosition(pos => {
       db.collection('planningNV').doc('locations').set({
         [currentNvAgent]: {
@@ -3114,16 +3251,16 @@ function toggleNvLocationTracking(){
           updatedAt: Date.now(),
         },
       }, { merge: true }).catch(err => console.error(err));
-      statusEl.textContent = `Position envoyée à ${new Date().toLocaleTimeString('fr-FR')}.`;
+      if(statusEl) statusEl.textContent = `✅ Active — dernière position envoyée à ${new Date().toLocaleTimeString('fr-FR')}.`;
     }, err => {
-      statusEl.textContent = "Permission refusée ou position indisponible.";
+      if(statusEl) statusEl.textContent = "Permission refusée ou position indisponible.";
       console.error(err);
     }, { enableHighAccuracy: true, timeout: 15000 });
   };
   sendPosition();
   nvGeoIntervalId = setInterval(sendPosition, 150000); // toutes les 2.5 min
-  btn.textContent = '⏸️ Désactiver la localisation';
-  statusEl.textContent = 'Localisation activée — garde cette page ouverte.';
+  if(btn) btn.textContent = '⏸️ Désactiver la localisation';
+  if(statusEl) statusEl.textContent = 'Localisation activée — garde cette page ouverte.';
 }
 
 function stopNvLocationTracking(){
