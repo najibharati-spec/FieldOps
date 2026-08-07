@@ -291,16 +291,18 @@ input, select{font-family: inherit;}
 .nv-chip.shift-jour{ background: rgba(62,143,111,0.14); color: #3E8F6F; }
 .nv-chip.shift-nuit{ background: rgba(22,63,61,0.12); color: #163F3D; }
 .nv-chip.off{ background: rgba(122,113,102,0.14); color: #7A7166; }
-.nv-day-strip{ display:flex; flex-wrap:wrap; gap: 6px; }
+.nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
+.nv-day-block{ border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+.nv-day-block:last-child{ border-bottom: none; padding-bottom: 0; }
+.nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; letter-spacing:.03em; }
+.nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
 .nv-day-chip{
-  font-size: 11px; color: var(--ink-soft); background: var(--sand); border-radius: 8px;
-  padding: 5px 9px; line-height: 1.3; display:inline-block; text-decoration:none;
+  font-size: 14px; color: var(--ink); background: var(--sand); border-radius: 8px;
+  padding: 8px 12px; line-height: 1.3; display:inline-block; text-decoration:none; font-weight:600;
 }
 .nv-day-chip-link{ cursor:pointer; }
 .nv-day-chip-link:hover{ background: var(--sand-deep); text-decoration: underline; }
-.nv-day-chip b{ color: var(--ink); margin-right: 4px; }
 .nv-day-chip.off{ background: rgba(122,113,102,0.12); color: #7A7166; font-weight: 700; }
-.nv-day-chip.off b{ color: #7A7166; }
 .nv-fulllist{ padding: 12px 20px 16px; background: var(--sand); border-top: 1px solid var(--line); }
 .nv-fulllist-title{ font-size: 10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color: var(--ink-soft); margin-bottom: 8px; }
 .nv-fulllist-row{ font-size: 12px; color: var(--ink); padding: 8px 0; line-height:1.5; border-bottom: 1px solid var(--line); }
@@ -2919,16 +2921,15 @@ const SHIFTS_NV = {
 const SHIFT_KEYS_NV = ['S1', 'S2', 'S3'];
 const NV_DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu'];
 
-// Groupe 2 (2 pers.) — toujours à Agdal, ne tourne jamais.
-const AGDAL_FIXED_NV = ["Youssef Derkaoui", "Ayoub Ben Malek"];
-// Groupe 3 (4 pers.) — toujours à Hay Riad, ne tourne jamais.
-const HAYRIAD_FIXED_NV = ["Yahya Rhallah", "Oussama El Atrach", "Hassan Azgoune", "Aymane Chlifane"];
-// Groupe 1 et Groupe 4 (3 pers. chacun) — tournent chaque semaine entre Salé-Rabat et Temara.
+// 4 groupes de 3 personnes — chacun tourne chaque semaine sur les 4 zones :
+// Temara → Agdal → Salé-Rabat → Hay Riad → (retour à Temara), et ainsi de suite.
 const ROTATING_TEAMS_NV = [
   ["Charaf Loummihi", "Mourad Cherradi", "Islam Elmardi"],
+  ["Youssef Derkaoui", "Ayoub Ben Malek", "Aymane Chlifane"],
+  ["Yahya Rhallah", "Oussama El Atrach", "Hassan Azgoune"],
   ["Ayoub Abssi", "Achraf Akhlij", "Mehdi Ait Jebour"],
 ];
-const ROTATING_ZONES_NV = ["Salé-Rabat", "Temara"];
+const ROTATING_ZONES_NV = ["Temara", "Agdal", "Salé-Rabat", "Hay Riad"];
 
 function updateWeekHeaderNv(){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
@@ -2948,9 +2949,9 @@ document.getElementById('nextWeekNvBtn').addEventListener('click', () => {
 });
 
 function buildZoneAssignmentsNv(weekIdx){
-  const zones = { "Salé-Rabat": [], "Agdal": [...AGDAL_FIXED_NV], "Hay Riad": [...HAYRIAD_FIXED_NV], "Temara": [] };
+  const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [] };
   ROTATING_TEAMS_NV.forEach((team, teamIdx) => {
-    const zoneIdx = ((teamIdx + weekIdx) % 2 + 2) % 2;
+    const zoneIdx = ((teamIdx + weekIdx) % 4 + 4) % 4;
     const zone = ROTATING_ZONES_NV[zoneIdx];
     zones[zone].push(...team);
   });
@@ -2999,20 +3000,18 @@ function renderPlanningNVInner(){
       let dayChips = '';
       ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
         if(dayIdx === offDayIdx){
-          dayChips += `<span class="nv-day-chip off"><b>${dayLabel}</b> OFF</span>`;
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel}</div><span class="nv-day-chip off">OFF</span></div>`;
         } else if(slots.length){
           // Le hotspot ENTIER (zone/slot) tourne chaque jour entre les membres de l'équipe :
           // aujourd'hui c'est Charaf qui y est, demain ce sera Islam, etc.
           const slotIdx = (memberIdx + dayIdx) % slots.length;
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
-          const firstVenue = venues[0] || '';
-          const mapUrl = firstVenue ? getVenueMapUrl(firstVenue) : null;
-          const inner = `<b>${dayLabel}</b> 📍 Hotspot ${slotIdx + 1} — ${venues.join(' / ')}`;
-          dayChips += mapUrl
-            ? `<a class="nv-day-chip nv-day-chip-link" href="${mapUrl}" target="_blank" rel="noopener">${inner}</a>`
-            : `<span class="nv-day-chip">${inner}</span>`;
+          const venueChips = venues.length
+            ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
+            : `<span class="nv-day-chip">—</span>`;
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel} · Hotspot ${slotIdx + 1}</div><div class="nv-day-venues">${venueChips}</div></div>`;
         } else {
-          dayChips += `<span class="nv-day-chip">${dayLabel}</span>`;
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel}</div><span class="nv-day-chip">—</span></div>`;
         }
       });
 
@@ -3103,7 +3102,7 @@ function renderPlanningNVInner(){
 
 /* ================= PLANNING NV — accès agent (PIN + localisation live) ================= */
 const NV_ALL_AGENTS = [
-  ...AGDAL_FIXED_NV, ...HAYRIAD_FIXED_NV, ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1],
+  ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1], ...ROTATING_TEAMS_NV[2], ...ROTATING_TEAMS_NV[3],
 ];
 
 let NV_PINS = {};
