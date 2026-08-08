@@ -2858,13 +2858,13 @@ function listenHotspotsNv(){
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
       HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
     }
-    renderPlanningNV();
+    refreshNvViews();
   }, err => console.error(err));
 
   if(nvLocationsUnsub) nvLocationsUnsub();
   nvLocationsUnsub = db.collection('planningNV').doc('locations').onSnapshot(doc => {
     NV_LOCATIONS = doc.exists ? (doc.data() || {}) : {};
-    renderPlanningNV();
+    refreshNvViews();
   }, err => console.error(err));
 }
 
@@ -2885,7 +2885,7 @@ function listenNvVenueLinks(){
   if(nvVenueLinksUnsub) nvVenueLinksUnsub();
   nvVenueLinksUnsub = db.collection('planningNV').doc('venueLinks').onSnapshot(doc => {
     NV_VENUE_LINKS = (doc.exists && doc.data()) || {};
-    renderPlanningNV();
+    refreshNvViews();
   }, err => console.error(err));
 }
 
@@ -2990,7 +2990,7 @@ function listenNvZoneLabels(){
   if(nvZoneLabelsUnsub) nvZoneLabelsUnsub();
   nvZoneLabelsUnsub = db.collection('planningNV').doc('zoneLabels').onSnapshot(doc => {
     NV_ZONE_LABELS = (doc.exists && doc.data()) || {};
-    renderPlanningNV();
+    refreshNvViews();
   }, err => console.error(err));
 }
 
@@ -3041,7 +3041,7 @@ function listenNvOverrides(){
   if(nvOverridesUnsub) nvOverridesUnsub();
   nvOverridesUnsub = db.collection('planningNV').doc('overrides_W' + weekIdx).onSnapshot(doc => {
     NV_OVERRIDES = (doc.exists && doc.data()) || {};
-    renderPlanningNV();
+    refreshNvViews();
   }, err => console.error(err));
 }
 
@@ -3089,6 +3089,17 @@ function renderPlanningNV(){
   } catch(err){
     console.error('renderPlanningNV error:', err);
     document.getElementById('nvZoneGrid').innerHTML = '<p style="color:var(--red); padding:20px;">Erreur d\'affichage — réessaie de recharger la page.</p>';
+  }
+}
+
+// À appeler après toute mise à jour de données (hotspots, overrides, liens...) : rafraîchit
+// automatiquement la vue admin ET le portail agent si l'un ou l'autre est actuellement affiché,
+// pour que les changements soient visibles immédiatement des deux côtés sans recharger la page.
+function refreshNvViews(){
+  renderPlanningNV();
+  const portalVisible = !document.getElementById('nvAgentPortal').classList.contains('hidden');
+  if(portalVisible && currentNvAgent){
+    renderNvPortal();
   }
 }
 
