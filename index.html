@@ -2634,7 +2634,8 @@ function renderAbsencesDetail(){
 function populateAbsenceAgentSelect(){
   const sel = document.getElementById('absenceAgentInput');
   const sortedAgents = [...AGENTS].sort((a, b) => a.name.localeCompare(b.name));
-  sel.innerHTML = sortedAgents.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
+  sel.innerHTML = '<option value="" disabled selected>-- Choisir un agent --</option>' +
+    sortedAgents.map(a => `<option value="${a.id}">${a.name}</option>`).join('');
 }
 
 function openAbsenceModal(absenceId = null){
@@ -2655,6 +2656,7 @@ function openAbsenceModal(absenceId = null){
     endDateInput.disabled = true; // pas de plage en mode "modifier" (une seule entrée à la fois)
   } else {
     title.textContent = 'Déclarer une absence / un jour';
+    document.getElementById('absenceAgentInput').value = '';
     document.getElementById('absenceTypeInput').value = 'maladie';
     document.getElementById('absenceDateInput').value = new Date().toISOString().slice(0, 10);
     document.getElementById('absenceNoteInput').value = '';
