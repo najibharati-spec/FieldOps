@@ -2,340 +2,171 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPS HQ — Redesign</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://unpkg.com/lucide@latest"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<title>OPS HQ — Options de design Planning</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <style>
-  * { font-family: 'Inter', sans-serif; }
-  .font-display { font-family: 'Space Grotesk', sans-serif; }
-  body { background: #020617; }
-  .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.06); }
-  .glow-violet { box-shadow: 0 0 0 1px rgba(139,92,246,0.15), 0 20px 40px -20px rgba(139,92,246,0.25); }
-  .grid-fade {
-    background-image: radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0);
-    background-size: 28px 28px;
+  :root{
+    --sand:#0A0E1A; --sand-deep:#141B2E; --paper:#12182B; --line:rgba(255,255,255,0.08);
+    --sky:#8B5CF6; --sky-deep:#6D28D9; --sky-ink:#A78BFA; --ink:#E7E9F3; --ink-soft:#8B93A9;
+    --green:#34D399; --amber:#FBBF24; --indigo:#A5B4FC; --red:#F87171;
   }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 999px; }
-  @keyframes pulse-dot { 0%,100%{ opacity:1 } 50%{ opacity:.35 } }
-  .pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+  *{box-sizing:border-box; margin:0; padding:0; font-family:'Inter',sans-serif;}
+  body{ background:var(--sand); color:var(--ink); padding:40px 24px 100px; }
+  .option-label{
+    display:inline-block; background:var(--sky-deep); color:#fff; font-size:12px; font-weight:800;
+    padding:5px 14px; border-radius:20px; margin-bottom:10px; letter-spacing:.03em;
+  }
+  .option-title{ font-size:22px; font-weight:800; margin-bottom:4px; }
+  .option-sub{ font-size:13px; color:var(--ink-soft); margin-bottom:22px; }
+  section{ max-width:1080px; margin:0 auto 90px; }
+  .card{ background:var(--paper); border:1px solid var(--line); border-radius:18px; }
+
+  /* ===== OPTION 1 : KANBAN ZONES ===== */
+  .kanban-grid{ display:grid; grid-template-columns:repeat(4,1fr); gap:16px; }
+  .kb-col{ background:var(--paper); border:1px solid var(--line); border-radius:16px; overflow:hidden; }
+  .kb-head{ padding:14px 16px; background:linear-gradient(135deg,var(--sky),var(--sky-deep)); color:#fff; }
+  .kb-head b{ font-size:14.5px; display:block; }
+  .kb-head span{ font-size:11px; opacity:.85; }
+  .kb-agent{ padding:12px 16px; border-bottom:1px solid var(--line); }
+  .kb-agent:last-child{ border-bottom:none; }
+  .kb-agent-name{ font-weight:700; font-size:13.5px; margin-bottom:6px; }
+  .pill{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:20px; }
+  .pill.jour{ background:rgba(52,211,153,0.15); color:var(--green); }
+  .pill.nuit{ background:rgba(99,102,241,0.18); color:var(--indigo); }
+  .pill.off{ background:rgba(148,163,184,0.15); color:#94A3B8; }
+  .kb-hotspot{ font-size:11px; color:var(--ink-soft); margin-top:6px; }
+
+  /* ===== OPTION 2 : GRILLE SEMAINE ===== */
+  .grid-table{ width:100%; border-collapse:collapse; }
+  .grid-table th{ text-align:center; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em; color:var(--ink-soft); padding:12px 8px; background:var(--sand-deep); border-bottom:1px solid var(--line); }
+  .grid-table th:first-child{ text-align:left; padding-left:18px; }
+  .grid-table td{ text-align:center; padding:10px 6px; border-bottom:1px solid var(--line); font-size:12px; }
+  .grid-table td:first-child{ text-align:left; padding-left:18px; font-weight:700; }
+  .agent-row-avatar{ display:inline-flex; align-items:center; gap:8px; }
+  .avatar{ width:26px; height:26px; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; color:#fff; flex-shrink:0; }
+  .cell-pill{ display:inline-block; min-width:64px; padding:6px 4px; border-radius:8px; font-size:10.5px; font-weight:700; }
+  .cell-pill.jour{ background:rgba(52,211,153,0.15); color:var(--green); }
+  .cell-pill.nuit{ background:rgba(99,102,241,0.18); color:var(--indigo); }
+  .cell-pill.off{ background:var(--sand-deep); color:var(--ink-soft); box-shadow:inset 0 0 0 1px var(--line); }
+  .today-col{ background:rgba(139,92,246,0.06); }
+
+  /* ===== OPTION 3 : TIMELINE JOURNEE ===== */
+  .tl-wrap{ display:flex; gap:0; }
+  .tl-hours{ width:52px; flex-shrink:0; padding-top:44px; }
+  .tl-hour{ height:36px; font-size:10px; color:var(--ink-soft); text-align:right; padding-right:8px; }
+  .tl-lanes{ flex:1; display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  .tl-lane-head{ text-align:center; font-size:12px; font-weight:800; padding:10px 0; color:var(--ink); border-bottom:1px solid var(--line); margin-bottom:6px; }
+  .tl-lane{ position:relative; height:576px; background:var(--paper); border:1px solid var(--line); border-radius:12px; }
+  .tl-block{ position:absolute; left:6px; right:6px; border-radius:8px; padding:8px 10px; font-size:11px; font-weight:700; color:#fff; }
+  .tl-block small{ display:block; font-size:9.5px; font-weight:500; opacity:.85; margin-top:2px; }
 </style>
 </head>
-<body class="min-h-screen text-slate-200 grid-fade">
+<body>
 
-<div class="flex min-h-screen">
+<section>
+  <span class="option-label">Option 1</span>
+  <div class="option-title">Vue Zones — Kanban</div>
+  <div class="option-sub">Une colonne par zone, les agents présents cette semaine avec leur shift du jour et hotspot actif — vue rapide "qui est où".</div>
+  <div class="kanban-grid">
+    <div class="kb-col">
+      <div class="kb-head"><b>Temara</b><span>Hotspot: Marché central</span></div>
+      <div class="kb-agent"><div class="kb-agent-name">Ayoub Abssi</div><span class="pill jour">Shift 1 · 11–18h</span><div class="kb-hotspot">📍 Marché central</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Achraf Akhlij</div><span class="pill nuit">Shift 3 · 19–02h</span><div class="kb-hotspot">📍 Gare Temara</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Mehdi Ait Jebour</div><span class="pill off">OFF</span></div>
+    </div>
+    <div class="kb-col">
+      <div class="kb-head"><b>Agdal</b><span>Hotspot: Carrefour</span></div>
+      <div class="kb-agent"><div class="kb-agent-name">Charaf Loummihi</div><span class="pill jour">Shift 1 · 11–18h</span><div class="kb-hotspot">📍 Carrefour Agdal</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Mourad Cherradi</div><span class="pill nuit">Shift 3 · 19–02h</span><div class="kb-hotspot">📍 Avenue Fal Ould Oumeir</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Islam Elmardi</div><span class="pill jour">Shift 2 · 16–23h</span><div class="kb-hotspot">📍 Place Talha</div></div>
+    </div>
+    <div class="kb-col">
+      <div class="kb-head"><b>Salé-Rabat</b><span>Hotspot: Bab Lamrissa</span></div>
+      <div class="kb-agent"><div class="kb-agent-name">Youssef Derkaoui</div><span class="pill jour">Shift 2 · 16–23h</span><div class="kb-hotspot">📍 Bab Lamrissa</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Ayoub Ben Malek</div><span class="pill off">OFF</span></div>
+      <div class="kb-agent"><div class="kb-agent-name">Aymane Chlifane</div><span class="pill jour">Shift 1 · 11–18h</span><div class="kb-hotspot">📍 Pont Moulay Hassan</div></div>
+    </div>
+    <div class="kb-col">
+      <div class="kb-head"><b>Hay Riad</b><span>Hotspot: Mega Mall</span></div>
+      <div class="kb-agent"><div class="kb-agent-name">Yahya Rhallab</div><span class="pill jour">Shift 1 · 11–18h</span><div class="kb-hotspot">📍 Mega Mall</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Oussama El Atrach</div><span class="pill nuit">Shift 3 · 19–02h</span><div class="kb-hotspot">📍 Bab Zaers</div></div>
+      <div class="kb-agent"><div class="kb-agent-name">Hassan Azgoune</div><span class="pill jour">Shift 2 · 16–23h</span><div class="kb-hotspot">📍 Avenue Annakhil</div></div>
+    </div>
+  </div>
+</section>
 
-  <!-- ============ SIDEBAR ============ -->
-  <aside class="w-64 shrink-0 hidden lg:flex flex-col glass border-r border-slate-800/60 sticky top-0 h-screen">
-    <div class="flex items-center gap-3 px-6 py-6">
-      <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-violet-500 to-indigo-600 flex items-center justify-center glow-violet">
-        <i data-lucide="zap" class="w-5 h-5 text-white"></i>
+<section>
+  <span class="option-label">Option 2</span>
+  <div class="option-title">Vue Semaine — Grille (proche de l'actuelle, redesignée)</div>
+  <div class="option-sub">Le tableau que tu connais déjà, avec avatars, pills colorées et colonne du jour surlignée — le plus proche de l'existant.</div>
+  <div class="card" style="overflow-x:auto;">
+    <table class="grid-table">
+      <thead><tr><th>Agent</th><th>Lun</th><th>Mar</th><th class="today-col">Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">CL</span>Charaf Loummihi</span></td>
+          <td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td class="today-col"><span class="cell-pill jour">J1</span></td><td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td>
+        </tr>
+        <tr>
+          <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">MC</span>Mourad Cherradi</span></td>
+          <td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td class="today-col"><span class="cell-pill off">OFF</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td>
+        </tr>
+        <tr>
+          <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#F59E0B,#DC2626);">AA</span>Achraf Akhlij</span></td>
+          <td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td><td class="today-col"><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td>
+        </tr>
+        <tr>
+          <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#334155,#1E293B);">MA</span>Mehdi Ait Jebour</span></td>
+          <td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J1</span></td><td class="today-col"><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section>
+  <span class="option-label">Option 3</span>
+  <div class="option-title">Vue Timeline — Journée par zone</div>
+  <div class="option-sub">Colonnes = zones, blocs verticaux positionnés selon l'heure (11h→02h) — utile pour visualiser les chevauchements et trous de couverture d'un coup d'œil.</div>
+  <div class="tl-wrap">
+    <div class="tl-hours">
+      <div class="tl-hour">11h</div><div class="tl-hour">13h</div><div class="tl-hour">15h</div><div class="tl-hour">17h</div>
+      <div class="tl-hour">19h</div><div class="tl-hour">21h</div><div class="tl-hour">23h</div><div class="tl-hour">01h</div>
+    </div>
+    <div class="tl-lanes">
+      <div>
+        <div class="tl-lane-head">Temara</div>
+        <div class="tl-lane">
+          <div class="tl-block" style="top:0; height:252px; background:linear-gradient(135deg,#34D399,#10B981);">Ayoub Abssi<small>11:00–18:00</small></div>
+          <div class="tl-block" style="top:288px; height:288px; background:linear-gradient(135deg,#6366F1,#4F46E5);">Achraf Akhlij<small>19:00–02:00</small></div>
+        </div>
       </div>
       <div>
-        <div class="font-display font-bold text-white tracking-tight leading-none">OPS HQ</div>
-        <div class="text-[11px] text-slate-500 mt-0.5">Rabat · Field Ops</div>
-      </div>
-    </div>
-
-    <nav class="flex-1 px-3 mt-4 space-y-1">
-      <div class="px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2">Opérations</div>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-violet-600/20 to-indigo-600/10 border border-violet-500/20 text-white text-sm font-medium">
-        <i data-lucide="layout-dashboard" class="w-4 h-4 text-violet-400"></i> Dashboard
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="calendar-days" class="w-4 h-4"></i> Planning
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="map-pin" class="w-4 h-4"></i> Hotspots
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="clock" class="w-4 h-4"></i> Pointage
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="calendar-x" class="w-4 h-4"></i> Absences
-        <span class="ml-auto text-[10px] font-semibold bg-rose-500/15 text-rose-400 px-1.5 py-0.5 rounded-md">3</span>
-      </a>
-
-      <div class="px-3 text-[10px] font-semibold uppercase tracking-wider text-slate-500 mb-2 mt-6">Gestion</div>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="users" class="w-4 h-4"></i> Agents
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="wallet" class="w-4 h-4"></i> Paie
-      </a>
-      <a class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/5 transition-all text-sm">
-        <i data-lucide="file-bar-chart" class="w-4 h-4"></i> Rapports
-      </a>
-    </nav>
-
-    <div class="p-3 mt-auto">
-      <div class="glass rounded-2xl p-3 flex items-center gap-3">
-        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-xs font-bold text-white shrink-0">NH</div>
-        <div class="min-w-0">
-          <div class="text-sm font-medium text-white truncate">Najib Harati</div>
-          <div class="text-[11px] text-slate-500 truncate">Lead On-Field Agent</div>
+        <div class="tl-lane-head">Agdal</div>
+        <div class="tl-lane">
+          <div class="tl-block" style="top:0; height:252px; background:linear-gradient(135deg,#34D399,#10B981);">Charaf Loummihi<small>11:00–18:00</small></div>
+          <div class="tl-block" style="top:180px; height:216px; background:linear-gradient(135deg,#FBBF24,#F59E0B);">Islam Elmardi<small>16:00–23:00</small></div>
+          <div class="tl-block" style="top:288px; height:288px; background:linear-gradient(135deg,#6366F1,#4F46E5);">Mourad Cherradi<small>19:00–02:00</small></div>
         </div>
-        <i data-lucide="chevron-right" class="w-4 h-4 text-slate-500 ml-auto"></i>
       </div>
-    </div>
-  </aside>
-
-  <!-- ============ MAIN ============ -->
-  <main class="flex-1 min-w-0">
-
-    <!-- TOP BAR -->
-    <header class="sticky top-0 z-10 glass border-b border-slate-800/60 px-5 lg:px-8 py-4 flex items-center gap-4">
-      <div class="relative flex-1 max-w-md">
-        <i data-lucide="search" class="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
-        <input placeholder="Chercher un agent, une zone…" class="w-full bg-white/5 border border-slate-800 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-200 placeholder:text-slate-500 outline-none focus:border-violet-500/50 focus:ring-2 focus:ring-violet-500/20 transition-all">
-      </div>
-
-      <div class="hidden md:flex items-center gap-2 text-xs text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
-        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> Système à jour
-      </div>
-
-      <button class="relative w-10 h-10 rounded-xl glass flex items-center justify-center hover:bg-white/10 transition-all">
-        <i data-lucide="bell" class="w-4 h-4 text-slate-300"></i>
-        <span class="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-[10px] font-bold text-white flex items-center justify-center">4</span>
-      </button>
-
-      <button class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white text-sm font-medium px-4 py-2.5 rounded-xl transition-all hover:-translate-y-0.5 shadow-lg shadow-violet-600/20">
-        <i data-lucide="plus" class="w-4 h-4"></i> Déclarer
-      </button>
-    </header>
-
-    <div class="p-5 lg:p-8 space-y-6">
-
       <div>
-        <h1 class="font-display text-2xl font-bold text-white tracking-tight">Bonjour, Najib 👋</h1>
-        <p class="text-slate-500 text-sm mt-1">Voici l'état de l'équipe aujourd'hui — vendredi 24 juillet</p>
-      </div>
-
-      <!-- KPI GRID -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-
-        <div class="glass rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-200 hover:shadow-xl hover:shadow-violet-500/5 group">
-          <div class="flex items-start justify-between">
-            <div class="w-10 h-10 rounded-xl bg-violet-500/15 flex items-center justify-center">
-              <i data-lucide="users" class="w-5 h-5 text-violet-400"></i>
-            </div>
-            <span class="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +8.3%
-            </span>
-          </div>
-          <div class="font-display text-3xl font-bold text-white mt-4">12</div>
-          <div class="text-sm text-slate-500 mt-1">Agents actifs — Planning</div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-200 hover:shadow-xl hover:shadow-emerald-500/5">
-          <div class="flex items-start justify-between">
-            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 flex items-center justify-center">
-              <i data-lucide="check-check" class="w-5 h-5 text-emerald-400"></i>
-            </div>
-            <span class="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +2.1%
-            </span>
-          </div>
-          <div class="font-display text-3xl font-bold text-white mt-4">91.5%</div>
-          <div class="text-sm text-slate-500 mt-1">Taux de présence (cycle)</div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/5">
-          <div class="flex items-start justify-between">
-            <div class="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center">
-              <i data-lucide="calendar-x" class="w-5 h-5 text-amber-400"></i>
-            </div>
-            <span class="flex items-center gap-1 text-xs font-semibold text-rose-400 bg-rose-500/10 px-2 py-1 rounded-lg">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> +2
-            </span>
-          </div>
-          <div class="font-display text-3xl font-bold text-white mt-4">3</div>
-          <div class="text-sm text-slate-500 mt-1">Absences en attente</div>
-        </div>
-
-        <div class="glass rounded-2xl p-5 hover:-translate-y-0.5 transition-all duration-200 hover:shadow-xl hover:shadow-indigo-500/5">
-          <div class="flex items-start justify-between">
-            <div class="w-10 h-10 rounded-xl bg-indigo-500/15 flex items-center justify-center">
-              <i data-lucide="map" class="w-5 h-5 text-indigo-400"></i>
-            </div>
-            <span class="flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg">
-              <i data-lucide="trending-up" class="w-3 h-3"></i> 4/4
-            </span>
-          </div>
-          <div class="font-display text-3xl font-bold text-white mt-4">100%</div>
-          <div class="text-sm text-slate-500 mt-1">Couverture des zones</div>
+        <div class="tl-lane-head">Salé-Rabat</div>
+        <div class="tl-lane">
+          <div class="tl-block" style="top:0; height:252px; background:linear-gradient(135deg,#34D399,#10B981);">Aymane Chlifane<small>11:00–18:00</small></div>
+          <div class="tl-block" style="top:180px; height:216px; background:linear-gradient(135deg,#FBBF24,#F59E0B);">Youssef Derkaoui<small>16:00–23:00</small></div>
         </div>
       </div>
-
-      <!-- MAIN GRID: TABLE + SIDE WIDGETS -->
-      <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-
-        <!-- TABLE -->
-        <div class="xl:col-span-2 glass rounded-2xl overflow-hidden">
-          <div class="flex items-center justify-between px-5 py-4 border-b border-slate-800/60">
-            <div>
-              <h2 class="font-display font-semibold text-white">Statut de l'équipe — aujourd'hui</h2>
-              <p class="text-xs text-slate-500 mt-0.5">Pointage & shift en temps réel</p>
-            </div>
-            <div class="flex gap-1.5">
-              <button class="text-xs font-medium px-3 py-1.5 rounded-lg bg-violet-500/15 text-violet-300 border border-violet-500/20">Tous</button>
-              <button class="text-xs font-medium px-3 py-1.5 rounded-lg text-slate-400 hover:bg-white/5">En service</button>
-              <button class="text-xs font-medium px-3 py-1.5 rounded-lg text-slate-400 hover:bg-white/5">Absents</button>
-            </div>
-          </div>
-
-          <div class="divide-y divide-slate-800/60">
-
-            <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-violet-500 to-fuchsia-500 flex items-center justify-center text-xs font-bold text-white shrink-0">CL</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-white">Charaf Loummihi</div>
-                <div class="text-xs text-slate-500">Zone Agdal · Shift 1 · 11:00–18:00</div>
-              </div>
-              <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full flex items-center gap-1.5 shrink-0">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> En service
-              </span>
-            </div>
-
-            <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white shrink-0">MC</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-white">Mourad Cherradi</div>
-                <div class="text-xs text-slate-500">Zone Temara · Shift 3 · 19:00–02:00</div>
-              </div>
-              <span class="text-xs font-semibold text-slate-400 bg-slate-500/10 px-2.5 py-1 rounded-full shrink-0">À venir</span>
-            </div>
-
-            <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-500 to-rose-500 flex items-center justify-center text-xs font-bold text-white shrink-0">AA</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-white">Achraf Akhlij</div>
-                <div class="text-xs text-slate-500">Zone Salé-Rabat · Shift 2 · 16:00–23:00</div>
-              </div>
-              <span class="text-xs font-semibold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full shrink-0">En retard</span>
-            </div>
-
-            <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-slate-600 to-slate-700 flex items-center justify-center text-xs font-bold text-white shrink-0">MA</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-white">Mehdi Ait Jebour</div>
-                <div class="text-xs text-slate-500">Zone Hay Riad · Congé payé</div>
-              </div>
-              <span class="text-xs font-semibold text-rose-400 bg-rose-500/10 px-2.5 py-1 rounded-full shrink-0">Absent</span>
-            </div>
-
-            <div class="flex items-center gap-4 px-5 py-3.5 hover:bg-white/[0.03] transition-colors">
-              <div class="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-xs font-bold text-white shrink-0">YR</div>
-              <div class="min-w-0 flex-1">
-                <div class="text-sm font-medium text-white">Yahya Rhallab</div>
-                <div class="text-xs text-slate-500">Zone Agdal · Shift 1 · 11:00–18:00</div>
-              </div>
-              <span class="text-xs font-semibold text-emerald-400 bg-emerald-500/10 px-2.5 py-1 rounded-full flex items-center gap-1.5 shrink-0">
-                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 pulse-dot"></span> En service
-              </span>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- SIDE WIDGETS -->
-        <div class="space-y-6">
-
-          <!-- CYCLE PROGRESS SIGNATURE WIDGET -->
-          <div class="glass rounded-2xl p-5">
-            <div class="flex items-center justify-between mb-4">
-              <h3 class="font-display font-semibold text-white text-sm">Cycle de paie</h3>
-              <span class="text-[11px] text-slate-500">21 juil → 20 août</span>
-            </div>
-            <div class="relative flex items-center justify-center py-2">
-              <svg width="140" height="140" viewBox="0 0 140 140" class="-rotate-90">
-                <circle cx="70" cy="70" r="58" fill="none" stroke="#1e293b" stroke-width="10"/>
-                <circle cx="70" cy="70" r="58" fill="none" stroke="url(#grad)" stroke-width="10"
-                  stroke-linecap="round" stroke-dasharray="364" stroke-dashoffset="102"/>
-                <defs>
-                  <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stop-color="#8b5cf6"/>
-                    <stop offset="100%" stop-color="#6366f1"/>
-                  </linearGradient>
-                </defs>
-              </svg>
-              <div class="absolute flex flex-col items-center">
-                <span class="font-display text-2xl font-bold text-white">Jour 4</span>
-                <span class="text-[11px] text-slate-500">sur 26</span>
-              </div>
-            </div>
-            <div class="grid grid-cols-3 gap-2 mt-3 text-center">
-              <div class="bg-white/5 rounded-xl py-2">
-                <div class="text-sm font-bold text-emerald-400">22</div>
-                <div class="text-[10px] text-slate-500">Présents</div>
-              </div>
-              <div class="bg-white/5 rounded-xl py-2">
-                <div class="text-sm font-bold text-amber-400">3</div>
-                <div class="text-[10px] text-slate-500">Congés</div>
-              </div>
-              <div class="bg-white/5 rounded-xl py-2">
-                <div class="text-sm font-bold text-rose-400">1</div>
-                <div class="text-[10px] text-slate-500">Maladie</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- QUICK ACTIONS -->
-          <div class="glass rounded-2xl p-5">
-            <h3 class="font-display font-semibold text-white text-sm mb-3">Actions rapides</h3>
-            <div class="space-y-2">
-              <button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-left">
-                <i data-lucide="calendar-plus" class="w-4 h-4 text-violet-400"></i>
-                <span class="text-sm text-slate-200">Modifier un shift</span>
-              </button>
-              <button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-left">
-                <i data-lucide="user-x" class="w-4 h-4 text-rose-400"></i>
-                <span class="text-sm text-slate-200">Déclarer une absence</span>
-              </button>
-              <button class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 transition-all text-left">
-                <i data-lucide="map-pin-plus" class="w-4 h-4 text-indigo-400"></i>
-                <span class="text-sm text-slate-200">Ajouter un hotspot</span>
-              </button>
-            </div>
-          </div>
-
-          <!-- ACTIVITY LOG -->
-          <div class="glass rounded-2xl p-5">
-            <h3 class="font-display font-semibold text-white text-sm mb-3">Activité récente</h3>
-            <div class="space-y-3.5">
-              <div class="flex gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-1.5 shrink-0"></div>
-                <div>
-                  <p class="text-xs text-slate-300"><b class="text-white">Yahya Rhallab</b> a pointé — Zone Agdal</p>
-                  <p class="text-[10px] text-slate-500 mt-0.5">il y a 12 min</p>
-                </div>
-              </div>
-              <div class="flex gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5 shrink-0"></div>
-                <div>
-                  <p class="text-xs text-slate-300"><b class="text-white">Mehdi Ait Jebour</b> — congé payé déclaré</p>
-                  <p class="text-[10px] text-slate-500 mt-0.5">il y a 1h</p>
-                </div>
-              </div>
-              <div class="flex gap-3">
-                <div class="w-1.5 h-1.5 rounded-full bg-violet-400 mt-1.5 shrink-0"></div>
-                <div>
-                  <p class="text-xs text-slate-300"><b class="text-white">Planning</b> régénéré — Semaine 30</p>
-                  <p class="text-[10px] text-slate-500 mt-0.5">il y a 3h</p>
-                </div>
-              </div>
-            </div>
-          </div>
-
+      <div>
+        <div class="tl-lane-head">Hay Riad</div>
+        <div class="tl-lane">
+          <div class="tl-block" style="top:0; height:252px; background:linear-gradient(135deg,#34D399,#10B981);">Yahya Rhallab<small>11:00–18:00</small></div>
+          <div class="tl-block" style="top:180px; height:216px; background:linear-gradient(135deg,#FBBF24,#F59E0B);">Hassan Azgoune<small>16:00–23:00</small></div>
+          <div class="tl-block" style="top:288px; height:288px; background:linear-gradient(135deg,#6366F1,#4F46E5);">Oussama El Atrach<small>19:00–02:00</small></div>
         </div>
       </div>
     </div>
-  </main>
-</div>
+  </div>
+</section>
 
-<script>lucide.createIcons();</script>
 </body>
 </html>
