@@ -1208,16 +1208,27 @@ function renderProfiles(){
   auth.signInAnonymously()
     .then(() => db.collection('agents').get())
     .then(snap => {
+      const nvNicknames = NV_ALL_AGENTS.map(n => n.trim().split(' ').slice(-1)[0].toLowerCase());
+
       const agentProfiles = snap.docs
         .map(d => {
           const data = d.data();
-          const nickname = data.nickname || data.name.split(' ').slice(-1)[0];
+          const nickname = data.nickname || (data.name || '').split(' ').slice(-1)[0];
           return { id: d.id, name: nickname, role: 'Agent', authType: 'pin' };
         })
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map((p, i) => ({ ...p, color: AVATAR_COLORS[i % AVATAR_COLORS.length] }));
+        // On exclut les 12 agents Planning NV de la liste "legacy" : ils ont leurs propres tuiles
+        // ci-dessous, construites directement depuis NV_ALL_AGENTS (source fiable), pour éviter
+        // tout souci de correspondance de nom entre les deux systèmes.
+        .filter(p => !nvNicknames.includes((p.name || '').trim().toLowerCase()))
+        .sort((a, b) => a.name.localeCompare(b.name));
 
-      const allProfiles = [...PROFILES, ...agentProfiles];
+      const nvProfiles = NV_ALL_AGENTS
+        .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: 'Agent', authType: 'nv-pin' }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      const allProfiles = [...PROFILES, ...nvProfiles, ...agentProfiles]
+        .map((p, i) => ({ ...p, color: p.color || AVATAR_COLORS[i % AVATAR_COLORS.length] }));
+
       grid.innerHTML = '';
       allProfiles.forEach(p => {
         const btn = document.createElement('button');
@@ -1239,7 +1250,7 @@ function selectProfile(profile, btnEl){
   document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
   btnEl.classList.add('selected');
   document.getElementById('loginBtn').disabled = false;
-  document.getElementById('passwordInput').placeholder = profile.authType === 'pin' ? 'Code PIN...' : "Mot de passe d'accès...";
+  document.getElementById('passwordInput').placeholder = (profile.authType === 'pin' || profile.authType === 'nv-pin') ? 'Code PIN...' : "Mot de passe d'accès...";
   document.getElementById('passwordInput').value = '';
   document.getElementById('loginError').textContent = '';
   document.getElementById('passwordInput').focus();
@@ -1254,40 +1265,38 @@ function attemptLogin(){
   if(!selectedProfile){ errEl.textContent = 'Sélectionnez un profil.'; return; }
   if(!pass){ errEl.textContent = 'Entrez le code d\'accès.'; return; }
 
+  if(selectedProfile.authType === 'nv-pin'){
+    errEl.textContent = 'Vérification...';
+    ensureNvPins().then(() => {
+      const fullName = selectedProfile.fullName;
+      if(NV_PINS[fullName] !== pass){
+        errEl.textContent = 'Code PIN incorrect.';
+        return;
+      }
+      errEl.textContent = '';
+      currentNvAgent = fullName;
+      // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
+      // elle ne doit jamais rester active en même temps que le portail agent.
+      auth.signOut()
+        .catch(() => {})
+        .then(() => auth.signInAnonymously())
+        .finally(() => {
+          document.getElementById('app').style.display = 'none';
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('agentPortal').classList.add('hidden');
+          document.getElementById('nvAgentPortal').classList.remove('hidden');
+          listenHotspotsNv();
+          renderNvPortal();
+        });
+    }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
+    return;
+  }
+
   if(selectedProfile.authType === 'pin'){
     errEl.textContent = 'Vérification...';
     db.collection('agents').doc(selectedProfile.id).get().then(doc => {
       if(!doc.exists){ errEl.textContent = 'Agent introuvable.'; return; }
       const agent = { id: doc.id, ...doc.data() };
-
-      // Si cet agent fait partie des 12 de Planning NV, son code d'accès est le PIN déterministe NV
-      // (planningNV/pins) — PAS le champ "pin" de sa fiche dans la collection "agents", qui n'est
-      // jamais renseigné pour ces agents et faisait donc toujours échouer la connexion.
-      const nvMatch = NV_ALL_AGENTS.find(n => n.trim().toLowerCase() === (agent.name || '').trim().toLowerCase());
-      if(nvMatch){
-        ensureNvPins().then(() => {
-          if(NV_PINS[nvMatch] !== pass){
-            errEl.textContent = 'Code PIN incorrect.';
-            return;
-          }
-          errEl.textContent = '';
-          currentNvAgent = nvMatch;
-          // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
-          // elle ne doit jamais rester active en même temps que le portail agent.
-          auth.signOut()
-            .catch(() => {})
-            .then(() => auth.signInAnonymously())
-            .finally(() => {
-              document.getElementById('app').style.display = 'none';
-              document.getElementById('loginScreen').classList.add('hidden');
-              document.getElementById('agentPortal').classList.add('hidden');
-              document.getElementById('nvAgentPortal').classList.remove('hidden');
-              listenHotspotsNv();
-              renderNvPortal();
-            });
-        }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
-        return;
-      }
 
       if(!agent.pin || agent.pin !== pass){
         errEl.textContent = 'Code PIN incorrect.';
