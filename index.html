@@ -1268,33 +1268,41 @@ function attemptLogin(){
     db.collection('agents').doc(selectedProfile.id).get().then(doc => {
       if(!doc.exists){ errEl.textContent = 'Agent introuvable.'; return; }
       const agent = { id: doc.id, ...doc.data() };
+
+      // Si cet agent fait partie des 12 de Planning NV, son code d'accès est le PIN déterministe NV
+      // (planningNV/pins) — PAS le champ "pin" de sa fiche dans la collection "agents", qui n'est
+      // jamais renseigné pour ces agents et faisait donc toujours échouer la connexion.
+      const nvMatch = NV_ALL_AGENTS.find(n => n.trim().toLowerCase() === (agent.name || '').trim().toLowerCase());
+      if(nvMatch){
+        ensureNvPins().then(() => {
+          if(NV_PINS[nvMatch] !== pass){
+            errEl.textContent = 'Code PIN incorrect.';
+            return;
+          }
+          errEl.textContent = '';
+          currentNvAgent = nvMatch;
+          // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
+          // elle ne doit jamais rester active en même temps que le portail agent.
+          auth.signOut()
+            .catch(() => {})
+            .then(() => auth.signInAnonymously())
+            .finally(() => {
+              document.getElementById('app').style.display = 'none';
+              document.getElementById('loginScreen').classList.add('hidden');
+              document.getElementById('agentPortal').classList.add('hidden');
+              document.getElementById('nvAgentPortal').classList.remove('hidden');
+              listenHotspotsNv();
+              renderNvPortal();
+            });
+        }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
+        return;
+      }
+
       if(!agent.pin || agent.pin !== pass){
         errEl.textContent = 'Code PIN incorrect.';
         return;
       }
       errEl.textContent = '';
-
-      // Si cet agent fait partie des 12 de Planning NV, il n'accède qu'à son portail Planning NV —
-      // aucun lien avec le reste de l'app (Dashboard, Planning, Absences...).
-      const nvMatch = NV_ALL_AGENTS.find(n => n.trim().toLowerCase() === (agent.name || '').trim().toLowerCase());
-      if(nvMatch){
-        currentNvAgent = nvMatch;
-        // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
-        // elle ne doit jamais rester active en même temps que le portail agent.
-        auth.signOut()
-          .catch(() => {})
-          .then(() => auth.signInAnonymously())
-          .finally(() => {
-            document.getElementById('app').style.display = 'none';
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('agentPortal').classList.add('hidden');
-            document.getElementById('nvAgentPortal').classList.remove('hidden');
-            listenHotspotsNv();
-            renderNvPortal();
-          });
-        return;
-      }
-
       enterAgentPortal(agent);
     }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
     return;
@@ -3353,6 +3361,7 @@ function renderPlanningNVInner(){
         const mapUrl = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
         locHtml = `<a class="nv-loc-badge ${freshness}" href="${mapUrl}" target="_blank" rel="noopener">🟢 Vue sur carte — ${timeLabel}</a>`;
       }
+      locHtml += `<button class="nv-mini-link" data-view-route="${name}" style="display:block; width:100%; text-align:center; margin-top:6px;">🧭 Voir le trajet du jour</button>`;
 
       membersHtml += `
         <div class="nv-member-row" style="flex-direction:column; align-items:stretch;">
@@ -3459,6 +3468,48 @@ function renderPlanningNVInner(){
   grid.querySelectorAll('[data-edit-off]').forEach(btn => {
     btn.addEventListener('click', () => editNvOffDay(btn.dataset.editOff));
   });
+  grid.querySelectorAll('[data-view-route]').forEach(btn => {
+    btn.addEventListener('click', () => viewNvAgentRoute(btn.dataset.viewRoute));
+  });
+}
+
+function viewNvAgentRoute(agentName){
+  const dateKey = dateKeyFor(new Date());
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:440px; max-height:80vh; display:flex; flex-direction:column;">
+      <h3>🧭 Trajet du jour — ${agentName}</h3>
+      <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">${dateKey}</div>
+      <div id="nvRouteList" style="overflow-y:auto; flex:1; min-height:60px;">Chargement…</div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvRouteCloseBtn">Fermer</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvRouteCloseBtn').addEventListener('click', close);
+
+  db.collection('nvRoutePings').where('agentName', '==', agentName).where('date', '==', dateKey).get()
+    .then(snap => {
+      const pings = snap.docs.map(d => d.data()).sort((a, b) => a.ts - b.ts);
+      const list = overlay.querySelector('#nvRouteList');
+      if(pings.length === 0){
+        list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--ink-soft); font-size:12.5px;">Aucune position enregistrée aujourd'hui pour cet agent.</div>`;
+        return;
+      }
+      list.innerHTML = pings.slice().reverse().map(p => {
+        const t = new Date(p.ts).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        const mapUrl = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:12.5px;">
+          <span style="color:var(--ink-soft);">${t}</span>
+          <a href="${mapUrl}" target="_blank" rel="noopener" style="color:var(--sky-ink); font-weight:600;">📍 Voir sur la carte</a>
+        </div>`;
+      }).join('') + `<div style="text-align:center; padding-top:10px; font-size:11px; color:var(--ink-soft);">${pings.length} position${pings.length > 1 ? 's' : ''} enregistrée${pings.length > 1 ? 's' : ''}</div>`;
+    }).catch(err => {
+      console.error(err);
+      overlay.querySelector('#nvRouteList').innerHTML = `<div style="color:var(--red); text-align:center; padding:20px;">Erreur de chargement.</div>`;
+    });
 }
 
 /* ================= PLANNING NV — accès agent (PIN + localisation live) ================= */
@@ -3562,9 +3613,82 @@ function findNvAgentSlot(agentName){
 function renderNvPortal(){
   document.getElementById('nvPortalAgentName').textContent = currentNvAgent;
   const content = document.getElementById('nvPortalContent');
+  const dateKey = dateKeyFor(new Date());
+  const checkinId = `${dateKey}_${currentNvAgent}`;
+
+  const firstName = currentNvAgent.split(' ')[0];
+  const MOTIVATIONAL_QUOTES = [
+    "Chaque course compte. Bonne journée sur le terrain !",
+    "L'équipe compte sur toi aujourd'hui — donne le meilleur !",
+    "Un jour à la fois, une livraison à la fois. On avance !",
+    "Ton travail fait la différence pour toute l'équipe.",
+    "Reste concentré, reste safe — et fais du bon boulot !",
+    "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
+  ];
+  const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
+  const motivationHtml = `
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
+      <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
+      <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
+      <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
+    </div>
+  `;
+
+  db.collection('nvCheckins').doc(checkinId).get().then(checkinDoc => {
+    const isCheckedIn = checkinDoc.exists;
+
+    if(!isCheckedIn){
+      content.innerHTML = `
+        ${motivationHtml}
+        <div style="text-align:center; padding:24px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
+          <div style="font-size:30px; margin-bottom:8px;">✅</div>
+          <div style="font-size:14px; font-weight:800; margin-bottom:6px;">Commence ton shift</div>
+          <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Fais ton check-in pour accéder à ton planning et ta zone du jour.</div>
+          <button class="portal-btn" id="nvCheckinBtn" style="width:auto; padding:12px 28px;">Check-in</button>
+        </div>
+      `;
+      document.getElementById('nvCheckinBtn').addEventListener('click', () => {
+        const btn = document.getElementById('nvCheckinBtn');
+        btn.disabled = true;
+        db.collection('nvCheckins').doc(checkinId).set({
+          agentName: currentNvAgent, date: dateKey, checkInAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }).then(() => renderNvPortal()).catch(err => { console.error(err); btn.disabled = false; });
+      });
+      return;
+    }
+
+    const geoActive = !!nvGeoIntervalId || localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1';
+    if(!geoActive){
+      content.innerHTML = `
+        ${motivationHtml}
+        <div style="text-align:center; padding:24px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
+          <div style="font-size:30px; margin-bottom:8px;">📍</div>
+          <div style="font-size:14px; font-weight:800; margin-bottom:6px;">Check-in fait ✅</div>
+          <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Active ta position pour accéder à ton planning et ta zone du jour.</div>
+          <button class="portal-btn" id="nvGeoActivateBtn" style="width:auto; padding:12px 24px;">Activer la localisation</button>
+          <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
+        </div>
+      `;
+      document.getElementById('nvGeoActivateBtn').addEventListener('click', () => {
+        localStorage.setItem('nvGeoActive_' + currentNvAgent, '1');
+        localStorage.setItem('nvGeoEverActivated_' + currentNvAgent, '1');
+        startNvLocationTracking();
+        renderNvPortal();
+      });
+      return;
+    }
+
+    renderNvPortalFull(content, motivationHtml, dateKey);
+  }).catch(err => {
+    console.error(err);
+    content.innerHTML = `<p style="padding:20px; color:var(--red);">Erreur de chargement.</p>`;
+  });
+}
+
+function renderNvPortalFull(content, motivationHtml, dateKey){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
   const slot = findNvAgentSlot(currentNvAgent);
-  if(!slot){ content.innerHTML = '<p style="padding:20px;">Aucune affectation cette semaine.</p>'; return; }
+  if(!slot){ content.innerHTML = motivationHtml + '<p style="padding:20px;">Aucune affectation cette semaine.</p>'; return; }
 
   const { zone, memberIdx } = slot;
   const override = NV_OVERRIDES[currentNvAgent] || {};
@@ -3620,22 +3744,6 @@ function renderNvPortal(){
   });
 
   const firstName = currentNvAgent.split(' ')[0];
-  const MOTIVATIONAL_QUOTES = [
-    "Chaque course compte. Bonne journée sur le terrain !",
-    "L'équipe compte sur toi aujourd'hui — donne le meilleur !",
-    "Un jour à la fois, une livraison à la fois. On avance !",
-    "Ton travail fait la différence pour toute l'équipe.",
-    "Reste concentré, reste safe — et fais du bon boulot !",
-    "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
-  ];
-  const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
-  const motivationHtml = `
-    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
-      <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
-      <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
-      <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
-    </div>
-  `;
 
   content.innerHTML = `
     ${motivationHtml}
@@ -3742,13 +3850,20 @@ function startNvLocationTracking(){
       return;
     }
     navigator.geolocation.getCurrentPosition(pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const now = Date.now();
       db.collection('planningNV').doc('locations').set({
-        [currentNvAgent]: {
-          lat: pos.coords.latitude,
-          lng: pos.coords.longitude,
-          updatedAt: Date.now(),
-        },
+        [currentNvAgent]: { lat, lng, updatedAt: now },
       }, { merge: true }).catch(err => console.error(err));
+      // Traçabilité : on garde un historique de chaque position (pas seulement la dernière)
+      // pour pouvoir reconstituer le trajet du jour a posteriori.
+      db.collection('nvRoutePings').add({
+        agentName: currentNvAgent,
+        date: dateKeyFor(new Date()),
+        lat, lng,
+        ts: now,
+      }).catch(err => console.error(err));
     }, err => {
       console.error(err);
     }, { enableHighAccuracy: true, timeout: 15000 });
