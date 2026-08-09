@@ -101,22 +101,30 @@
   <div class="option-sub">Le tableau que tu connais déjà, avec avatars, pills colorées et colonne du jour surlignée — le plus proche de l'existant.</div>
   <div class="card" style="overflow-x:auto;">
     <table class="grid-table">
-      <thead><tr><th>Agent</th><th>Lun</th><th>Mar</th><th class="today-col">Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th></tr></thead>
+      <thead><tr><th>Agent</th><th>Zone</th><th>Hotspot (aujourd'hui)</th><th>Lun</th><th>Mar</th><th class="today-col">Mer</th><th>Jeu</th><th>Ven</th><th>Sam</th><th>Dim</th></tr></thead>
       <tbody>
         <tr>
           <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">CL</span>Charaf Loummihi</span></td>
+          <td style="color:var(--ink-soft); font-size:11.5px;">Agdal</td>
+          <td style="color:var(--ink); font-size:11.5px;">📍 Carrefour Agdal</td>
           <td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td class="today-col"><span class="cell-pill jour">J1</span></td><td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td>
         </tr>
         <tr>
           <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">MC</span>Mourad Cherradi</span></td>
+          <td style="color:var(--ink-soft); font-size:11.5px;">Agdal</td>
+          <td style="color:var(--ink); font-size:11.5px;">📍 Av. Fal Ould Oumeir</td>
           <td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td class="today-col"><span class="cell-pill off">OFF</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td><td><span class="cell-pill nuit">N3</span></td>
         </tr>
         <tr>
           <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#F59E0B,#DC2626);">AA</span>Achraf Akhlij</span></td>
+          <td style="color:var(--ink-soft); font-size:11.5px;">Temara</td>
+          <td style="color:var(--ink); font-size:11.5px;">📍 Gare Temara</td>
           <td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td><td class="today-col"><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J2</span></td><td><span class="cell-pill jour">J2</span></td>
         </tr>
         <tr>
           <td><span class="agent-row-avatar"><span class="avatar" style="background:linear-gradient(135deg,#334155,#1E293B);">MA</span>Mehdi Ait Jebour</span></td>
+          <td style="color:var(--ink-soft); font-size:11.5px;">Temara</td>
+          <td style="color:var(--ink); font-size:11.5px;">📍 Marché central</td>
           <td><span class="cell-pill off">OFF</span></td><td><span class="cell-pill jour">J1</span></td><td class="today-col"><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td><td><span class="cell-pill jour">J1</span></td>
         </tr>
       </tbody>
@@ -164,6 +172,122 @@
           <div class="tl-block" style="top:288px; height:288px; background:linear-gradient(135deg,#6366F1,#4F46E5);">Oussama El Atrach<small>19:00–02:00</small></div>
         </div>
       </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="option-label">Option 4</span>
+  <div class="option-title">Cartes Agent — Grille individuelle</div>
+  <div class="option-sub">Une carte par agent, avec zone, shift et hotspot du jour en évidence — bon pour scroller vite et voir chaque profil séparément.</div>
+  <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:14px;">
+    <div class="card" style="padding:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span class="avatar" style="width:34px; height:34px; font-size:12px; background:linear-gradient(135deg,#8B5CF6,#6D28D9);">CL</span><b style="font-size:13.5px;">Charaf Loummihi</b></div>
+      <span class="pill jour" style="margin-bottom:8px; display:inline-flex;">Shift 1 · 11–18h</span>
+      <div style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">Zone</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Agdal</div>
+      <div style="font-size:11.5px; color:var(--ink-soft);">Hotspot aujourd'hui</div>
+      <div style="font-size:13px; font-weight:700;">📍 Carrefour Agdal</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span class="avatar" style="width:34px; height:34px; font-size:12px; background:linear-gradient(135deg,#6366F1,#4F46E5);">MC</span><b style="font-size:13.5px;">Mourad Cherradi</b></div>
+      <span class="pill nuit" style="margin-bottom:8px; display:inline-flex;">Shift 3 · 19–02h</span>
+      <div style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">Zone</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Agdal</div>
+      <div style="font-size:11.5px; color:var(--ink-soft);">Hotspot aujourd'hui</div>
+      <div style="font-size:13px; font-weight:700;">📍 Av. Fal Ould Oumeir</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span class="avatar" style="width:34px; height:34px; font-size:12px; background:linear-gradient(135deg,#F59E0B,#DC2626);">AA</span><b style="font-size:13.5px;">Achraf Akhlij</b></div>
+      <span class="pill jour" style="margin-bottom:8px; display:inline-flex;">Shift 2 · 16–23h</span>
+      <div style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">Zone</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Temara</div>
+      <div style="font-size:11.5px; color:var(--ink-soft);">Hotspot aujourd'hui</div>
+      <div style="font-size:13px; font-weight:700;">📍 Gare Temara</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:12px;"><span class="avatar" style="width:34px; height:34px; font-size:12px; background:linear-gradient(135deg,#334155,#1E293B);">MA</span><b style="font-size:13.5px;">Mehdi Ait Jebour</b></div>
+      <span class="pill off" style="margin-bottom:8px; display:inline-flex;">OFF aujourd'hui</span>
+      <div style="font-size:11.5px; color:var(--ink-soft); margin-top:8px;">Zone</div>
+      <div style="font-size:13px; font-weight:700; margin-bottom:8px;">Temara</div>
+      <div style="font-size:11.5px; color:var(--ink-soft);">Hotspot habituel</div>
+      <div style="font-size:13px; font-weight:700;">📍 Marché central</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="option-label">Option 5</span>
+  <div class="option-title">Groupes de rotation — Vue équipe</div>
+  <div class="option-sub">Organisé par groupe (A/B/C/D) comme la vraie logique de rotation Planning NV — chaque carte montre la zone de la semaine et le hotspot de chaque membre.</div>
+  <div style="display:grid; grid-template-columns:repeat(2,1fr); gap:14px;">
+    <div class="card" style="overflow:hidden;">
+      <div style="padding:14px 18px; background:linear-gradient(135deg,#8B5CF6,#6D28D9); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+        <b style="font-size:15px;">Groupe A</b><span style="font-size:11.5px; background:rgba(255,255,255,0.22); padding:4px 10px; border-radius:20px;">Zone: Agdal cette semaine</span>
+      </div>
+      <div style="padding:12px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Charaf Loummihi</span><span style="font-size:11.5px; color:var(--ink-soft);">📍 Carrefour Agdal</span>
+      </div>
+      <div style="padding:12px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Mourad Cherradi</span><span style="font-size:11.5px; color:var(--ink-soft);">📍 Av. Fal Ould Oumeir</span>
+      </div>
+      <div style="padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Islam Elmardi</span><span style="font-size:11.5px; color:var(--ink-soft);">📍 Place Talha</span>
+      </div>
+    </div>
+    <div class="card" style="overflow:hidden;">
+      <div style="padding:14px 18px; background:linear-gradient(135deg,#F59E0B,#DC2626); color:#fff; display:flex; justify-content:space-between; align-items:center;">
+        <b style="font-size:15px;">Groupe D</b><span style="font-size:11.5px; background:rgba(255,255,255,0.22); padding:4px 10px; border-radius:20px;">Zone: Temara cette semaine</span>
+      </div>
+      <div style="padding:12px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Ayoub Abssi</span><span style="font-size:11.5px; color:var(--ink-soft);">📍 Marché central</span>
+      </div>
+      <div style="padding:12px 18px; border-bottom:1px solid var(--line); display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Achraf Akhlij</span><span style="font-size:11.5px; color:var(--ink-soft);">📍 Gare Temara</span>
+      </div>
+      <div style="padding:12px 18px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:700; font-size:13px;">Mehdi Ait Jebour</span><span style="font-size:11.5px; color:var(--ink-soft);">OFF aujourd'hui</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <span class="option-label">Option 6</span>
+  <div class="option-title">Liste compacte + hotspots en avant</div>
+  <div class="option-sub">Une ligne par agent, très dense, avec le hotspot toujours affiché en premier (pas caché derrière un clic) — le plus rapide à scanner sur mobile.</div>
+  <div class="card">
+    <div style="display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid var(--line);">
+      <span class="avatar" style="background:linear-gradient(135deg,#8B5CF6,#6D28D9);">CL</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:13.5px;">Charaf Loummihi <span style="font-weight:400; color:var(--ink-soft); font-size:11.5px;">· Agdal</span></div>
+        <div style="font-size:12px; color:var(--sky-ink); margin-top:2px;">📍 Carrefour Agdal</div>
+      </div>
+      <span class="pill jour">J1 · 11–18h</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid var(--line);">
+      <span class="avatar" style="background:linear-gradient(135deg,#6366F1,#4F46E5);">MC</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:13.5px;">Mourad Cherradi <span style="font-weight:400; color:var(--ink-soft); font-size:11.5px;">· Agdal</span></div>
+        <div style="font-size:12px; color:var(--sky-ink); margin-top:2px;">📍 Av. Fal Ould Oumeir</div>
+      </div>
+      <span class="pill nuit">N3 · 19–02h</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; padding:12px 18px; border-bottom:1px solid var(--line);">
+      <span class="avatar" style="background:linear-gradient(135deg,#F59E0B,#DC2626);">AA</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:13.5px;">Achraf Akhlij <span style="font-weight:400; color:var(--ink-soft); font-size:11.5px;">· Temara</span></div>
+        <div style="font-size:12px; color:var(--sky-ink); margin-top:2px;">📍 Gare Temara</div>
+      </div>
+      <span class="pill jour">J2 · 16–23h</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:12px; padding:12px 18px;">
+      <span class="avatar" style="background:linear-gradient(135deg,#334155,#1E293B);">MA</span>
+      <div style="flex:1; min-width:0;">
+        <div style="font-weight:700; font-size:13.5px;">Mehdi Ait Jebour <span style="font-weight:400; color:var(--ink-soft); font-size:11.5px;">· Temara</span></div>
+        <div style="font-size:12px; color:var(--ink-soft); margin-top:2px;">Hotspot habituel: 📍 Marché central</div>
+      </div>
+      <span class="pill off">OFF</span>
     </div>
   </div>
 </section>
