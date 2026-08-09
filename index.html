@@ -334,6 +334,18 @@ input, select{font-family: inherit;}
 .nv-day-chip-link{ cursor:pointer; }
 .nv-day-chip-link:hover{ background: #1C2540; text-decoration: underline; }
 .nv-day-chip.off{ background: rgba(148,163,184,0.12); color: #94A3B8; font-weight: 700; }
+.nv-today-hero{
+  border-radius: 12px; padding: 12px 14px; color:#fff; display:flex; flex-direction:column; gap: 4px;
+  box-shadow: 0 10px 24px -12px rgba(0,0,0,0.55);
+}
+.nv-today-hero-label{ font-size: 11px; font-weight: 800; text-transform:uppercase; letter-spacing:.04em; opacity:.9; }
+.nv-today-hero-venues{ font-size: 15px; font-weight: 800; }
+.nv-today-hero-venues a{ color:#fff; text-decoration:none; }
+.nv-today-hero-venues a:hover{ text-decoration:underline; }
+.nv-today-hero.nv-today-hero-off{
+  background: var(--sand-deep); color: var(--ink-soft); font-size: 13px; font-weight: 700;
+  border-radius: 12px; padding: 12px 14px; text-align:center; box-shadow:none;
+}
 .nv-fulllist{ padding: 12px 20px 16px; background: var(--sand-deep); border-top: 1px solid var(--line); }
 .nv-fulllist-title{ font-size: 10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color: var(--ink-soft); margin-bottom: 8px; }
 .nv-fulllist-row{ font-size: 12px; color: var(--ink); padding: 8px 0; line-height:1.5; border-bottom: 1px solid var(--line); }
@@ -3212,10 +3224,16 @@ function buildZoneAssignmentsNv(weekIdx){
 }
 
 const NV_ZONE_COLORS = {
-  "Salé-Rabat": "#D9643A",
-  "Agdal": "#D4A24C",
-  "Hay Riad": "#7A5C8A",
-  "Temara": "#3D6B8A",
+  "Salé-Rabat": "#FB7185",
+  "Agdal": "#FBBF24",
+  "Hay Riad": "#A78BFA",
+  "Temara": "#38BDF8",
+};
+const NV_ZONE_GRADIENTS = {
+  "Salé-Rabat": "linear-gradient(135deg,#FB7185,#E11D48)",
+  "Agdal": "linear-gradient(135deg,#FBBF24,#D97706)",
+  "Hay Riad": "linear-gradient(135deg,#A78BFA,#7C3AED)",
+  "Temara": "linear-gradient(135deg,#38BDF8,#0284C7)",
 };
 
 function renderPlanningNV(){
@@ -3250,9 +3268,12 @@ function renderPlanningNVInner(){
     const members = zones[zone];
     const slots = HOTSPOTS_NV[zone] || [];
     const color = NV_ZONE_COLORS[zone];
+    const gradient = NV_ZONE_GRADIENTS[zone] || color;
+    const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
 
     const card = document.createElement('div');
     card.className = 'nv-zone-card';
+    card.style.borderLeft = `4px solid ${color}`;
 
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
@@ -3261,6 +3282,22 @@ function renderPlanningNVInner(){
       const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
       const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
+
+      // Hotspot du jour (aujourd'hui) mis en avant — même calcul que le détail jour par jour ci-dessous.
+      let heroHtml;
+      if(todayIdx === offDayIdx){
+        heroHtml = `<div class="nv-today-hero nv-today-hero-off">😴 OFF aujourd'hui</div>`;
+      } else if(slots.length){
+        const todaySlotIdx = (memberIdx + todayIdx) % slots.length;
+        const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
+        const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
+        const todayVenueHtml = todayVenues.length
+          ? todayVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('<span style="opacity:.5;">·</span>')
+          : '<span style="opacity:.7;">Aucun lieu défini</span>';
+        heroHtml = `<div class="nv-today-hero" style="background:${gradient};"><span class="nv-today-hero-label">Aujourd'hui · ${todaySlotLabel}</span><span class="nv-today-hero-venues">${todayVenueHtml}</span></div>`;
+      } else {
+        heroHtml = `<div class="nv-today-hero nv-today-hero-off">Aucun hotspot configuré</div>`;
+      }
 
       let dayChips = '';
       ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
@@ -3299,7 +3336,8 @@ function renderPlanningNVInner(){
               <button class="nv-chip ${isJour ? 'shift-jour' : 'shift-nuit'}" data-edit-shift="${name}" style="border:none; cursor:pointer;" title="Modifier le shift">${shiftLabel} ✏️</button>
             </div>
           </div>
-          <div style="text-align:right; margin-bottom:6px;">
+          ${heroHtml}
+          <div style="text-align:right; margin:8px 0 6px;">
             <button class="nv-mini-link" data-edit-off="${name}">✏️ Changer le jour OFF (actuellement ${NV_DAY_LABELS[offDayIdx]})</button>
           </div>
           <div class="nv-day-strip">${dayChips}</div>
@@ -3326,7 +3364,7 @@ function renderPlanningNVInner(){
     }).join('');
 
     card.innerHTML = `
-      <div class="nv-zone-head" style="background:${color};">
+      <div class="nv-zone-head" style="background:${gradient};">
         <div style="display:flex; align-items:center; gap:8px;">
           <h3>${getNvZoneLabel(zone)}</h3>
           <button class="icon-btn" data-rename-zone="${zone}" title="Renommer" style="background:rgba(255,255,255,0.22); color:#fff; width:26px; height:26px;">✏️</button>
@@ -3516,6 +3554,22 @@ function renderNvPortal(){
 
   window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
 
+  let todayVenueHeroHtml = '';
+  if(todayIdx === offDayIdx){
+    todayVenueHeroHtml = `<div class="nv-portal-hero-shift" style="margin-top:8px;">😴 Repos aujourd'hui</div>`;
+  } else if(slots.length){
+    const todaySlotIdx = (memberIdx + todayIdx) % slots.length;
+    const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
+    const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
+    const todayVenueHtml = todayVenues.length
+      ? todayVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener" style="color:#fff;">📍 ${v}</a>`).join('<span style="opacity:.6;"> · </span>')
+      : '<span style="opacity:.75;">Aucun lieu défini</span>';
+    todayVenueHeroHtml = `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2);">
+      <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; opacity:.85; margin-bottom:3px;">Hotspot aujourd'hui · ${todaySlotLabel}</div>
+      <div style="font-size:16px; font-weight:800;">${todayVenueHtml}</div>
+    </div>`;
+  }
+
   let weekHtml = '';
   ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
     const isToday = dayIdx === todayIdx;
@@ -3544,6 +3598,7 @@ function renderNvPortal(){
       <div class="nv-portal-hero-label">Zone cette semaine</div>
       <div class="nv-portal-hero-zone">${getNvZoneLabel(zone)}</div>
       <div class="nv-portal-hero-shift">🕐 ${shiftLabel7} <span style="opacity:.75; font-weight:500;">(${shiftLabel8} Ven-Sam)</span></div>
+      ${todayVenueHeroHtml}
     </div>
     <div class="portal-status" style="margin-top:14px;">
       <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📅 Ma semaine complète</div>
