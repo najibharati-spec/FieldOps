@@ -3571,8 +3571,8 @@ function sendNvEmail(toEmail, toName, subject, message){
     alert('Aucun email enregistré pour cet agent.');
     return Promise.reject(new Error('no email'));
   }
-  const mailtoUrl = `mailto:${encodeURIComponent(toEmail)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
-  window.location.href = mailtoUrl;
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+  window.open(gmailUrl, '_blank');
   return Promise.resolve();
 }
 
@@ -3698,9 +3698,19 @@ function renderNvPinsPanel(panel){
     `).join('');
     panel.innerHTML = `
       <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">Email des 12 agents Planning NV</div>
-      <div class="modal-hint" style="margin:0 0 10px;">Les PIN se gèrent depuis la page Agents (fiche de chaque agent) — ici c'est juste un rappel en lecture seule. "✉️ Accès" et "✉️ Planning" ouvrent ton client email (Gmail) avec le message déjà rempli — il ne reste qu'à cliquer Envoyer.</div>
+      <div class="modal-hint" style="margin:0 0 10px;">Les PIN se gèrent depuis la page Agents (fiche de chaque agent) — ici c'est juste un rappel en lecture seule. Les boutons ouvrent Gmail (web) avec le message déjà rempli — il ne reste qu'à cliquer Envoyer. Si ton navigateur bloque les fenêtres pour "Envoyer à tous", autorise les pop-ups pour ce site.</div>
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <button class="btn-primary" id="nvSendAllAccessBtn" style="flex:1; font-size:12px; padding:9px;">✉️ Envoyer à tous — Accès</button>
+        <button class="btn-primary" id="nvSendAllPlanningBtn" style="flex:1; font-size:12px; padding:9px;">✉️ Envoyer à tous — Planning</button>
+      </div>
       ${rows}
     `;
+    document.getElementById('nvSendAllAccessBtn').addEventListener('click', () => {
+      NV_ALL_AGENTS.forEach((name, i) => setTimeout(() => sendNvWelcomeEmail(name), i * 350));
+    });
+    document.getElementById('nvSendAllPlanningBtn').addEventListener('click', () => {
+      NV_ALL_AGENTS.forEach((name, i) => setTimeout(() => sendNvPlanningEmail(name), i * 350));
+    });
     panel.querySelectorAll('[data-edit-nv-email]').forEach(btn => {
       btn.addEventListener('click', () => {
         const name = btn.dataset.editNvEmail;
