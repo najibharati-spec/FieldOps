@@ -656,6 +656,7 @@ tr:last-child td{ border-bottom:none; }
   <div class="portal-card">
     <div class="portal-header">
       <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:2px;">Bienvenue 👋</div>
         <b id="portalAgentName">—</b>
         <span id="portalClock">--:--</span>
       </div>
@@ -675,6 +676,7 @@ tr:last-child td{ border-bottom:none; }
   <div class="portal-card">
     <div class="portal-header">
       <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:2px;">Bienvenue 👋</div>
         <b id="nvPortalAgentName">—</b>
         <span id="nvPortalClock">--:--</span>
       </div>
@@ -1447,6 +1449,10 @@ function renderPortalHistory(){
       const docs = snap.docs.map(d => d.data()).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
       const list = document.getElementById('portalHistoryList');
       list.innerHTML = '';
+      if(docs.length === 0){
+        list.innerHTML = `<div style="text-align:center; padding:20px 10px; color:var(--ink-soft); font-size:12.5px;">Aucun historique pour l'instant — ton premier check-in apparaîtra ici.</div>`;
+        return;
+      }
       docs.forEach(d => {
         const inT = d.checkIn && d.checkIn.toDate ? d.checkIn.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
         const outT = d.checkOut && d.checkOut.toDate ? d.checkOut.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
@@ -3628,7 +3634,12 @@ function updateNvGeoButtonVisibility(){
   if(!isActive){
     // Jamais activé (ou désactivé) : le bouton reste visible pour pouvoir démarrer.
     area.innerHTML = `
-      <button class="portal-btn" id="nvGeoBtn">📍 Activer la localisation</button>
+      <div style="text-align:center; padding:22px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
+        <div style="font-size:30px; margin-bottom:8px;">📍</div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:4px;">Localisation non activée</div>
+        <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Active ta position pour que l'équipe sache où tu es pendant ton shift. Elle s'arrête automatiquement à la fin.</div>
+        <button class="portal-btn" id="nvGeoBtn" style="width:auto; padding:12px 24px;">Activer la localisation</button>
+      </div>
       <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
     `;
     document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
