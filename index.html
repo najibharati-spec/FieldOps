@@ -163,14 +163,22 @@ input, select{font-family: inherit;}
 .ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(139,92,246,0.55); }
 
 /* ============ AGENT PORTAL ============ */
-#agentPortal{
+#agentPortal, #nvAgentPortal{
   min-height: 100vh; display:flex; align-items:center; justify-content:center;
-  background: var(--sand); padding: 24px;
+  padding: 24px;
+  background:
+    radial-gradient(circle at 15% 15%, rgba(139,92,246,0.14), transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(99,102,241,0.12), transparent 45%),
+    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0) 0 0/28px 28px,
+    var(--sand);
 }
 .portal-card{
-  width:100%; max-width: 380px; background: var(--paper); border-radius: 20px; padding: 28px;
-  box-shadow: 0 24px 60px -20px rgba(139,92,246,0.20); border:1px solid var(--line);
+  width:100%; max-width: 420px; background: var(--paper); border-radius: 20px; padding: 28px;
+  box-shadow: 0 30px 80px -20px rgba(139,92,246,0.28); border:1px solid var(--line);
   backdrop-filter: blur(14px);
+}
+@media (min-width: 720px){
+  .portal-card{ max-width: 460px; padding: 34px; }
 }
 .portal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
 .portal-header b{ font-size: 16px; display:block; color: var(--ink); }
