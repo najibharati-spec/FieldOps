@@ -13,6 +13,7 @@
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <style>
 :root{
@@ -3519,6 +3520,125 @@ function stableNvPin(name){
   return String(1000 + (hash % 9000));
 }
 
+/* ================= EMAIL (EmailJS — envoi manuel, pas d'automatisation serveur) ================= */
+let NV_EMAILS = {};
+let NV_EMAIL_CONFIG = null;
+const OPS_HQ_URL = 'https://najibharati-spec.github.io/ops-hq/';
+
+function ensureNvEmails(){
+  return db.collection('planningNV').doc('emails').get().then(doc => {
+    NV_EMAILS = (doc.exists && doc.data()) || {};
+  });
+}
+
+function ensureEmailConfig(){
+  return db.collection('planningNV').doc('emailConfig').get().then(doc => {
+    NV_EMAIL_CONFIG = (doc.exists && doc.data()) || null;
+    return NV_EMAIL_CONFIG;
+  });
+}
+
+function promptEmailConfig(){
+  ensureEmailConfig().then(cfg => {
+    cfg = cfg || {};
+    const serviceId = prompt('EmailJS — Service ID :', cfg.serviceId || '');
+    if(serviceId === null) return;
+    const templateId = prompt('EmailJS — Template ID :', cfg.templateId || '');
+    if(templateId === null) return;
+    const publicKey = prompt('EmailJS — Public Key :', cfg.publicKey || '');
+    if(publicKey === null) return;
+    const updated = { serviceId: serviceId.trim(), templateId: templateId.trim(), publicKey: publicKey.trim() };
+    db.collection('planningNV').doc('emailConfig').set(updated).then(() => {
+      NV_EMAIL_CONFIG = updated;
+      alert('Configuration email enregistrée.');
+    }).catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
+  });
+}
+
+function sendNvEmail(toEmail, toName, subject, message){
+  return ensureEmailConfig().then(cfg => {
+    if(!cfg || !cfg.serviceId || !cfg.templateId || !cfg.publicKey){
+      alert('Configure d\'abord EmailJS (Service ID / Template ID / Public Key) via le bouton Paramètres email.');
+      return Promise.reject(new Error('email config missing'));
+    }
+    if(!toEmail){
+      alert('Aucun email enregistré pour cet agent.');
+      return Promise.reject(new Error('no email'));
+    }
+    return emailjs.send(cfg.serviceId, cfg.templateId, {
+      to_email: toEmail, to_name: toName, subject, message,
+    }, { publicKey: cfg.publicKey });
+  });
+}
+
+function sendNvWelcomeEmail(name){
+  ensureNvEmails().then(() => ensureNvPins()).then(() => {
+    const email = NV_EMAILS[name];
+    const pin = NV_PINS[name];
+    const subject = 'Bienvenue sur OPS HQ — ton accès';
+    const message = `Bonjour ${name.split(' ')[0]},
+
+Ton accès à l'espace Planning OPS HQ est prêt.
+
+Lien de connexion : ${OPS_HQ_URL}
+Ton code PIN : ${pin}
+
+Connecte-toi, sélectionne ton profil, fais ton check-in et active ta localisation pour voir ton planning de la semaine.
+
+Bonne journée sur le terrain !
+L'équipe OPS HQ`;
+    sendNvEmail(email, name, subject, message)
+      .then(() => alert(`Email envoyé à ${name} (${email}).`))
+      .catch(err => { if(err.message !== 'no email' && err.message !== 'email config missing') { console.error(err); alert('Erreur lors de l\'envoi.'); } });
+  });
+}
+
+function sendNvPlanningEmail(name){
+  Promise.all([ensureNvEmails(), ensureNvPins()]).then(() => {
+    const slot = findNvAgentSlot(name);
+    if(!slot){ alert('Aucune affectation cette semaine pour ' + name + '.'); return; }
+    const { zone, memberIdx } = slot;
+    const weekIdx = getISOWeekIndex(currentWeekStartNv);
+    const override = NV_OVERRIDES[name] || {};
+    const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+    const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
+    const shiftLabel7 = SHIFTS_NV[shiftKey].label7;
+    const shiftLabel8 = SHIFTS_NV[shiftKey].label8;
+    const slots = HOTSPOTS_NV[zone] || [];
+    const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+    let lines = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
+      if(dayIdx === offDayIdx) return `${dayLabel} : OFF`;
+      const isWeekend = dayIdx >= 4;
+      const dayTime = isWeekend && dayIdx < 6 ? shiftLabel8 : shiftLabel7;
+      if(slots.length){
+        const slotIdx = (memberIdx + dayIdx) % slots.length;
+        const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+        const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+        const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
+        return `${dayLabel} : ${dayTime} — ${slotLabel} (${venueList})`;
+      }
+      return `${dayLabel} : ${dayTime}`;
+    });
+
+    const email = NV_EMAILS[name];
+    const subject = `Ton planning de la semaine — ${getNvZoneLabel(zone)}`;
+    const message = `Bonjour ${name.split(' ')[0]},
+
+Voici ton planning pour cette semaine — zone : ${getNvZoneLabel(zone)}.
+
+${lines.join('\n')}
+
+Consulte ton espace pour tous les détails (hotspots, lieux exacts) : ${OPS_HQ_URL}
+
+Bonne semaine !
+L'équipe OPS HQ`;
+    sendNvEmail(email, name, subject, message)
+      .then(() => alert(`Planning envoyé à ${name} (${email}).`))
+      .catch(err => { if(err.message !== 'no email' && err.message !== 'email config missing') { console.error(err); alert('Erreur lors de l\'envoi.'); } });
+  });
+}
+
 function ensureNvPins(){
   return db.collection('planningNV').doc('pins').get().then(doc => {
     const stored = (doc.exists && doc.data()) || {};
@@ -3544,15 +3664,76 @@ document.getElementById('showNvPinsBtn').addEventListener('click', () => {
   if(!panel.classList.contains('hidden')){ panel.classList.add('hidden'); return; }
   panel.innerHTML = '<p style="color:var(--ink-soft); font-size:13px;">Chargement...</p>';
   panel.classList.remove('hidden');
-  ensureNvPins().then(() => {
+  renderNvPinsPanel(panel);
+});
+
+function renderNvPinsPanel(panel){
+  Promise.all([ensureNvPins(), ensureNvEmails()]).then(() => {
     const rows = NV_ALL_AGENTS.map(name => `
-      <div style="display:flex; justify-content:space-between; padding:6px 0; border-bottom:1px solid var(--line); font-size:13px;">
-        <span>${name}</span><b style="font-family:var(--font-mono); letter-spacing:1px;">${NV_PINS[name] || '—'}</b>
+      <div style="padding:8px 0; border-bottom:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:4px;">
+          <span><b>${name}</b></span>
+          <span style="display:flex; align-items:center; gap:6px;">
+            <b style="font-family:var(--font-mono); letter-spacing:1px;">${NV_PINS[name] || '—'}</b>
+            <button class="icon-btn" data-edit-nv-pin="${name}" title="Modifier le PIN"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+          </span>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; color:var(--ink-soft);">
+          <span style="display:flex; align-items:center; gap:6px;">
+            📧 ${NV_EMAILS[name] || 'pas d\'email'}
+            <button class="nv-mini-link" data-edit-nv-email="${name}" style="padding:0;">✏️</button>
+          </span>
+          <span style="display:flex; gap:10px;">
+            <button class="nv-mini-link" data-send-welcome="${name}">✉️ Accès</button>
+            <button class="nv-mini-link" data-send-planning="${name}">✉️ Planning</button>
+          </span>
+        </div>
       </div>
     `).join('');
-    panel.innerHTML = `<div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">PIN des 12 agents Planning NV</div>${rows}`;
+    panel.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft);">PIN &amp; email des 12 agents Planning NV</div>
+        <button class="btn-ghost" id="nvEmailConfigBtn" style="border:1px solid var(--line); padding:4px 10px; font-size:11px;">⚙️ Paramètres email</button>
+      </div>
+      ${rows}
+    `;
+    document.getElementById('nvEmailConfigBtn').addEventListener('click', promptEmailConfig);
+    panel.querySelectorAll('[data-edit-nv-pin]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.editNvPin;
+        const val = prompt(`Nouveau code PIN pour ${name} (4 chiffres) :`, NV_PINS[name] || '');
+        if(val === null) return;
+        const clean = val.trim();
+        if(!/^\d{4,6}$/.test(clean)){ alert('Le PIN doit contenir entre 4 et 6 chiffres.'); return; }
+        const updated = { ...NV_PINS, [name]: clean };
+        db.collection('planningNV').doc('pins').set(updated).then(() => {
+          NV_PINS = updated;
+          renderNvPinsPanel(panel);
+        }).catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
+      });
+    });
+    panel.querySelectorAll('[data-edit-nv-email]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const name = btn.dataset.editNvEmail;
+        const val = prompt(`Email pour ${name} :`, NV_EMAILS[name] || '');
+        if(val === null) return;
+        const clean = val.trim();
+        if(clean && !/^\S+@\S+\.\S+$/.test(clean)){ alert('Email invalide.'); return; }
+        const updated = { ...NV_EMAILS, [name]: clean };
+        db.collection('planningNV').doc('emails').set(updated).then(() => {
+          NV_EMAILS = updated;
+          renderNvPinsPanel(panel);
+        }).catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
+      });
+    });
+    panel.querySelectorAll('[data-send-welcome]').forEach(btn => {
+      btn.addEventListener('click', () => sendNvWelcomeEmail(btn.dataset.sendWelcome));
+    });
+    panel.querySelectorAll('[data-send-planning]').forEach(btn => {
+      btn.addEventListener('click', () => sendNvPlanningEmail(btn.dataset.sendPlanning));
+    });
   });
-});
+}
 
 document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
   stopNvLocationTracking();
