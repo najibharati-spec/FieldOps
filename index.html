@@ -2606,29 +2606,102 @@ function renderAbsencesDetail(){
   const sorted = [...currentCycleRecords].sort((a, b) => {
     const nameCmp = (a.agentName || '').localeCompare(b.agentName || '');
     if(nameCmp !== 0) return nameCmp;
+    const typeCmp = (a.type || '').localeCompare(b.type || '');
+    if(typeCmp !== 0) return typeCmp;
     return (a.date || '').localeCompare(b.date || '');
   });
 
+  // Regroupe les jours consécutifs (même agent + même type + dates qui se suivent) en une seule ligne "plage".
+  const groups = [];
   sorted.forEach(r => {
-    const info = ABSENCE_TYPES[r.type] || { label: r.type, cls: '' };
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td><b>${r.agentName}</b></td>
-      <td>${r.date}</td>
+    const last = groups[groups.length - 1];
+    const oneDayAfter = last && last.records[last.records.length - 1].date &&
+      new Date(r.date) - new Date(last.records[last.records.length - 1].date) === 86400000;
+    if(last && last.agentId === r.agentId && last.type === r.type && oneDayAfter){
+      last.records.push(r);
+    } else {
+      groups.push({ agentId: r.agentId, agentName: r.agentName, type: r.type, records: [r] });
+    }
+  });
+
+  groups.forEach((g, gi) => {
+    const info = ABSENCE_TYPES[g.type] || { label: g.type, cls: '' };
+    const n = g.records.length;
+    const groupId = `absgrp-${gi}`;
+
+    if(n === 1){
+      const r = g.records[0];
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><b>${r.agentName}</b></td>
+        <td>${r.date}</td>
+        <td><span class="badge ${info.cls}">${info.label}</span></td>
+        <td>${r.note || '—'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" data-edit-abs="${r.id}" title="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+            <button class="icon-btn danger" data-delete-abs="${r.id}" title="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(tr);
+      return;
+    }
+
+    // Ligne "plage" (repliée par défaut) + lignes individuelles cachées, dépliables.
+    const groupTr = document.createElement('tr');
+    groupTr.innerHTML = `
+      <td><b>${g.agentName}</b></td>
+      <td>${g.records[0].date} → ${g.records[n - 1].date} <span style="color:var(--ink-soft); font-weight:400;">(${n} jours)</span></td>
       <td><span class="badge ${info.cls}">${info.label}</span></td>
-      <td>${r.note || '—'}</td>
+      <td>—</td>
       <td>
         <div class="row-actions">
-          <button class="icon-btn" data-edit-abs="${r.id}" title="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></button>
-          <button class="icon-btn danger" data-delete-abs="${r.id}" title="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>
+          <button class="btn-ghost" data-toggle-group="${groupId}" style="padding:4px 10px; font-size:12px;">▾ Voir les jours</button>
+          <button class="icon-btn danger" data-delete-group="${groupId}" title="Supprimer toute la plage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>
         </div>
       </td>
     `;
-    tbody.appendChild(tr);
+    tbody.appendChild(groupTr);
+
+    g.records.forEach(r => {
+      const subTr = document.createElement('tr');
+      subTr.className = 'abs-group-row hidden';
+      subTr.dataset.group = groupId;
+      subTr.innerHTML = `
+        <td style="padding-left:24px; color:var(--ink-soft);">↳ ${r.agentName}</td>
+        <td>${r.date}</td>
+        <td><span class="badge ${info.cls}">${info.label}</span></td>
+        <td>${r.note || '—'}</td>
+        <td>
+          <div class="row-actions">
+            <button class="icon-btn" data-edit-abs="${r.id}" title="Modifier"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4z"/></svg></button>
+            <button class="icon-btn danger" data-delete-abs="${r.id}" title="Supprimer ce jour uniquement"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>
+          </div>
+        </td>
+      `;
+      tbody.appendChild(subTr);
+    });
   });
 
   tbody.querySelectorAll('[data-edit-abs]').forEach(btn => btn.addEventListener('click', () => openAbsenceModal(btn.dataset.editAbs)));
   tbody.querySelectorAll('[data-delete-abs]').forEach(btn => btn.addEventListener('click', () => deleteAbsence(btn.dataset.deleteAbs)));
+  tbody.querySelectorAll('[data-toggle-group]').forEach(btn => btn.addEventListener('click', () => {
+    const gid = btn.dataset.toggleGroup;
+    const rows = tbody.querySelectorAll(`.abs-group-row[data-group="${gid}"]`);
+    const nowHidden = rows[0] && rows[0].classList.contains('hidden');
+    rows.forEach(r => r.classList.toggle('hidden', !nowHidden));
+    btn.textContent = nowHidden ? '▴ Cacher les jours' : '▾ Voir les jours';
+  }));
+  tbody.querySelectorAll('[data-delete-group]').forEach(btn => btn.addEventListener('click', () => {
+    const gid = btn.dataset.deleteGroup;
+    const idx = parseInt(gid.split('-')[1], 10);
+    const g = groups[idx];
+    if(!confirm(`Supprimer toute la plage : ${g.agentName} — ${g.records[0].date} → ${g.records[g.records.length - 1].date} (${g.records.length} jours) ?`)) return;
+    const batch = db.batch();
+    g.records.forEach(r => batch.delete(db.collection('absences').doc(r.id)));
+    batch.commit().then(() => renderAbsencesView()).catch(err => console.error(err));
+  }));
 }
 
 function populateAbsenceAgentSelect(){
