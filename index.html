@@ -1206,27 +1206,14 @@ function renderProfiles(){
 
   // Il faut une session (même anonyme) pour lire Firestore selon nos règles de sécurité.
   auth.signInAnonymously()
-    .then(() => db.collection('agents').get())
-    .then(snap => {
-      const nvNicknames = NV_ALL_AGENTS.map(n => n.trim().split(' ').slice(-1)[0].toLowerCase());
-
-      const agentProfiles = snap.docs
-        .map(d => {
-          const data = d.data();
-          const nickname = data.nickname || (data.name || '').split(' ').slice(-1)[0];
-          return { id: d.id, name: nickname, role: 'Agent', authType: 'pin' };
-        })
-        // On exclut les 12 agents Planning NV de la liste "legacy" : ils ont leurs propres tuiles
-        // ci-dessous, construites directement depuis NV_ALL_AGENTS (source fiable), pour éviter
-        // tout souci de correspondance de nom entre les deux systèmes.
-        .filter(p => !nvNicknames.includes((p.name || '').trim().toLowerCase()))
-        .sort((a, b) => a.name.localeCompare(b.name));
-
+    .then(() => {
+      // L'ancien système (collection "agents", 13 agents historiques) est retiré de la grille de
+      // connexion : Planning NV est désormais le seul système actif pour les agents de terrain.
       const nvProfiles = NV_ALL_AGENTS
         .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: 'Agent', authType: 'nv-pin' }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
-      const allProfiles = [...PROFILES, ...nvProfiles, ...agentProfiles]
+      const allProfiles = [...PROFILES, ...nvProfiles]
         .map((p, i) => ({ ...p, color: p.color || AVATAR_COLORS[i % AVATAR_COLORS.length] }));
 
       grid.innerHTML = '';
