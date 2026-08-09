@@ -662,6 +662,7 @@ tr:last-child td{ border-bottom:none; }
       </div>
       <button class="btn-ghost" id="portalLogoutBtn">Déconnexion</button>
     </div>
+    <div id="portalMotivation"></div>
     <div class="portal-status" id="portalStatus">Chargement...</div>
     <button class="portal-btn" id="portalCheckBtn">Check-in</button>
     <div class="portal-history">
@@ -1378,6 +1379,25 @@ function enterAgentPortal(agent){
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('agentPortal').classList.remove('hidden');
   document.getElementById('portalAgentName').textContent = agent.nickname || agent.name;
+
+  const firstName = (agent.nickname || agent.name).split(' ')[0];
+  const MOTIVATIONAL_QUOTES = [
+    "Chaque course compte. Bonne journée sur le terrain !",
+    "L'équipe compte sur toi aujourd'hui — donne le meilleur !",
+    "Un jour à la fois, une livraison à la fois. On avance !",
+    "Ton travail fait la différence pour toute l'équipe.",
+    "Reste concentré, reste safe — et fais du bon boulot !",
+    "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
+  ];
+  const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
+  document.getElementById('portalMotivation').innerHTML = `
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
+      <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
+      <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
+      <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
+    </div>
+  `;
+
   refreshPortalStatus();
 }
 
@@ -3599,7 +3619,26 @@ function renderNvPortal(){
     }
   });
 
+  const firstName = currentNvAgent.split(' ')[0];
+  const MOTIVATIONAL_QUOTES = [
+    "Chaque course compte. Bonne journée sur le terrain !",
+    "L'équipe compte sur toi aujourd'hui — donne le meilleur !",
+    "Un jour à la fois, une livraison à la fois. On avance !",
+    "Ton travail fait la différence pour toute l'équipe.",
+    "Reste concentré, reste safe — et fais du bon boulot !",
+    "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
+  ];
+  const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
+  const motivationHtml = `
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
+      <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
+      <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
+      <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
+    </div>
+  `;
+
   content.innerHTML = `
+    ${motivationHtml}
     <div class="nv-portal-hero" style="background: linear-gradient(135deg, ${zoneColor}, ${zoneColor}CC);">
       <div class="nv-portal-hero-label">Zone cette semaine</div>
       <div class="nv-portal-hero-zone">${getNvZoneLabel(zone)}</div>
@@ -3610,7 +3649,10 @@ function renderNvPortal(){
       <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📅 Ma semaine complète</div>
       <div class="nv-day-strip">${weekHtml}</div>
     </div>
-    <div id="nvGeoArea"></div>
+    <div style="margin-top:14px;">
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📍 Localisation</div>
+      <div id="nvGeoArea"></div>
+    </div>
   `;
 
   // Reprend automatiquement le suivi si l'agent l'avait activé plus tôt (et que son shift n'est pas fini).
