@@ -961,6 +961,11 @@ tr:last-child td{ border-bottom:none; }
           <button class="btn-ghost" id="showNvPinsBtn" style="border:1px solid var(--line);">✉️ Accès &amp; emails</button>
         </div>
         <div class="card hidden" id="nvPinsPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
+        <div class="planning-tabs">
+          <button class="ptab active" data-nv-view="week">📊 Vue Semaine</button>
+          <button class="ptab" data-nv-view="zones">🗺️ Vue Zones</button>
+        </div>
+        <div class="card planning-card hidden" id="nvWeekGrid"></div>
         <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
     </main>
@@ -3283,8 +3288,89 @@ function refreshNvViews(){
   }
 }
 
+let nvPlanningView = 'week';
+
 function renderPlanningNVInner(){
   updateWeekHeaderNv();
+  document.getElementById('nvWeekGrid').classList.toggle('hidden', nvPlanningView !== 'week');
+  document.getElementById('nvZoneGrid').classList.toggle('hidden', nvPlanningView !== 'zones');
+  if(nvPlanningView === 'week'){
+    renderNvWeekGridView();
+  } else {
+    renderNvZonesView();
+  }
+}
+
+document.querySelectorAll('#view-planningnv .planning-tabs [data-nv-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    nvPlanningView = btn.dataset.nvView;
+    document.querySelectorAll('#view-planningnv .planning-tabs [data-nv-view]').forEach(b => b.classList.toggle('active', b === btn));
+    renderPlanningNVInner();
+  });
+});
+
+function renderNvWeekGridView(){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const zones = buildZoneAssignmentsNv(weekIdx);
+  const container = document.getElementById('nvWeekGrid');
+  const ALL_DAY_LABELS_NV = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const todayIdx = (new Date().getDay() + 6) % 7;
+
+  let bodyRows = '';
+  Object.keys(HOTSPOTS_NV).forEach(zone => {
+    const members = zones[zone];
+    const slots = HOTSPOTS_NV[zone] || [];
+    const color = NV_ZONE_COLORS[zone];
+
+    members.forEach((name, memberIdx) => {
+      const override = NV_OVERRIDES[name] || {};
+      const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+      const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
+      const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
+      const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
+      const dayCells = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
+        const isToday = dayIdx === todayIdx;
+        if(dayIdx === offDayIdx){
+          return `<td style="${isToday ? 'background:rgba(139,92,246,0.06);' : ''}"><span class="cell-pill" style="background:var(--sand-deep); color:var(--ink-soft); display:block; font-size:10.5px;">OFF</span></td>`;
+        }
+        let hotspotLine = '';
+        if(slots.length){
+          const slotIdx = (memberIdx + dayIdx) % slots.length;
+          const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+          const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
+          hotspotLine = `<div style="font-size:9.5px; color:var(--ink-soft); margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${venues.join(', ')}">📍 ${label}</div>`;
+        }
+        return `<td style="${isToday ? 'background:rgba(139,92,246,0.06);' : ''}">
+          <span class="cell-pill ${isJour ? 'jour' : 'nuit'}" style="display:block; background:${isJour ? 'rgba(52,211,153,0.15)' : 'rgba(99,102,241,0.18)'}; color:${isJour ? '#34D399' : '#A5B4FC'}; font-size:10.5px;">${isJour ? '☀️' : '🌙'} ${SHIFTS_NV[shiftKey].label7.split(' ')[0]}</span>
+          ${hotspotLine}
+        </td>`;
+      }).join('');
+
+      bodyRows += `
+        <tr>
+          <td class="sticky-col agent-name-cell">
+            <span class="agent-row-avatar" style="display:flex; align-items:center; gap:8px;">
+              <span class="avatar" style="width:26px; height:26px; border-radius:50%; background:${color}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0;">${initials}</span>
+              ${name}
+            </span>
+          </td>
+          <td class="zone-cell">${getNvZoneLabel(zone)}</td>
+          ${dayCells}
+        </tr>
+      `;
+    });
+  });
+
+  container.innerHTML = `
+    <table class="planning-table">
+      <thead><tr><th class="sticky-col">Agent</th><th>Zone</th>${ALL_DAY_LABELS_NV.map((d, i) => `<th style="${i === todayIdx ? 'color:var(--sky-ink);' : ''}">${d}</th>`).join('')}</tr></thead>
+      <tbody>${bodyRows}</tbody>
+    </table>
+  `;
+}
+
+function renderNvZonesView(){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
   const zones = buildZoneAssignmentsNv(weekIdx);
   const grid = document.getElementById('nvZoneGrid');
