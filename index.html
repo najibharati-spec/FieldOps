@@ -369,6 +369,7 @@ tr:last-child td{ border-bottom:none; }
 .badge.nuit{ background: rgba(30,58,90,0.10); color: var(--sky-ink); }
 .badge.abs-maladie{ background: rgba(178,59,59,0.14); color: #B23B3B; }
 .badge.abs-injustifiee{ background: rgba(122,113,102,0.16); color: #7A7166; }
+.badge.abs-conge{ background: rgba(122,90,168,0.14); color: #7A5AA8; }
 .badge.abs-ferie{ background: rgba(62,143,111,0.14); color: #3E8F6F; }
 .badge.abs-double{ background: rgba(217,100,58,0.16); color: var(--mustard-deep); }
 .badge.abs-off{ background: rgba(61,107,138,0.14); color: #3D6B8A; }
@@ -891,7 +892,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="section-title">Résumé du cycle (base 26 jours)</div>
         <div class="card" style="margin-bottom:24px; overflow-x:auto;">
           <table>
-            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Total absences</th><th>Jours présence</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
+            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Congé</th><th>Total absences</th><th>Jours présence</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
             <tbody id="absencesSummaryBody"></tbody>
           </table>
         </div>
@@ -977,6 +978,7 @@ tr:last-child td{ border-bottom:none; }
     <select id="absenceTypeInput" class="login-input">
       <option value="maladie">Absence maladie (−1 jour)</option>
       <option value="injustifiee">Absence injustifiée (−1 jour)</option>
+      <option value="conge">Congé payé (−1 jour)</option>
       <option value="ferie">Jour férié travaillé (+1 jour)</option>
       <option value="double">Jour doublé (+1 jour)</option>
       <option value="off_travaille">Jour OFF travaillé (+1 jour)</option>
@@ -2502,6 +2504,7 @@ function renderPointageDay(){
 const ABSENCE_TYPES = {
   maladie:     { label: 'Absence maladie',        delta: -1, cls: 'abs-maladie' },
   injustifiee: { label: 'Absence injustifiée',    delta: -1, cls: 'abs-injustifiee' },
+  conge:       { label: 'Congé payé',             delta: -1, cls: 'abs-conge' },
   ferie:       { label: 'Jour férié travaillé',   delta: +1, cls: 'abs-ferie' },
   double:      { label: 'Jour doublé',            delta: +1, cls: 'abs-double' },
   off_travaille: { label: 'Jour OFF travaillé',   delta: +1, cls: 'abs-off' },
@@ -2570,7 +2573,7 @@ function renderAbsencesSummary(){
     recs.forEach(r => { if(counts[r.type] !== undefined) counts[r.type]++; });
     const delta = typeKeys.reduce((sum, k) => sum + counts[k] * ABSENCE_TYPES[k].delta, 0);
     const total = CYCLE_BASE_DAYS + delta;
-    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0);
+    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0) + (counts.conge || 0);
     const presence = CYCLE_BASE_DAYS - totalAbsences;
 
     const tr = document.createElement('tr');
@@ -2578,6 +2581,7 @@ function renderAbsencesSummary(){
       <td><b>${a.name}</b></td>
       <td>${counts.maladie || ''}</td>
       <td>${counts.injustifiee || ''}</td>
+      <td>${counts.conge || ''}</td>
       <td style="font-weight:700; color:var(--red);">${totalAbsences || ''}</td>
       <td style="font-weight:700; color:var(--green);">${presence}j</td>
       <td>${counts.ferie || ''}</td>
@@ -2828,7 +2832,7 @@ function deleteAbsence(id){
 }
 
 function buildAbsenceExportRows(records, baseDays){
-  const rows = [['Agent', 'Jours de base', 'Maladie', 'Injustifiée', 'Total absences', 'Jours présence', 'Férié travaillé', 'Doublé', 'OFF travaillé', 'Total ajusté']];
+  const rows = [['Agent', 'Jours de base', 'Maladie', 'Injustifiée', 'Congé', 'Total absences', 'Jours présence', 'Férié travaillé', 'Doublé', 'OFF travaillé', 'Total ajusté']];
   const sortedAgents = [...AGENTS].sort((a, b) => a.name.localeCompare(b.name));
   const typeKeys = Object.keys(ABSENCE_TYPES);
   sortedAgents.forEach(a => {
@@ -2837,8 +2841,8 @@ function buildAbsenceExportRows(records, baseDays){
     typeKeys.forEach(k => counts[k] = 0);
     recs.forEach(r => { if(counts[r.type] !== undefined) counts[r.type]++; });
     const delta = typeKeys.reduce((sum, k) => sum + counts[k] * ABSENCE_TYPES[k].delta, 0);
-    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0);
-    rows.push([a.name, baseDays, counts.maladie, counts.injustifiee, totalAbsences, baseDays - totalAbsences, counts.ferie, counts.double, counts.off_travaille, baseDays + delta]);
+    const totalAbsences = (counts.maladie || 0) + (counts.injustifiee || 0) + (counts.conge || 0);
+    rows.push([a.name, baseDays, counts.maladie, counts.injustifiee, counts.conge, totalAbsences, baseDays - totalAbsences, counts.ferie, counts.double, counts.off_travaille, baseDays + delta]);
   });
   return rows;
 }
