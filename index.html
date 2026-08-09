@@ -637,15 +637,6 @@ tr:last-child td{ border-bottom:none; }
         <input type="password" id="passwordInput" class="login-input" placeholder="Mot de passe ou code PIN..." disabled>
         <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
         <div class="login-error" id="loginError"></div>
-
-        <div id="nvLoginLinkWrap" style="text-align:center; margin-top:16px;">
-          <button class="btn-ghost" id="nvLoginLinkBtn" style="border:none; text-decoration:underline; font-size:12.5px;">Je suis un agent Planning NV →</button>
-        </div>
-        <div id="nvLoginForm" class="hidden" style="margin-top:12px;">
-          <input type="text" id="nvPinInput" class="login-input" placeholder="Ton code PIN...">
-          <button id="nvLoginBtn" class="login-submit" style="margin-top:10px;">ENTRER</button>
-          <div class="login-error" id="nvLoginError"></div>
-        </div>
       </div>
     </main>
   </div>
@@ -3565,34 +3556,6 @@ document.getElementById('showNvPinsBtn').addEventListener('click', () => {
     `).join('');
     panel.innerHTML = `<div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">PIN des 12 agents Planning NV</div>${rows}`;
   });
-});
-
-document.getElementById('nvLoginLinkBtn').addEventListener('click', () => {
-  document.getElementById('nvLoginForm').classList.toggle('hidden');
-});
-
-document.getElementById('nvLoginBtn').addEventListener('click', () => {
-  const pin = document.getElementById('nvPinInput').value.trim();
-  const errEl = document.getElementById('nvLoginError');
-  errEl.textContent = '';
-  if(!pin){ errEl.textContent = 'Entre ton code PIN.'; return; }
-
-  auth.signOut()
-    .catch(() => {})
-    .then(() => auth.signInAnonymously())
-    .then(() => ensureNvPins())
-    .then(() => {
-      const match = Object.entries(NV_PINS).find(([name, p]) => p === pin);
-      if(!match){ errEl.textContent = 'Code PIN incorrect.'; return; }
-      currentNvAgent = match[0];
-      document.getElementById('app').style.display = 'none';
-      document.getElementById('loginScreen').classList.add('hidden');
-      document.getElementById('agentPortal').classList.add('hidden');
-      document.getElementById('nvAgentPortal').classList.remove('hidden');
-      listenHotspotsNv();
-      renderNvPortal();
-    })
-    .catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
 });
 
 document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
