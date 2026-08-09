@@ -2677,43 +2677,76 @@ document.getElementById('saveAbsenceBtn').addEventListener('click', () => {
   const dateEnd = document.getElementById('absenceDateEndInput').value;
   const note = document.getElementById('absenceNoteInput').value.trim();
   const errEl = document.getElementById('absenceModalError');
+  errEl.textContent = '';
 
   if(!agentId){ errEl.textContent = 'Choisis un agent.'; return; }
   if(!date){ errEl.textContent = 'Choisis une date.'; return; }
 
   const agent = AGENTS.find(a => a.id === agentId);
+  const agentLabel = agent ? agent.name : '(agent inconnu)';
+  const typeLabel = (ABSENCE_TYPES[type] && ABSENCE_TYPES[type].label) || type;
 
   // Plage de dates (sans édition existante) : on crée une entrée par jour.
   if(!editingAbsenceId && dateEnd && dateEnd > date){
     const dayCount = Math.round((new Date(dateEnd) - new Date(date)) / 86400000) + 1;
     if(dayCount > 62){ errEl.textContent = 'La plage est trop longue (max ~2 mois).'; return; }
-    const batch = db.batch();
-    let d = new Date(date);
-    for(let i = 0; i < dayCount; i++){
-      const dStr = d.toISOString().slice(0, 10);
-      const cycle = getCycleFor(d);
-      const ref = db.collection('absences').doc();
-      batch.set(ref, { agentId, agentName: agent ? agent.name : '', type, date: dStr, note: note || null, cycleKey: cycle.key });
-      d.setDate(d.getDate() + 1);
-    }
-    batch.commit().then(() => {
-      document.getElementById('absenceModalOverlay').classList.add('hidden');
-      renderAbsencesView();
-    }).catch(err => { errEl.textContent = 'Erreur lors de l\'enregistrement.'; console.error(err); });
+    const dayStrs = [];
+    let dd = new Date(date);
+    for(let i = 0; i < dayCount; i++){ dayStrs.push(dd.toISOString().slice(0, 10)); dd.setDate(dd.getDate() + 1); }
+
+    db.collection('absences').where('agentId', '==', agentId).where('date', 'in', dayStrs.slice(0, 10)).get()
+      .then(snap => {
+        // Vérifie aussi le reste de la plage si > 10 jours (limite Firestore "in")
+        const checks = [];
+        for(let i = 10; i < dayStrs.length; i += 10){
+          checks.push(db.collection('absences').where('agentId', '==', agentId).where('date', 'in', dayStrs.slice(i, i + 10)).get());
+        }
+        return Promise.all([Promise.resolve(snap), ...checks]);
+      })
+      .then(snaps => {
+        const dupes = snaps.flatMap(s => s.docs.map(d => d.data().date));
+        if(dupes.length > 0){
+          errEl.textContent = `${agentLabel} a déjà une entrée le ${dupes[0]}. Corrige ou supprime-la d'abord.`;
+          return;
+        }
+        if(!confirm(`Confirmer : ${agentLabel} — ${dayStrs[0]} → ${dayStrs[dayStrs.length - 1]} (${dayCount} jours) — ${typeLabel} ?`)) return;
+        const batch = db.batch();
+        dayStrs.forEach(dStr => {
+          const cycle = getCycleFor(new Date(dStr));
+          const ref = db.collection('absences').doc();
+          batch.set(ref, { agentId, agentName: agent ? agent.name : '', type, date: dStr, note: note || null, cycleKey: cycle.key });
+        });
+        batch.commit().then(() => {
+          document.getElementById('absenceModalOverlay').classList.add('hidden');
+          renderAbsencesView();
+        }).catch(err => { errEl.textContent = 'Erreur lors de l\'enregistrement.'; console.error(err); });
+      }).catch(err => { errEl.textContent = 'Erreur lors de la vérification.'; console.error(err); });
     return;
   }
 
   const cycle = getCycleFor(new Date(date));
   const payload = { agentId, agentName: agent ? agent.name : '', type, date, note: note || null, cycleKey: cycle.key };
 
-  const promise = editingAbsenceId
-    ? db.collection('absences').doc(editingAbsenceId).update(payload)
-    : db.collection('absences').add(payload);
+  const checkDupe = editingAbsenceId
+    ? Promise.resolve(null)
+    : db.collection('absences').where('agentId', '==', agentId).where('date', '==', date).get()
+        .then(snap => snap.empty ? null : snap.docs[0]);
 
-  promise.then(() => {
-    document.getElementById('absenceModalOverlay').classList.add('hidden');
-    renderAbsencesView();
-  }).catch(err => { errEl.textContent = 'Erreur lors de l\'enregistrement.'; console.error(err); });
+  checkDupe.then(dupeDoc => {
+    if(dupeDoc){
+      errEl.textContent = `${agentLabel} a déjà une entrée le ${date}. Corrige ou supprime-la d'abord.`;
+      return;
+    }
+    if(!confirm(`Confirmer : ${agentLabel} — ${date} — ${typeLabel} ?`)) return;
+    const promise = editingAbsenceId
+      ? db.collection('absences').doc(editingAbsenceId).update(payload)
+      : db.collection('absences').add(payload);
+
+    promise.then(() => {
+      document.getElementById('absenceModalOverlay').classList.add('hidden');
+      renderAbsencesView();
+    }).catch(err => { errEl.textContent = 'Erreur lors de l\'enregistrement.'; console.error(err); });
+  }).catch(err => { errEl.textContent = 'Erreur lors de la vérification.'; console.error(err); });
 });
 
 function deleteAbsence(id){
