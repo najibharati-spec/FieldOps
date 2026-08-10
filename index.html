@@ -2203,13 +2203,23 @@ const TEAM_IMPORT = [
 ];
 
 document.getElementById('importTeamBtn').addEventListener('click', () => {
-  if(AGENTS.length > 0 && !confirm(`Il y a déjà ${AGENTS.length} agent(s) enregistré(s). Importer les 13 agents va les ajouter en plus (pas de doublons vérifiés par nom). Continuer ?`)) return;
+  const existingNames = new Set(AGENTS.map(a => (a.name || '').trim().toLowerCase()));
+  const toImport = TEAM_IMPORT.filter(t => !existingNames.has(t.name.trim().toLowerCase()));
+  const skipped = TEAM_IMPORT.filter(t => existingNames.has(t.name.trim().toLowerCase()));
+
+  if(toImport.length === 0){
+    alert(`Les 13 agents sont déjà tous présents dans la liste — rien à importer.`);
+    return;
+  }
+  const skipMsg = skipped.length ? `\n\n${skipped.length} agent(s) déjà présent(s), ignoré(s) : ${skipped.map(t => t.name).join(', ')}` : '';
+  if(!confirm(`${toImport.length} agent(s) manquant(s) vont être importés (les doublons par nom sont automatiquement évités).${skipMsg}\n\nContinuer ?`)) return;
+
   const btn = document.getElementById('importTeamBtn');
   btn.disabled = true;
   btn.textContent = 'Import en cours...';
   const batch = db.batch();
   const pinReport = [];
-  TEAM_IMPORT.forEach(t => {
+  toImport.forEach(t => {
     const ref = db.collection('agents').doc();
     const pin = generateRandomPin();
     pinReport.push(`${t.name} : ${pin}`);
@@ -2226,8 +2236,8 @@ document.getElementById('importTeamBtn').addEventListener('click', () => {
   });
   batch.commit()
     .then(() => {
-      btn.textContent = '✓ 13 agents importés';
-      alert(`13 agents importés avec un PIN généré automatiquement :\n\n${pinReport.join('\n')}\n\nNote ces codes pour les donner à chaque agent.`);
+      btn.textContent = `✓ ${toImport.length} agent(s) importé(s)`;
+      alert(`${toImport.length} agent(s) importé(s) avec un PIN généré automatiquement :\n\n${pinReport.join('\n')}\n\nNote ces codes pour les donner à chaque agent.`);
       setTimeout(() => { btn.disabled = false; btn.textContent = '⚡ Importer les 13 agents'; }, 2500);
     })
     .catch(err => { console.error(err); btn.disabled = false; btn.textContent = '⚡ Importer les 13 agents'; alert('Erreur pendant l\'import.'); });
