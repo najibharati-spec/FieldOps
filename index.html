@@ -977,7 +977,6 @@ tr:last-child td{ border-bottom:none; }
         <div class="view-header">
           <p class="view-subtitle">Gérez la liste des agents de terrain et leur configuration de rotation.</p>
           <div style="display:flex; gap:8px;">
-            <button class="btn-ghost" id="importTeamBtn" style="border:1px solid var(--line);">⚡ Importer les 13 agents</button>
             <button class="btn-ghost" id="genAllPinsBtn" style="border:1px solid var(--line);">🎲 Générer les PIN manquants</button>
             <button class="btn-ghost" id="genAllNicknamesBtn" style="border:1px solid var(--line);">✏️ Surnoms manquants</button>
             <button class="btn-ghost" id="fixDefaultsBtn" style="border:1px solid var(--line);">🎯 Jour/Nuit/OFF par défaut</button>
@@ -2184,64 +2183,6 @@ function toggleGroupFieldsVisibility(){
 }
 
 document.getElementById('openAddAgentBtn').addEventListener('click', () => openAgentModal(null));
-
-/* ================= BULK IMPORT (13 agents de Najib) ================= */
-const TEAM_IMPORT = [
-  { name: "Yahya Rhallah",     nickname: "Rhallah",    group: "trio1", defaultPeriod: "JOUR", defaultOffDay: 1 },
-  { name: "Aymane Chlifane",   nickname: "Chlifane",   group: "trio1", defaultPeriod: "NUIT", defaultOffDay: 2 },
-  { name: "Mehdi Ait Jebour",  nickname: "Ait Jebour", group: "trio1", defaultPeriod: "NUIT", defaultOffDay: 3 },
-  { name: "Achraf Akhlij",     nickname: "Akhlij",     group: "trio2", defaultPeriod: "JOUR", defaultOffDay: 0 },
-  { name: "Islam Elmardi",     nickname: "Elmardi",    group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 2 },
-  { name: "Oussama El Atrach", nickname: "El Atrach",  group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 3 },
-  { name: "Youssef Derkaoui",  nickname: "Derkaoui",   group: "trio3", defaultPeriod: "JOUR", defaultOffDay: 0 },
-  { name: "Mourad Cherradi",   nickname: "Cherradi",   group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 1 },
-  { name: "Ayoub Abssi",       nickname: "Abssi",      group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 3 },
-  { name: "Charaf Loummihi",   nickname: "Loummihi",   group: "sale",  defaultPeriod: "JOUR", defaultOffDay: 0 },
-  { name: "Ayoub Ben Malek",   nickname: "Ben Malek",  group: "sale",  defaultPeriod: "NUIT", defaultOffDay: 1 },
-  { name: "Hassan Azgoune",    nickname: "Azgoune",    group: "sale",  defaultPeriod: "NUIT", defaultOffDay: 2 },
-  { name: "Zakariae Benali",   nickname: "Benali",     group: "zakariae", fixedZone: "Technopolis", defaultPeriod: "JOUR", defaultOffDay: 0 },
-];
-
-document.getElementById('importTeamBtn').addEventListener('click', () => {
-  const existingNames = new Set(AGENTS.map(a => (a.name || '').trim().toLowerCase()));
-  const toImport = TEAM_IMPORT.filter(t => !existingNames.has(t.name.trim().toLowerCase()));
-  const skipped = TEAM_IMPORT.filter(t => existingNames.has(t.name.trim().toLowerCase()));
-
-  if(toImport.length === 0){
-    alert(`Les 13 agents sont déjà tous présents dans la liste — rien à importer.`);
-    return;
-  }
-  const skipMsg = skipped.length ? `\n\n${skipped.length} agent(s) déjà présent(s), ignoré(s) : ${skipped.map(t => t.name).join(', ')}` : '';
-  if(!confirm(`${toImport.length} agent(s) manquant(s) vont être importés (les doublons par nom sont automatiquement évités).${skipMsg}\n\nContinuer ?`)) return;
-
-  const btn = document.getElementById('importTeamBtn');
-  btn.disabled = true;
-  btn.textContent = 'Import en cours...';
-  const batch = db.batch();
-  const pinReport = [];
-  toImport.forEach(t => {
-    const ref = db.collection('agents').doc();
-    const pin = generateRandomPin();
-    pinReport.push(`${t.name} : ${pin}`);
-    batch.set(ref, {
-      name: t.name,
-      nickname: t.nickname || t.name.split(' ')[0],
-      group: t.group,
-      zone: null,
-      fixedZone: t.fixedZone || null,
-      pin,
-      defaultPeriod: t.defaultPeriod || 'JOUR',
-      defaultOffDay: typeof t.defaultOffDay === 'number' ? t.defaultOffDay : 0,
-    });
-  });
-  batch.commit()
-    .then(() => {
-      btn.textContent = `✓ ${toImport.length} agent(s) importé(s)`;
-      alert(`${toImport.length} agent(s) importé(s) avec un PIN généré automatiquement :\n\n${pinReport.join('\n')}\n\nNote ces codes pour les donner à chaque agent.`);
-      setTimeout(() => { btn.disabled = false; btn.textContent = '⚡ Importer les 13 agents'; }, 2500);
-    })
-    .catch(err => { console.error(err); btn.disabled = false; btn.textContent = '⚡ Importer les 13 agents'; alert('Erreur pendant l\'import.'); });
-});
 
 /* ================= PIN GENERATION ================= */
 function generateRandomPin(){
