@@ -4093,17 +4093,6 @@ function renderNvZonesView(){
         }
       });
 
-      const loc = NV_LOCATIONS[name];
-      let locHtml = '<div class="nv-loc-badge nv-loc-none">📍 Localisation non activée</div>';
-      if(loc && loc.updatedAt){
-        const minsAgo = Math.round((Date.now() - loc.updatedAt) / 60000);
-        const freshness = minsAgo <= 6 ? 'nv-loc-fresh' : 'nv-loc-stale';
-        const timeLabel = minsAgo < 1 ? 'à l\'instant' : `il y a ${minsAgo} min`;
-        const mapUrl = `https://www.google.com/maps?q=${loc.lat},${loc.lng}`;
-        locHtml = `<a class="nv-loc-badge ${freshness}" href="${mapUrl}" target="_blank" rel="noopener">🟢 Vue sur carte — ${timeLabel}</a>`;
-      }
-      locHtml += `<button class="nv-mini-link" data-view-route="${name}" style="display:block; width:100%; text-align:center; margin-top:6px;">🧭 Voir le trajet du jour</button>`;
-
       membersHtml += `
         <div class="nv-member-row" style="flex-direction:column; align-items:stretch;">
           <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
@@ -4117,7 +4106,6 @@ function renderNvZonesView(){
             <button class="nv-mini-link" data-edit-off="${name}">✏️ Changer le jour OFF (actuellement ${NV_DAY_LABELS[offDayIdx]})</button>
           </div>
           <div class="nv-day-strip">${dayChips}</div>
-          ${locHtml}
         </div>
       `;
     });
