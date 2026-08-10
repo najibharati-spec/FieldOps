@@ -16,19 +16,19 @@
 
 <style>
 :root{
-  --sand: #0A0E1A;
-  --sand-deep: #141B2E;
-  --sky: #8B5CF6;
-  --sky-deep: #6D28D9;
-  --sky-ink: #A78BFA;
-  --mustard: #6366F1;
-  --mustard-deep: #4F46E5;
-  --ink: #E7E9F3;
-  --ink-soft: #8B93A9;
-  --paper: #12182B;
-  --line: rgba(255,255,255,0.08);
-  --green: #34D399;
-  --red: #F87171;
+  --sand: #E9E2F9;
+  --sand-deep: #D8CBF2;
+  --sky: #7C3AED;
+  --sky-deep: #5B21B6;
+  --sky-ink: #6423C4;
+  --mustard: #4338CA;
+  --mustard-deep: #3730A3;
+  --ink: #0F0C1A;
+  --ink-soft: #4B4560;
+  --paper: #FFFFFF;
+  --line: rgba(30,20,60,0.22);
+  --green: #047857;
+  --red: #DC2626;
   --radius: 14px;
   --font-display: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
@@ -38,8 +38,8 @@ html{ background: var(--sand); }
 body{
   font-family: var(--font-display);
   background:
-    radial-gradient(circle at 12% 0%, rgba(139,92,246,0.10), transparent 42%),
-    radial-gradient(circle at 88% 18%, rgba(99,102,241,0.08), transparent 40%),
+    radial-gradient(circle at 12% 0%, rgba(124,58,237,0.07), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(79,70,229,0.06), transparent 40%),
     var(--sand);
   background-attachment: fixed;
   color: var(--ink);
@@ -52,10 +52,10 @@ input, select{font-family: inherit;}
 
 /* ============ LOGIN SCREEN ============ */
 :root{
-  --login-navy: #0A0A18;
-  --login-navy-2: #201A47;
-  --login-amber: #8B5CF6;
-  --login-cream: #0A0E1A;
+  --login-navy: #F0EBFB;
+  --login-navy-2: #E0D6F7;
+  --login-amber: #7C3AED;
+  --login-cream: #FFFFFF;
 }
 #loginScreen{ min-height: 100vh; }
 .login-split{
@@ -64,9 +64,9 @@ input, select{font-family: inherit;}
 .login-hero-panel{
   flex: 1 1 46%; min-width: 340px;
   background:
-    radial-gradient(circle at 20% 10%, rgba(139,92,246,0.22), transparent 40%),
+    radial-gradient(circle at 20% 10%, rgba(124,58,237,0.16), transparent 40%),
     linear-gradient(160deg, var(--login-navy), var(--login-navy-2));
-  color: #EAF1F9;
+  color: #2B2440;
   display:flex; flex-direction:column; justify-content:space-between;
   padding: 40px 44px;
   position: relative; overflow:hidden;
@@ -78,18 +78,18 @@ input, select{font-family: inherit;}
   display:flex; align-items:center; justify-content:center;
 }
 .login-mark svg{ width:20px; height:20px; }
-.hero-brand span{ font-size:16px; font-weight:800; letter-spacing:-0.01em; }
+.hero-brand span{ font-size:16px; font-weight:800; letter-spacing:-0.01em; color:#2B2440; }
 .route-map{ flex:1; display:flex; align-items:center; justify-content:center; padding: 10px 0; }
 .route-svg{ width: 100%; max-width: 340px; height: auto; }
 .pin-dot-outer{ fill: var(--login-amber); }
-.pin-dot-inner{ fill: var(--login-navy); }
-.pin-label{ fill: rgba(234,241,249,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
-.pin-label-sub{ fill: rgba(234,241,249,0.4); font-family: var(--font-mono); font-size: 9.5px; }
+.pin-dot-inner{ fill: #fff; }
+.pin-label{ fill: rgba(43,36,64,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
+.pin-label-sub{ fill: rgba(43,36,64,0.45); font-family: var(--font-mono); font-size: 9.5px; }
 .scooter-icon path, .scooter-icon circle{ fill: var(--login-amber); }
 @media (prefers-reduced-motion: reduce){ #routeMotion{ display:none; } }
 .hero-foot{ font-family: var(--font-mono); }
 .hero-foot span{ font-size: 22px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
-.hero-foot p{ font-size: 12px; color: rgba(234,241,249,0.55); max-width: 280px; }
+.hero-foot p{ font-size: 12px; color: rgba(43,36,64,0.6); max-width: 280px; }
 
 .login-form-panel{
   flex: 1 1 54%;
@@ -128,8 +128,8 @@ input, select{font-family: inherit;}
   display:flex; flex-direction:column; align-items:center; gap: 8px;
   transition: all .15s ease;
 }
-.profile-btn:hover{ border-color: var(--sky); background: var(--paper); transform: translateY(-1px); }
-.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(139,92,246,0.18); }
+.profile-btn:hover{ border-color: var(--sky); background: var(--paper); transform: translateY(-1px); box-shadow: 0 4px 14px -8px rgba(30,20,60,0.2); }
+.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(124,58,237,0.16); }
 .profile-avatar{
   width: 40px; height: 40px; border-radius: 50%;
   display:flex; align-items:center; justify-content:center;
@@ -145,7 +145,7 @@ input, select{font-family: inherit;}
   font-size: 14px; margin-bottom: 12px; color: var(--ink);
   transition: border-color .15s, box-shadow .15s;
 }
-.login-input:focus{ outline:none; border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(139,92,246,0.16); }
+.login-input:focus{ outline:none; border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(124,58,237,0.14); }
 .login-submit{
   width:100%; padding: 14px; border-radius: var(--radius);
   background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px;
@@ -160,22 +160,33 @@ input, select{font-family: inherit;}
 /* ============ LOGIN TABS ============ */
 .login-tabs{ display:flex; gap:6px; background: var(--sand-deep); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
 .ltab{ flex:1; padding: 9px; border-radius: 7px; font-size: 12.5px; font-weight:700; color: var(--ink-soft); background: transparent; }
-.ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(139,92,246,0.55); }
+.ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(91,33,182,0.35); }
 
 /* ============ AGENT PORTAL ============ */
 #agentPortal, #nvAgentPortal{
   min-height: 100vh; display:flex; align-items:center; justify-content:center;
   padding: 24px;
   background:
-    radial-gradient(circle at 15% 15%, rgba(139,92,246,0.14), transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(99,102,241,0.12), transparent 45%),
-    radial-gradient(circle at 1px 1px, rgba(255,255,255,0.05) 1px, transparent 0) 0 0/28px 28px,
+    radial-gradient(circle at 15% 15%, rgba(124,58,237,0.10), transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(79,70,229,0.08), transparent 45%),
+    radial-gradient(circle at 1px 1px, rgba(30,20,60,0.05) 1px, transparent 0) 0 0/28px 28px,
     var(--sand);
 }
 .portal-card{
   width:100%; max-width: 420px; background: var(--paper); border-radius: 20px; padding: 28px;
-  box-shadow: 0 30px 80px -20px rgba(139,92,246,0.28); border:1px solid var(--line);
-  backdrop-filter: blur(14px);
+  box-shadow: 0 30px 80px -24px rgba(30,20,60,0.18); border:1px solid var(--line);
+}
+.portal-side-art{ display:none; }
+@media (min-width: 900px){
+  #agentPortal, #nvAgentPortal{ gap: 48px; }
+  .portal-side-art{
+    display:flex; flex-direction:column; align-items:center; width: 320px; flex-shrink:0;
+  }
+  .portal-side-art svg{ width:100%; max-width:320px; height:auto; }
+  .portal-side-art-quote{
+    font-family: var(--font-display); font-style:italic; font-weight:600; font-size:15px;
+    color: var(--ink-soft); text-align:center; margin-top:8px; line-height:1.5; max-width:260px;
+  }
 }
 @media (min-width: 720px){
   .portal-card{ max-width: 460px; padding: 34px; }
@@ -203,61 +214,61 @@ input, select{font-family: inherit;}
 
 .sidebar{
   width: 220px; flex-shrink:0;
-  background: linear-gradient(180deg, #0B0A1F, #1B1440 55%, #2A1F5E);
-  border-right: 1px solid var(--line);
-  color: #EAF1F9;
+  background: linear-gradient(180deg, #FAF8FE, #F0EAFC);
+  border-right: 1.5px solid var(--line);
+  color: var(--ink);
   display:flex; flex-direction:column;
   padding: 22px 14px;
 }
 .sidebar-brand{
   display:flex; align-items:center; gap: 10px;
   padding: 0 8px 22px; margin-bottom: 18px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
+  border-bottom: 1px solid var(--line);
 }
 .sidebar-brand .mark{
   width:32px; height:32px; border-radius:9px;
   background: linear-gradient(135deg, var(--sky), var(--sky-deep));
   display:flex; align-items:center; justify-content:center;
   font-weight:800; color:#fff; font-size:14px;
-  box-shadow: 0 0 0 1px rgba(255,255,255,0.08), 0 8px 18px -6px rgba(139,92,246,0.6);
+  box-shadow: 0 8px 18px -8px rgba(124,58,237,0.55);
 }
-.sidebar-brand h2{ font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; }
+.sidebar-brand h2{ font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); }
 .nav-group{ margin-bottom: 18px; }
 .nav-label{
   font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
-  color: rgba(234,241,249,0.4); padding: 0 10px; margin-bottom: 6px; font-weight:600;
+  color: var(--ink-soft); padding: 0 10px; margin-bottom: 6px; font-weight:600;
 }
 .nav-item{
   display:flex; align-items:center; gap: 10px;
   width:100%; text-align:left; padding: 9px 10px; border-radius: 9px;
-  color: rgba(234,241,249,0.72); background: transparent; font-size: 13.5px; font-weight: 600;
+  color: var(--ink-soft); background: transparent; font-size: 13.5px; font-weight: 600;
   transition: all .12s; margin-bottom: 2px;
 }
-.nav-item:hover{ background: rgba(255,255,255,0.06); color:#fff; }
+.nav-item:hover{ background: var(--sand-deep); color: var(--ink); }
 .nav-item.active{
   background: linear-gradient(135deg, var(--sky), var(--sky-deep));
   color: #fff;
-  box-shadow: 0 6px 18px -6px rgba(139,92,246,0.65);
+  box-shadow: 0 6px 18px -8px rgba(124,58,237,0.5);
 }
 .nav-item svg{ width:16px; height:16px; flex-shrink:0; }
-.sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.12); }
+.sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid var(--line); }
 .user-chip{ display:flex; align-items:center; gap:9px; padding: 8px 10px; }
-.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; box-shadow: 0 0 8px rgba(52,211,153,0.7); }
+.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; box-shadow: 0 0 8px rgba(5,150,105,0.5); }
 .user-chip-text{ display:flex; flex-direction:column; }
-.user-chip-text b{ font-size: 12.5px; }
-.user-chip-text span{ font-size: 10.5px; color: rgba(234,241,249,0.5); }
+.user-chip-text b{ font-size: 12.5px; color: var(--ink); }
+.user-chip-text span{ font-size: 10.5px; color: var(--ink-soft); }
 .logout-btn{
   width:100%; margin-top:10px; padding: 8px; border-radius: 8px;
-  background: rgba(255,255,255,0.06); color: rgba(234,241,249,0.85);
+  background: var(--sand-deep); color: var(--ink-soft);
   font-size: 12.5px; font-weight:600;
 }
-.logout-btn:hover{ background: rgba(255,255,255,0.12); }
+.logout-btn:hover{ background: var(--line); color: var(--ink); }
 
 .main{ flex:1; overflow-x:hidden; }
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
   padding: 18px 32px; border-bottom: 1px solid var(--line);
-  background: rgba(18,24,43,0.75);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(14px);
   position: sticky; top: 0; z-index: 5;
 }
@@ -265,7 +276,7 @@ input, select{font-family: inherit;}
 .topbar-meta{ display:flex; align-items:center; gap: 14px; font-size: 12.5px; color: var(--ink-soft); font-family: var(--font-mono); }
 .sync-pill{
   display:flex; align-items:center; gap:6px; padding: 5px 10px;
-  background: rgba(52,211,153,0.12); color: var(--green); border-radius: 20px; font-weight:600; font-size: 11.5px;
+  background: rgba(5,150,105,0.10); color: var(--green); border-radius: 20px; font-weight:600; font-size: 11.5px;
 }
 .sync-pill .dot{ width:6px; height:6px; border-radius:50%; background: var(--green); }
 
@@ -277,16 +288,16 @@ input, select{font-family: inherit;}
 .stat-card{
   background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--sky-ink);
   border-radius: 18px; padding: 18px;
-  backdrop-filter: blur(14px);
+  box-shadow: 0 4px 16px -8px rgba(30,20,60,0.12);
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 20px 40px -24px rgba(139,92,246,0.35); }
-.stat-card.accent-green{ border-left-color: #34D399; }
-.stat-card.accent-blue{ border-left-color: #7DD3FC; }
-.stat-card.accent-amber{ border-left-color: #FBBF24; }
-.stat-card.accent-purple{ border-left-color: #C4B5FD; }
-.stat-card.accent-red{ border-left-color: #F87171; }
-.stat-card.accent-orange{ border-left-color: #FB923C; }
+.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px -20px rgba(124,58,237,0.25); }
+.stat-card.accent-green{ border-left-color: #059669; }
+.stat-card.accent-blue{ border-left-color: #0284C7; }
+.stat-card.accent-amber{ border-left-color: #B45309; }
+.stat-card.accent-purple{ border-left-color: #7C3AED; }
+.stat-card.accent-red{ border-left-color: #DC2626; }
+.stat-card.accent-orange{ border-left-color: #EA580C; }
 .stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600; margin-bottom: 8px;}
 .stat-card .value{ font-size: 28px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
 .stat-card .sub{ font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
@@ -297,14 +308,13 @@ input, select{font-family: inherit;}
 .nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
 .nv-zone-card{
   border-radius: 20px; overflow:hidden; background: var(--paper);
-  border: 1px solid var(--line); box-shadow: 0 20px 44px -26px rgba(0,0,0,0.6);
-  backdrop-filter: blur(14px);
+  border: 1px solid var(--line); box-shadow: 0 12px 32px -20px rgba(30,20,60,0.18);
 }
 .nv-zone-head{
   padding: 16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between;
 }
 .nv-zone-head h3{ font-size: 19px; font-weight: 800; letter-spacing:-0.01em; }
-.nv-zone-head span{ font-size: 12.5px; font-weight: 700; background: rgba(255,255,255,0.22); padding: 5px 12px; border-radius: 20px; }
+.nv-zone-head span{ font-size: 12.5px; font-weight: 700; background: rgba(255,255,255,0.28); padding: 5px 12px; border-radius: 20px; }
 .nv-hotspot-line{ padding: 10px 20px; font-size: 13px; color: var(--ink-soft); border-bottom: 1px solid var(--line); background: var(--sand-deep); line-height:1.6; }
 .nv-member-row{
   display:flex; align-items:center; justify-content:space-between; gap: 10px;
@@ -314,24 +324,24 @@ input, select{font-family: inherit;}
 .nv-member-name{ font-weight: 800; font-size: 16px; flex: 1; color: var(--ink); }
 .nv-member-hotspot{ font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; line-height: 1.5; }
 .nv-chip{ font-size: 12.5px; font-weight: 700; padding: 6px 13px; border-radius: 20px; white-space:nowrap; }
-.nv-chip.shift-jour{ background: rgba(52,211,153,0.14); color: #34D399; }
-.nv-chip.shift-nuit{ background: rgba(99,102,241,0.16); color: #A5B4FC; }
-.nv-chip.off{ background: rgba(148,163,184,0.14); color: #94A3B8; }
+.nv-chip.shift-jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-chip.shift-nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
+.nv-chip.off{ background: rgba(107,114,128,0.12); color: #6B7280; }
 .nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
 .nv-day-block{ border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-.nv-day-today{ background: rgba(139,92,246,0.08); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
+.nv-day-today{ background: rgba(124,58,237,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
 .nv-today-tag{ background: var(--sky-deep); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-portal-hero{
-  border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: 0 20px 44px -22px rgba(0,0,0,0.55);
+  border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: 0 16px 34px -20px rgba(30,20,60,0.35);
 }
 .nv-portal-hero-label{ font-size: 12px; font-weight:600; opacity:.85; margin-bottom:4px; }
 .nv-portal-hero-zone{ font-size: 24px; font-weight: 800; letter-spacing:-0.01em; margin-bottom: 10px; }
-.nv-portal-hero-shift{ font-size: 14px; font-weight: 700; background: rgba(255,255,255,0.18); display:inline-block; padding: 6px 12px; border-radius: 20px; }
+.nv-portal-hero-shift{ font-size: 14px; font-weight: 700; background: rgba(255,255,255,0.22); display:inline-block; padding: 6px 12px; border-radius: 20px; }
 .nv-portal-day{ border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px; }
 .nv-portal-day:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
 .nv-time-chip{ font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-left: 6px; display:inline-block; }
-.nv-time-chip.nv-time-jour{ background: rgba(52,211,153,0.14); color: #34D399; }
-.nv-time-chip.nv-time-nuit{ background: rgba(99,102,241,0.16); color: #A5B4FC; }
+.nv-time-chip.nv-time-jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-time-chip.nv-time-nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
 .nv-day-block:last-child{ border-bottom: none; padding-bottom: 0; }
 .nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
@@ -340,11 +350,11 @@ input, select{font-family: inherit;}
   padding: 8px 12px; line-height: 1.3; display:inline-block; text-decoration:none; font-weight:600;
 }
 .nv-day-chip-link{ cursor:pointer; }
-.nv-day-chip-link:hover{ background: #1C2540; text-decoration: underline; }
-.nv-day-chip.off{ background: rgba(148,163,184,0.12); color: #94A3B8; font-weight: 700; }
+.nv-day-chip-link:hover{ background: #DDD6F5; text-decoration: underline; }
+.nv-day-chip.off{ background: rgba(107,114,128,0.10); color: #6B7280; font-weight: 700; }
 .nv-today-hero{
   border-radius: 12px; padding: 12px 14px; color:#fff; display:flex; flex-direction:column; gap: 4px;
-  box-shadow: 0 10px 24px -12px rgba(0,0,0,0.55);
+  box-shadow: 0 10px 24px -14px rgba(30,20,60,0.4);
 }
 .nv-today-hero-label{ font-size: 11px; font-weight: 800; text-transform:uppercase; letter-spacing:.04em; opacity:.9; }
 .nv-today-hero-venues{ font-size: 15px; font-weight: 800; }
@@ -381,12 +391,11 @@ input, select{font-family: inherit;}
   border-radius: 8px; margin-top: 8px; text-decoration:none;
 }
 .nv-loc-badge.nv-loc-none{ background: var(--sand-deep); color: var(--ink-soft); font-weight: 500; }
-.nv-loc-badge.nv-loc-fresh{ background: rgba(52,211,153,0.14); color: #34D399; }
-.nv-loc-badge.nv-loc-stale{ background: rgba(251,191,36,0.14); color: #FBBF24; }
+.nv-loc-badge.nv-loc-fresh{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-loc-badge.nv-loc-stale{ background: rgba(180,83,9,0.12); color: #B45309; }
 .zone-card{
   background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 16px;
   border-left: 4px solid var(--mustard);
-  backdrop-filter: blur(14px);
 }
 .zone-card h3{ font-size: 14px; font-weight:700; margin-bottom: 10px; color: var(--ink); }
 .zone-card .count{ font-size: 24px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
@@ -395,23 +404,23 @@ input, select{font-family: inherit;}
 
 .section-title{ font-size: 15px; font-weight: 800; margin: 26px 0 14px; color: var(--ink); }
 
-.card{ background: var(--paper); border:1px solid var(--line); border-radius: 18px; backdrop-filter: blur(14px); }
+.card{ background: var(--paper); border:1.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 16px -8px rgba(30,20,60,0.12); }
 
 table{ width:100%; border-collapse: collapse; }
 th{ text-align:left; font-size: 11px; text-transform:uppercase; letter-spacing:.04em; color: var(--ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1px solid var(--line); }
 td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line); color: var(--ink); }
 tr:last-child td{ border-bottom:none; }
 .badge{ display:inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.badge.fix{ background: rgba(139,92,246,0.14); color: #C4B5FD; }
-.badge.var{ background: rgba(251,191,36,0.16); color: #FBBF24; }
-.badge.jour{ background: rgba(52,211,153,0.14); color: #34D399; }
-.badge.nuit{ background: rgba(99,102,241,0.16); color: #A5B4FC; }
-.badge.abs-maladie{ background: rgba(248,113,113,0.16); color: #F87171; }
-.badge.abs-injustifiee{ background: rgba(148,163,184,0.16); color: #94A3B8; }
-.badge.abs-conge{ background: rgba(196,181,253,0.16); color: #C4B5FD; }
-.badge.abs-ferie{ background: rgba(52,211,153,0.14); color: #34D399; }
-.badge.abs-double{ background: rgba(251,191,36,0.16); color: #FBBF24; }
-.badge.abs-off{ background: rgba(125,211,252,0.16); color: #7DD3FC; }
+.badge.fix{ background: rgba(124,58,237,0.16); color: #5B21B6; }
+.badge.var{ background: rgba(180,83,9,0.20); color: #92400E; }
+.badge.jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.badge.nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
+.badge.abs-maladie{ background: rgba(220,38,38,0.16); color: #B91C1C; }
+.badge.abs-injustifiee{ background: rgba(107,114,128,0.18); color: #374151; }
+.badge.abs-conge{ background: rgba(124,58,237,0.16); color: #5B21B6; }
+.badge.abs-ferie{ background: rgba(5,150,105,0.18); color: #047857; }
+.badge.abs-double{ background: rgba(180,83,9,0.20); color: #92400E; }
+.badge.abs-off{ background: rgba(2,132,199,0.18); color: #0369A1; }
 
 .placeholder-view{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -439,9 +448,9 @@ tr:last-child td{ border-bottom:none; }
   color: #fff; font-weight: 700; font-size: 13px;
   padding: 10px 18px; border-radius: var(--radius); white-space: nowrap;
   transition: transform .15s, box-shadow .15s;
-  box-shadow: 0 10px 24px -10px rgba(99,102,241,0.55);
+  box-shadow: 0 10px 22px -10px rgba(79,70,229,0.45);
 }
-.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 28px -10px rgba(99,102,241,0.7); }
+.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px -10px rgba(79,70,229,0.55); }
 .btn-ghost{
   background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px;
   padding: 10px 16px; border-radius: var(--radius);
@@ -454,12 +463,12 @@ tr:last-child td{ border-bottom:none; }
 }
 .icon-btn:hover{ background: var(--sand-deep); color: var(--ink); }
 .icon-btn svg{ width: 15px; height: 15px; }
-.icon-btn.danger:hover{ background: rgba(248,113,113,0.14); color: var(--red); }
+.icon-btn.danger:hover{ background: rgba(220,38,38,0.10); color: var(--red); }
 .row-actions{ display:flex; gap: 4px; justify-content:flex-end; }
 
 /* ============ MODAL ============ */
 .modal-overlay{
-  position: fixed; inset: 0; background: rgba(4,6,14,0.65);
+  position: fixed; inset: 0; background: rgba(30,20,60,0.35);
   backdrop-filter: blur(4px);
   display:flex; align-items:center; justify-content:center; z-index: 100;
   padding: 20px;
@@ -468,8 +477,7 @@ tr:last-child td{ border-bottom:none; }
   width: 100%; max-width: 420px; background: var(--paper);
   border: 1px solid var(--line);
   border-radius: 16px; padding: 28px 26px 22px;
-  box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6);
-  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 70px -24px rgba(30,20,60,0.35);
 }
 .modal-card h3{ font-size: 17px; font-weight: 800; margin-bottom: 18px; color: var(--ink); }
 .form-label{ display:block; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-bottom: 6px; margin-top: 12px; }
@@ -511,8 +519,8 @@ tr:last-child td{ border-bottom:none; }
   text-transform:uppercase; font-size: 10px; letter-spacing:.05em; color: var(--ink-soft); font-weight: 800;
   background: var(--sand-deep); border-bottom: 2px solid var(--line); padding-top: 12px; padding-bottom: 12px;
 }
-.planning-table tbody tr:nth-child(even){ background: rgba(255,255,255,0.015); }
-.planning-table tbody tr:hover{ background: rgba(139,92,246,0.05); }
+.planning-table tbody tr:nth-child(even){ background: rgba(30,20,60,0.015); }
+.planning-table tbody tr:hover{ background: rgba(124,58,237,0.04); }
 .planning-table td.agent-name-cell{ text-align:left; font-weight: 700; color: var(--ink); }
 .planning-table td.zone-cell{ text-align:left; font-size: 11.5px; color: var(--ink-soft); }
 .agent-name-edit{
@@ -522,7 +530,7 @@ tr:last-child td{ border-bottom:none; }
 .agent-name-edit:hover{ background: var(--sand-deep); }
 .agent-name-edit:focus{ outline: none; background: var(--paper); box-shadow: 0 0 0 1.5px var(--sky); }
 .sticky-col{ position: sticky; left: 0; background: var(--paper); text-align:left !important; z-index: 2; }
-.planning-table tbody tr:nth-child(even) .sticky-col{ background: #131A2E; }
+.planning-table tbody tr:nth-child(even) .sticky-col{ background: #F3F1FA; }
 .planning-table td.total-cell{
   font-family: var(--font-mono); font-weight: 800; color: var(--sky-ink); font-size: 13px;
 }
@@ -534,9 +542,9 @@ tr:last-child td{ border-bottom:none; }
   transition: filter .12s, transform .12s;
   letter-spacing: .01em;
 }
-.shift-pill:hover{ filter: brightness(1.12); transform: translateY(-1px); }
-.shift-pill.s-jour{ background: #10B981; color: #fff; }
-.shift-pill.s-nuit{ background: #4F46E5; color: #fff; }
+.shift-pill:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+.shift-pill.s-jour{ background: #059669; color: #fff; }
+.shift-pill.s-nuit{ background: #4338CA; color: #fff; }
 .shift-pill.s-quiet{ background: var(--sand-deep); color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--line); }
 .cell-select{
   width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--sky); font-size: 11px;
@@ -544,8 +552,8 @@ tr:last-child td{ border-bottom:none; }
 }
 
 .alerts-banner{
-  background: rgba(251,191,36,0.12); border: 1px solid rgba(251,191,36,0.35); border-radius: 12px;
-  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #FBBF24;
+  background: rgba(180,83,9,0.08); border: 1px solid rgba(180,83,9,0.25); border-radius: 12px;
+  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #92400E;
 }
 .alerts-banner b{ display:block; margin-bottom: 4px; font-size: 12.5px; }
 .alerts-banner ul{ margin: 4px 0 0 18px; }
@@ -652,6 +660,48 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- AGENT PORTAL (écran simplifié pour un agent connecté) -->
 <div id="agentPortal" class="hidden">
+  <div class="portal-side-art">
+    <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="artGlow" cx="50%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="artScooter" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#A78BFA"/>
+          <stop offset="100%" stop-color="#6D28D9"/>
+        </linearGradient>
+      </defs>
+      <circle cx="160" cy="120" r="140" fill="url(#artGlow)"/>
+      <g opacity="0.5" fill="#1B2540">
+        <rect x="10" y="230" width="26" height="60" rx="2"/>
+        <rect x="42" y="200" width="30" height="90" rx="2"/>
+        <rect x="80" y="220" width="24" height="70" rx="2"/>
+        <rect x="220" y="210" width="28" height="80" rx="2"/>
+        <rect x="254" y="235" width="24" height="55" rx="2"/>
+        <rect x="284" y="195" width="30" height="95" rx="2"/>
+      </g>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#2A3352" stroke-width="2"/>
+      <g transform="translate(90,150)">
+        <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
+        <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter)" stroke-width="6"/>
+        <circle cx="118" cy="132" r="20" fill="none" stroke="url(#artScooter)" stroke-width="6"/>
+        <path d="M18 132 L55 132 L78 80 L100 80" fill="none" stroke="url(#artScooter)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M100 80 L118 132" fill="none" stroke="url(#artScooter)" stroke-width="7" stroke-linecap="round"/>
+        <rect x="40" y="95" width="34" height="26" rx="6" fill="url(#artScooter)"/>
+        <circle cx="95" cy="55" r="14" fill="#E7E9F3"/>
+        <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter)"/>
+        <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
+      </g>
+      <g fill="#A78BFA" opacity="0.8">
+        <circle cx="45" cy="60" r="3"/>
+        <circle cx="270" cy="45" r="4"/>
+        <circle cx="290" cy="140" r="3"/>
+      </g>
+      <path d="M250 60 L253 68 L261 68 L254 73 L257 81 L250 76 L243 81 L246 73 L239 68 L247 68 Z" fill="#FBBF24"/>
+    </svg>
+    <div class="portal-side-art-quote">"Chaque livraison compte.<br>On avance, ensemble."</div>
+  </div>
   <div class="portal-card">
     <div class="portal-header">
       <div>
@@ -673,6 +723,48 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
 <div id="nvAgentPortal" class="hidden">
+  <div class="portal-side-art">
+    <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="artGlow2" cx="50%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="artScooter2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#A78BFA"/>
+          <stop offset="100%" stop-color="#6D28D9"/>
+        </linearGradient>
+      </defs>
+      <circle cx="160" cy="120" r="140" fill="url(#artGlow2)"/>
+      <g opacity="0.5" fill="#1B2540">
+        <rect x="10" y="230" width="26" height="60" rx="2"/>
+        <rect x="42" y="200" width="30" height="90" rx="2"/>
+        <rect x="80" y="220" width="24" height="70" rx="2"/>
+        <rect x="220" y="210" width="28" height="80" rx="2"/>
+        <rect x="254" y="235" width="24" height="55" rx="2"/>
+        <rect x="284" y="195" width="30" height="95" rx="2"/>
+      </g>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#2A3352" stroke-width="2"/>
+      <g transform="translate(90,150)">
+        <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
+        <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter2)" stroke-width="6"/>
+        <circle cx="118" cy="132" r="20" fill="none" stroke="url(#artScooter2)" stroke-width="6"/>
+        <path d="M18 132 L55 132 L78 80 L100 80" fill="none" stroke="url(#artScooter2)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M100 80 L118 132" fill="none" stroke="url(#artScooter2)" stroke-width="7" stroke-linecap="round"/>
+        <rect x="40" y="95" width="34" height="26" rx="6" fill="url(#artScooter2)"/>
+        <circle cx="95" cy="55" r="14" fill="#E7E9F3"/>
+        <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter2)"/>
+        <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
+      </g>
+      <g fill="#A78BFA" opacity="0.8">
+        <circle cx="45" cy="60" r="3"/>
+        <circle cx="270" cy="45" r="4"/>
+        <circle cx="290" cy="140" r="3"/>
+      </g>
+      <path d="M250 60 L253 68 L261 68 L254 73 L257 81 L250 76 L243 81 L246 73 L239 68 L247 68 Z" fill="#FBBF24"/>
+    </svg>
+    <div class="portal-side-art-quote">"Ton travail fait la<br>différence, chaque jour."</div>
+  </div>
   <div class="portal-card">
     <div class="portal-header">
       <div>
@@ -809,7 +901,7 @@ tr:last-child td{ border-bottom:none; }
         </div>
         <div class="card" id="agentsCard">
           <table>
-            <thead><tr><th>Agent</th><th>PIN</th><th>Zone</th><th>Type</th><th>Shift fixe</th><th></th></tr></thead>
+            <thead><tr><th>Agent</th><th>PIN</th><th>Email</th><th>Zone</th><th>Type</th><th>Shift fixe</th><th></th></tr></thead>
             <tbody id="agentsTableBody"></tbody>
           </table>
           <div class="placeholder-view hidden" id="agentsEmptyState">
@@ -948,7 +1040,37 @@ tr:last-child td{ border-bottom:none; }
           </div>
         </div>
       </section>
-      <section class="view hidden" id="view-rapports"></section>
+      <section class="view hidden" id="view-rapports">
+        <div class="view-header">
+          <div>
+            <div class="view-subtitle">Rapports et remarques envoyés par les agents Planning NV</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="rapportsFilterAgent" class="login-input" style="width:auto; margin:0; padding:8px 12px;">
+              <option value="">Tous les agents</option>
+            </select>
+            <select id="rapportsFilterType" class="login-input" style="width:auto; margin:0; padding:8px 12px;">
+              <option value="">Tous les types</option>
+              <option value="rapport">Rapport</option>
+              <option value="remarque">Remarque</option>
+            </select>
+            <button class="btn-ghost" id="rapportsExportBtn" style="border:1px solid var(--line);">↓ Export CSV</button>
+          </div>
+        </div>
+
+        <div class="stat-grid" id="rapportsStatGrid" style="margin-bottom:20px;"></div>
+
+        <div class="card" id="rapportsMissingCard" style="padding:16px 20px; margin-bottom:20px;"></div>
+
+        <div class="card">
+          <div id="rapportsList" style="padding:8px 0;"></div>
+          <div class="placeholder-view hidden" id="rapportsEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            <h3>Aucun rapport pour l'instant</h3>
+            <p>Les rapports et remarques envoyés par les agents depuis leur portail apparaîtront ici.</p>
+          </div>
+        </div>
+      </section>
       <section class="view hidden" id="view-paie"></section>
       <section class="view hidden" id="view-parametres"></section>
       <section class="view hidden" id="view-planningnv">
@@ -966,9 +1088,9 @@ tr:last-child td{ border-bottom:none; }
             </button>
           </div>
           <p class="view-subtitle" style="margin:0;">Espace indépendant — aucun lien avec les Agents, Zones ou l'autre Planning.</p>
-          <button class="btn-ghost" id="showNvPinsBtn" style="border:1px solid var(--line);">✉️ Accès &amp; emails</button>
+          <button class="btn-ghost" id="showNvFlashBtn" style="border:1px solid var(--line);">📢 Info équipe</button>
         </div>
-        <div class="card hidden" id="nvPinsPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
+        <div class="card hidden" id="nvFlashPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
         <div class="planning-tabs">
           <button class="ptab active" data-nv-view="week">📊 Vue Semaine</button>
           <button class="ptab" data-nv-view="zones">🗺️ Vue Zones</button>
@@ -1078,6 +1200,9 @@ tr:last-child td{ border-bottom:none; }
       <input type="text" id="agentPinModalInput" class="login-input" placeholder="Ex: 1234" inputmode="numeric" maxlength="8" style="margin-bottom:0;">
       <button type="button" class="btn-ghost" id="genPinBtn" style="border:1px solid var(--line); white-space:nowrap; padding:13px 14px;" title="Générer un PIN aléatoire">🎲</button>
     </div>
+
+    <label class="form-label">Email (pour envoyer l'accès et le planning)</label>
+    <input type="email" id="agentEmailModalInput" class="login-input" placeholder="Ex: prenom.nom@gmail.com">
 
     <label class="form-label">Groupe de planification</label>
     <select id="agentGroupInput" class="login-input">
@@ -1512,7 +1637,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     const target = document.getElementById('view-' + view);
     target.classList.remove('hidden');
     document.getElementById('viewTitle').textContent = btn.querySelector('span').textContent;
-    if(['paie','rapports','parametres'].includes(view) && !target.dataset.built){
+    if(['paie','parametres'].includes(view) && !target.dataset.built){
       renderPlaceholder(target, btn.querySelector('span').textContent);
       target.dataset.built = '1';
     }
@@ -1527,6 +1652,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     }
     if(view === 'planningnv'){
       listenHotspotsNv();
+    }
+    if(view === 'rapports'){
+      renderRapportsView();
     }
   });
 });
@@ -1644,8 +1772,20 @@ function listenAgents(){
     initDashboard();
     renderAgentsTable();
     if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanningWeek();
+    seedMissingAgentEmails();
   }, err => {
     console.error('Erreur de lecture des agents:', err);
+  });
+}
+
+let emailSeedDone = false;
+function seedMissingAgentEmails(){
+  if(emailSeedDone) return; // une seule passe par session, pour ne pas boucler sur les onSnapshot suivants
+  emailSeedDone = true;
+  AGENTS.forEach(a => {
+    if(!a.email && DEFAULT_NV_EMAILS[a.name]){
+      db.collection('agents').doc(a.id).update({ email: DEFAULT_NV_EMAILS[a.name] }).catch(err => console.error(err));
+    }
   });
 }
 
@@ -1779,6 +1919,28 @@ function renderCurrentlyWorking(){
   });
 }
 
+function levenshtein(a, b){
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+  for(let j = 0; j <= n; j++) dp[0][j] = j;
+  for(let i = 1; i <= m; i++){
+    for(let j = 1; j <= n; j++){
+      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function findNvNameTypo(name){
+  if(NV_ALL_AGENTS.includes(name)) return null;
+  let best = null, bestDist = 4; // tolère jusqu'à 3 caractères d'écart
+  NV_ALL_AGENTS.forEach(nvName => {
+    const d = levenshtein(name.toLowerCase(), nvName.toLowerCase());
+    if(d < bestDist){ bestDist = d; best = nvName; }
+  });
+  return best;
+}
+
 function renderAgentsTable(){
   const weekIdx = getISOWeekIndex(new Date());
   const tbody = document.getElementById('agentsTableBody');
@@ -1798,10 +1960,19 @@ function renderAgentsTable(){
     const period = resolveAgentPeriod(a, weekIdx);
     const zone = resolveAgentZone(a, weekIdx);
     const groupLabel = a.group ? GROUPS[a.group].label : 'Manuel';
+    const isNvAgent = NV_ALL_AGENTS.includes(a.name);
+    const typoMatch = !isNvAgent ? findNvNameTypo(a.name) : null;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><b>${a.name}</b></td>
+      <td><b>${a.name}</b>${typoMatch ? `<div style="font-size:10.5px; color:var(--red); font-weight:600; margin-top:2px;">⚠️ Nom différent de "${typoMatch}" (Planning NV) — PIN et email ne marcheront pas tant que ce n'est pas corrigé</div>` : ''}</td>
       <td style="font-family: var(--font-mono); font-weight:700;">${a.pin || '<span style="color:var(--ink-soft); font-weight:400;">—</span>'}</td>
+      <td style="font-size:11.5px;">
+        ${a.email ? `<div style="color:var(--ink-soft); margin-bottom:4px;">${a.email}</div>` : '<div style="color:var(--ink-soft); margin-bottom:4px;">—</div>'}
+        ${a.email ? `<div style="display:flex; gap:8px;">
+          <button class="nv-mini-link" data-send-access="${a.id}">✉️ Accès</button>
+          ${isNvAgent ? `<button class="nv-mini-link" data-send-planning="${a.id}">✉️ Planning</button>` : ''}
+        </div>` : ''}
+      </td>
       <td><span class="zone-dot" style="background:${ZONE_COLORS[zone] || 'var(--ink-soft)'}"></span>${getZoneLabel(zone)}</td>
       <td><span class="badge ${a.group ? 'fix' : 'var'}">${groupLabel}</span></td>
       <td><span class="badge ${period === 'JOUR' ? 'jour' : 'nuit'}">${period}</span></td>
@@ -1817,6 +1988,14 @@ function renderAgentsTable(){
 
   tbody.querySelectorAll('[data-edit]').forEach(btn => btn.addEventListener('click', () => openAgentModal(btn.dataset.edit)));
   tbody.querySelectorAll('[data-delete]').forEach(btn => btn.addEventListener('click', () => deleteAgent(btn.dataset.delete)));
+  tbody.querySelectorAll('[data-send-access]').forEach(btn => btn.addEventListener('click', () => {
+    const a = AGENTS.find(x => x.id === btn.dataset.sendAccess);
+    if(a) sendAgentAccessEmail(a);
+  }));
+  tbody.querySelectorAll('[data-send-planning]').forEach(btn => btn.addEventListener('click', () => {
+    const a = AGENTS.find(x => x.id === btn.dataset.sendPlanning);
+    if(a) sendNvPlanningEmail(a.name);
+  }));
 }
 
 /* ================= AGENT MODAL (Add / Edit) ================= */
@@ -1834,6 +2013,7 @@ function openAgentModal(agentId = null){
   const nameInput = document.getElementById('agentNameInput');
   const nicknameInput = document.getElementById('agentNicknameInput');
   const pinInput = document.getElementById('agentPinModalInput');
+  const emailInput = document.getElementById('agentEmailModalInput');
   const groupInput = document.getElementById('agentGroupInput');
   const zoneInput = document.getElementById('agentZoneInput');
   const fixedZoneInput = document.getElementById('agentFixedZoneInput');
@@ -1847,6 +2027,7 @@ function openAgentModal(agentId = null){
     nameInput.value = agent.name;
     nicknameInput.value = agent.nickname || '';
     pinInput.value = agent.pin || '';
+    emailInput.value = agent.email || DEFAULT_NV_EMAILS[agent.name] || '';
     groupInput.value = agent.group || '';
     if(agent.zone) zoneInput.value = agent.zone;
     if(agent.fixedZone) fixedZoneInput.value = agent.fixedZone;
@@ -1857,6 +2038,7 @@ function openAgentModal(agentId = null){
     nameInput.value = '';
     nicknameInput.value = '';
     pinInput.value = generateRandomPin();
+    emailInput.value = '';
     groupInput.value = '';
     zoneInput.selectedIndex = 0;
     fixedZoneInput.selectedIndex = 0;
@@ -2029,14 +2211,16 @@ document.getElementById('saveAgentBtn').addEventListener('click', () => {
   const zone = document.getElementById('agentZoneInput').value;
   const fixedZone = document.getElementById('agentFixedZoneInput').value;
   const pin = document.getElementById('agentPinModalInput').value.trim();
+  const email = document.getElementById('agentEmailModalInput').value.trim();
   const defaultPeriod = document.getElementById('agentDefaultPeriodInput').value;
   const defaultOffDay = parseInt(document.getElementById('agentDefaultOffDayInput').value, 10);
   const errEl = document.getElementById('agentModalError');
 
   if(!name){ errEl.textContent = 'Entrez le nom de l\'agent.'; return; }
+  if(email && !/^\S+@\S+\.\S+$/.test(email)){ errEl.textContent = 'Email invalide.'; return; }
 
   const payload = {
-    name, group, pin: pin || null,
+    name, group, pin: pin || null, email: email || null,
     nickname: nickname || name.split(' ').slice(-1)[0],
     zone: group ? null : zone,
     fixedZone: group === 'zakariae' ? fixedZone : null,
@@ -2624,6 +2808,143 @@ document.getElementById('cycleTodayBtn').addEventListener('click', () => {
 
 let currentCycleRecords = [];
 
+/* ================= RAPPORTS (rapports & remarques envoyés par les agents Planning NV) ================= */
+let rapportsUnsub = null;
+let rapportsFilterBuilt = false;
+
+function renderRapportsView(){
+  if(!rapportsFilterBuilt){
+    const agentSelect = document.getElementById('rapportsFilterAgent');
+    NV_ALL_AGENTS.forEach(name => {
+      const opt = document.createElement('option');
+      opt.value = name; opt.textContent = name;
+      agentSelect.appendChild(opt);
+    });
+    document.getElementById('rapportsFilterAgent').addEventListener('change', renderRapportsList);
+    document.getElementById('rapportsFilterType').addEventListener('change', renderRapportsList);
+    document.getElementById('rapportsExportBtn').addEventListener('click', exportRapportsCsv);
+    rapportsFilterBuilt = true;
+  }
+
+  if(rapportsUnsub) rapportsUnsub();
+  rapportsUnsub = db.collection('rapports').orderBy('createdAt', 'desc').limit(200).onSnapshot(snap => {
+    RAPPORTS_CACHE = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    renderRapportsStats();
+    renderRapportsMissing();
+    renderRapportsList();
+  }, err => console.error(err));
+}
+
+function renderRapportsStats(){
+  const grid = document.getElementById('rapportsStatGrid');
+  const total = RAPPORTS_CACHE.length;
+  const nRapports = RAPPORTS_CACHE.filter(r => r.type === 'rapport').length;
+  const nRemarques = RAPPORTS_CACHE.filter(r => r.type === 'remarque').length;
+  const weekAgo = Date.now() - 7 * 86400000;
+  const thisWeek = RAPPORTS_CACHE.filter(r => r.createdAt && r.createdAt.toMillis && r.createdAt.toMillis() >= weekAgo).length;
+  const counts = {};
+  RAPPORTS_CACHE.forEach(r => { counts[r.agentName] = (counts[r.agentName] || 0) + 1; });
+  const topAgent = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+
+  grid.innerHTML = `
+    <div class="stat-card accent-blue">
+      <div class="label">Total envoyés</div>
+      <div class="value">${total}</div>
+      <div class="sub">${nRapports} rapports · ${nRemarques} remarques</div>
+    </div>
+    <div class="stat-card accent-green">
+      <div class="label">Cette semaine</div>
+      <div class="value">${thisWeek}</div>
+      <div class="sub">Sur les 7 derniers jours</div>
+    </div>
+    <div class="stat-card accent-purple">
+      <div class="label">Agent le plus actif</div>
+      <div class="value" style="font-size:18px;">${topAgent ? topAgent[0].split(' ')[0] : '—'}</div>
+      <div class="sub">${topAgent ? topAgent[1] + ' envoi(s)' : 'Aucun envoi'}</div>
+    </div>
+  `;
+}
+
+function renderRapportsMissing(){
+  const card = document.getElementById('rapportsMissingCard');
+  const weekAgo = Date.now() - 7 * 86400000;
+  const activeNames = new Set(RAPPORTS_CACHE.filter(r => r.createdAt && r.createdAt.toMillis && r.createdAt.toMillis() >= weekAgo).map(r => r.agentName));
+  const missing = NV_ALL_AGENTS.filter(name => !activeNames.has(name));
+
+  if(missing.length === 0){
+    card.innerHTML = `<div style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--green);">✅ Tous les agents ont envoyé au moins un rapport ou une remarque cette semaine.</div>`;
+    return;
+  }
+  card.innerHTML = `
+    <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:8px;">⚠️ Aucun rapport cette semaine</div>
+    <div style="display:flex; flex-wrap:wrap; gap:6px;">
+      ${missing.map(name => `<span class="badge" style="background:rgba(180,83,9,0.14); color:#B45309;">${name}</span>`).join('')}
+    </div>
+  `;
+}
+
+function exportRapportsCsv(){
+  const rows = [['Date', 'Agent', 'Type', 'Texte']];
+  RAPPORTS_CACHE.forEach(r => {
+    const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('fr-FR') : (r.date || '');
+    rows.push([when, r.agentName, r.type, (r.text || '').replace(/\n/g, ' ')]);
+  });
+  const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `rapports_${dateKeyFor(new Date())}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+let RAPPORTS_CACHE = [];
+
+function renderRapportsList(){
+  const agentFilter = document.getElementById('rapportsFilterAgent').value;
+  const typeFilter = document.getElementById('rapportsFilterType').value;
+  const list = document.getElementById('rapportsList');
+  const emptyState = document.getElementById('rapportsEmptyState');
+
+  const filtered = RAPPORTS_CACHE.filter(r =>
+    (!agentFilter || r.agentName === agentFilter) &&
+    (!typeFilter || r.type === typeFilter)
+  );
+
+  if(filtered.length === 0){
+    list.innerHTML = '';
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  emptyState.classList.add('hidden');
+
+  list.innerHTML = filtered.map(r => {
+    const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : (r.date || '');
+    const typeLabel = r.type === 'remarque' ? '💬 Remarque' : '📩 Rapport';
+    const typeColor = r.type === 'remarque' ? '#FBBF24' : '#38BDF8';
+    return `
+      <div style="padding:14px 18px; border-bottom:1px solid var(--line);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <span style="font-weight:700; font-size:13.5px;">${r.agentName}</span>
+          <span style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:11px; font-weight:700; color:${typeColor};">${typeLabel}</span>
+            <span style="font-size:11px; color:var(--ink-soft);">${when}</span>
+            <button class="icon-btn danger" data-del-rapport="${r.id}" title="Supprimer"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6h14z"/></svg></button>
+          </span>
+        </div>
+        <div style="font-size:13px; color:var(--ink); line-height:1.5; white-space:pre-wrap;">${r.text}</div>
+      </div>
+    `;
+  }).join('');
+
+  list.querySelectorAll('[data-del-rapport]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(!confirm('Supprimer cet envoi ?')) return;
+      db.collection('rapports').doc(btn.dataset.delRapport).delete().catch(err => console.error(err));
+    });
+  });
+}
+
 function renderAbsencesView(){
   const cycle = getCycleFor(currentCycleRef);
   document.getElementById('cycleLabel').textContent = `Cycle ${cycle.key}`;
@@ -3189,9 +3510,9 @@ function renameNvZone(zone){
 }
 
 const SHIFTS_NV = {
-  S1: { label7: "11:00-18:00", label8: "11:00-19:00" },
-  S2: { label7: "16:00-23:00", label8: "16:00-00:00" },
-  S3: { label7: "19:00-02:00", label8: "19:00-03:00" },
+  S1: { name: "Matin", label7: "11:00-18:00", label8: "11:00-19:00" },
+  S2: { name: "Après-midi", label7: "16:00-23:00", label8: "16:00-00:00" },
+  S3: { name: "Nuit", label7: "19:00-02:00", label8: "19:00-03:00" },
 };
 const SHIFT_KEYS_NV = ['S1', 'S2', 'S3'];
 const NV_DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu'];
@@ -3232,14 +3553,49 @@ function listenNvOverrides(){
   }, err => console.error(err));
 }
 
+function formatHourNv(h){
+  return `${String(((h % 24) + 24) % 24).padStart(2, '0')}:00`;
+}
+
+function resolveNvShiftInfo(override, memberIdx, weekIdx){
+  if(override && override.customShift){
+    const c = override.customShift;
+    return { name: c.name, label7: c.label7, label8: c.label8, isJour: c.isJour, shiftKey: null };
+  }
+  const shiftKey = (override && override.shiftKey) || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+  const s = SHIFTS_NV[shiftKey];
+  return { name: s.name, label7: s.label7, label8: s.label8, isJour: SHIFT_KEYS_NV.indexOf(shiftKey) === 0, shiftKey };
+}
+
 function editNvShift(agentName){
-  const choice = prompt(`Shift de "${agentName}" cette semaine :\n\n1. ${SHIFTS_NV.S1.label7} (Shift 1)\n2. ${SHIFTS_NV.S2.label7} (Shift 2)\n3. ${SHIFTS_NV.S3.label7} (Shift 3)\n\nTape 1, 2 ou 3 :`);
+  const choice = prompt(`Shift de "${agentName}" cette semaine :\n\n1. ${SHIFTS_NV.S1.name} — ${SHIFTS_NV.S1.label7}\n2. ${SHIFTS_NV.S2.name} — ${SHIFTS_NV.S2.label7}\n3. ${SHIFTS_NV.S3.name} — ${SHIFTS_NV.S3.label7}\n\nTape 1, 2 ou 3 — ou tape directement une heure de début personnalisée (ex: 14:00) :`);
   if(!choice) return;
-  const map = { '1': 'S1', '2': 'S2', '3': 'S3' };
-  const shiftKey = map[choice.trim()];
-  if(!shiftKey){ alert('Choix invalide.'); return; }
+  const trimmed = choice.trim();
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
-  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), shiftKey } };
+
+  const map = { '1': 'S1', '2': 'S2', '3': 'S3' };
+  if(map[trimmed]){
+    const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), shiftKey: map[trimmed], customShift: null } };
+    db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+    return;
+  }
+
+  // Heure personnalisée, ex: "14:00" ou "14h30"
+  const match = trimmed.match(/^(\d{1,2})[:h](\d{2})?$/i);
+  if(!match){ alert('Choix invalide. Tape 1, 2, 3 ou une heure au format HH:MM (ex: 14:00).'); return; }
+  const startH = parseInt(match[1], 10);
+  const startM = match[2] ? parseInt(match[2], 10) : 0;
+  if(startH > 23 || startM > 59){ alert('Heure invalide.'); return; }
+  const startLabel = `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}`;
+  const endLabel7 = formatHourNv(startH + 7);
+  const endLabel8 = formatHourNv(startH + 8);
+  const customShift = {
+    name: `Personnalisé (${startLabel})`,
+    label7: `${startLabel}-${endLabel7}`,
+    label8: `${startLabel}-${endLabel8}`,
+    isJour: startH < 15,
+  };
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), customShift, shiftKey: null } };
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
 }
 
@@ -3253,12 +3609,38 @@ function editNvOffDay(agentName){
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
 }
 
+function editNvZone(agentName){
+  const zoneNames = Object.keys(NV_ZONE_COLORS);
+  const choice = prompt(`Zone de "${agentName}" cette semaine :\n\n${zoneNames.map((z, i) => `${i + 1}. ${z}`).join('\n')}\n\nTape le numéro (laisse vide pour revenir à la rotation automatique) :`);
+  if(choice === null) return;
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const trimmed = choice.trim();
+  let zoneOverride = null;
+  if(trimmed){
+    const idx = parseInt(trimmed, 10) - 1;
+    if(isNaN(idx) || idx < 0 || idx >= zoneNames.length){ alert('Choix invalide.'); return; }
+    zoneOverride = zoneNames[idx];
+  }
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), zoneOverride } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
+
 function buildZoneAssignmentsNv(weekIdx){
   const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [] };
   ROTATING_TEAMS_NV.forEach((team, teamIdx) => {
     const zoneIdx = ((teamIdx + weekIdx) % 4 + 4) % 4;
     const zone = ROTATING_ZONES_NV[zoneIdx];
     zones[zone].push(...team);
+  });
+  // Overrides manuels de zone pour la semaine en cours : on déplace l'agent de sa zone
+  // calculée automatiquement vers la zone choisie par l'admin.
+  Object.entries(NV_OVERRIDES).forEach(([name, ov]) => {
+    if(!ov || !ov.zoneOverride || !zones[ov.zoneOverride]) return;
+    Object.keys(zones).forEach(z => {
+      const idx = zones[z].indexOf(name);
+      if(idx >= 0) zones[z].splice(idx, 1);
+    });
+    zones[ov.zoneOverride].push(name);
   });
   return zones;
 }
@@ -3332,10 +3714,19 @@ function renderNvWeekGridView(){
 
     members.forEach((name, memberIdx) => {
       const override = NV_OVERRIDES[name] || {};
-      const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
       const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
-      const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
+      const isJour = shiftInfo.isJour;
       const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
+
+      // Total heures cette semaine : 8h Ven/Sam, 7h les autres jours travaillés, 0h le jour OFF.
+      let totalHeures = 0;
+      ALL_DAY_LABELS_NV.forEach((_, dayIdx) => {
+        if(dayIdx === offDayIdx) return;
+        const isWeekendShort = dayIdx >= 4 && dayIdx < 6; // Ven, Sam
+        totalHeures += isWeekendShort ? 8 : 7;
+      });
+      const hoursOk = totalHeures === 44;
 
       const dayCells = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
         const isToday = dayIdx === todayIdx;
@@ -3350,7 +3741,7 @@ function renderNvWeekGridView(){
           hotspotLine = `<div style="font-size:9.5px; color:var(--ink-soft); margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${venues.join(', ')}">📍 ${label}</div>`;
         }
         return `<td style="${isToday ? 'background:rgba(139,92,246,0.06);' : ''}">
-          <span class="cell-pill ${isJour ? 'jour' : 'nuit'}" style="display:block; background:${isJour ? 'rgba(52,211,153,0.15)' : 'rgba(99,102,241,0.18)'}; color:${isJour ? '#34D399' : '#A5B4FC'}; font-size:10.5px;">${isJour ? '☀️' : '🌙'} ${SHIFTS_NV[shiftKey].label7.split(' ')[0]}</span>
+          <span class="cell-pill ${isJour ? 'jour' : 'nuit'}" style="display:block; background:${isJour ? 'rgba(52,211,153,0.15)' : 'rgba(99,102,241,0.18)'}; color:${isJour ? '#34D399' : '#A5B4FC'}; font-size:10.5px;">${isJour ? '☀️' : '🌙'} ${shiftInfo.name}</span>
           ${hotspotLine}
         </td>`;
       }).join('');
@@ -3363,8 +3754,18 @@ function renderNvWeekGridView(){
               ${name}
             </span>
           </td>
-          <td class="zone-cell">${getNvZoneLabel(zone)}</td>
+          <td class="zone-cell">
+            ${getNvZoneLabel(zone)}${override.zoneOverride ? ' <span title="Zone modifiée manuellement">✏️</span>' : ''}
+            <div style="display:flex; gap:6px; margin-top:4px;">
+              <button class="nv-mini-link" data-grid-edit-zone="${name}" style="padding:0; font-size:10px;">Zone</button>
+              <button class="nv-mini-link" data-grid-edit-shift="${name}" style="padding:0; font-size:10px;">Shift</button>
+              <button class="nv-mini-link" data-grid-edit-off="${name}" style="padding:0; font-size:10px;">OFF</button>
+            </div>
+          </td>
           ${dayCells}
+          <td style="font-weight:800; font-family:var(--font-mono); color:${hoursOk ? 'var(--green)' : 'var(--red)'};" title="${hoursOk ? 'Conforme aux 44h/semaine' : 'Ne totalise pas 44h/semaine !'}">
+            ${totalHeures}h${!hoursOk ? ' ⚠️' : ''}
+          </td>
         </tr>
       `;
     });
@@ -3372,10 +3773,20 @@ function renderNvWeekGridView(){
 
   container.innerHTML = `
     <table class="planning-table">
-      <thead><tr><th class="sticky-col">Agent</th><th>Zone</th>${ALL_DAY_LABELS_NV.map((d, i) => `<th style="${i === todayIdx ? 'color:var(--sky-ink);' : ''}">${d}</th>`).join('')}</tr></thead>
+      <thead><tr><th class="sticky-col">Agent</th><th>Zone</th>${ALL_DAY_LABELS_NV.map((d, i) => `<th style="${i === todayIdx ? 'color:var(--sky-ink);' : ''}">${d}</th>`).join('')}<th>Total</th></tr></thead>
       <tbody>${bodyRows}</tbody>
     </table>
   `;
+
+  container.querySelectorAll('[data-grid-edit-zone]').forEach(btn => {
+    btn.addEventListener('click', () => { editNvZone(btn.dataset.gridEditZone); });
+  });
+  container.querySelectorAll('[data-grid-edit-shift]').forEach(btn => {
+    btn.addEventListener('click', () => { editNvShift(btn.dataset.gridEditShift); });
+  });
+  container.querySelectorAll('[data-grid-edit-off]').forEach(btn => {
+    btn.addEventListener('click', () => { editNvOffDay(btn.dataset.gridEditOff); });
+  });
 }
 
 function renderNvZonesView(){
@@ -3399,10 +3810,10 @@ function renderNvZonesView(){
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
       const override = NV_OVERRIDES[name] || {};
-      const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
       const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
-      const shiftLabel = `${SHIFTS_NV[shiftKey].label7} / ${SHIFTS_NV[shiftKey].label8} (Ven-Sam)`;
-      const isJour = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
+      const shiftLabel = `${shiftInfo.name} · ${shiftInfo.label7} / ${shiftInfo.label8} (Ven-Sam)`;
+      const isJour = shiftInfo.isJour;
 
       // Hotspot du jour (aujourd'hui) mis en avant — même calcul que le détail jour par jour ci-dessous.
       let heroHtml;
@@ -3670,60 +4081,62 @@ function sendNvEmail(toEmail, toName, subject, message){
   return Promise.resolve();
 }
 
-function sendNvWelcomeEmail(name){
-  ensureNvEmails().then(() => db.collection('agents').where('name', '==', name).limit(1).get()).then(snap => {
-    const email = NV_EMAILS[name];
-    const pin = snap.empty ? null : snap.docs[0].data().pin;
-    if(!pin){ alert(`${name} n'a pas encore de PIN dans la page Agents.`); return; }
-    const subject = 'Bienvenue sur OPS HQ — ton accès';
-    const message = `Bonjour ${name.split(' ')[0]},
+function sendAgentAccessEmail(agent){
+  if(!agent.email){ alert(`${agent.name} n'a pas d'email enregistré.`); return; }
+  if(!agent.pin){ alert(`${agent.name} n'a pas encore de PIN.`); return; }
+  const subject = 'Bienvenue sur OPS HQ — ton accès';
+  const message = `Bonjour ${agent.name.split(' ')[0]},
 
 Ton accès à l'espace Planning OPS HQ est prêt.
 
 Lien de connexion : ${OPS_HQ_URL}
-Ton code PIN : ${pin}
+Ton code PIN : ${agent.pin}
 
 Connecte-toi, sélectionne ton profil, fais ton check-in et active ta localisation pour voir ton planning de la semaine.
 
 Bonne journée sur le terrain !
 L'équipe OPS HQ`;
-    sendNvEmail(email, name, subject, message)
-      .then(() => {})
-      .catch(err => { if(err.message !== 'no email') { console.error(err); alert('Erreur.'); } });
-  });
+  sendNvEmail(agent.email, agent.name, subject, message).catch(() => {});
+}
+
+function sendNvWelcomeEmail(name){
+  const agent = AGENTS.find(a => a.name === name);
+  if(!agent){ alert(`${name} n'a pas encore de fiche dans la page Agents.`); return; }
+  sendAgentAccessEmail(agent);
 }
 
 function sendNvPlanningEmail(name){
-  Promise.all([ensureNvEmails(), ensureNvPins()]).then(() => {
-    const slot = findNvAgentSlot(name);
-    if(!slot){ alert('Aucune affectation cette semaine pour ' + name + '.'); return; }
-    const { zone, memberIdx } = slot;
-    const weekIdx = getISOWeekIndex(currentWeekStartNv);
-    const override = NV_OVERRIDES[name] || {};
-    const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
-    const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
-    const shiftLabel7 = SHIFTS_NV[shiftKey].label7;
-    const shiftLabel8 = SHIFTS_NV[shiftKey].label8;
-    const slots = HOTSPOTS_NV[zone] || [];
-    const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  const agent = AGENTS.find(a => a.name === name);
+  const email = agent && agent.email;
+  const slot = findNvAgentSlot(name);
+  if(!slot){ alert('Aucune affectation cette semaine pour ' + name + '.'); return; }
+  const { zone, memberIdx } = slot;
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const override = NV_OVERRIDES[name] || {};
+  const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
+  const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
+  const shiftLabel7 = shiftInfo.label7;
+  const shiftLabel8 = shiftInfo.label8;
+  const shiftName = shiftInfo.name;
+  const slots = HOTSPOTS_NV[zone] || [];
+  const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
-    let lines = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
-      if(dayIdx === offDayIdx) return `${dayLabel} : OFF`;
-      const isWeekend = dayIdx >= 4;
-      const dayTime = isWeekend && dayIdx < 6 ? shiftLabel8 : shiftLabel7;
-      if(slots.length){
-        const slotIdx = (memberIdx + dayIdx) % slots.length;
-        const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
-        const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
-        const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
-        return `${dayLabel} : ${dayTime} — ${slotLabel} (${venueList})`;
-      }
-      return `${dayLabel} : ${dayTime}`;
-    });
+  let lines = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
+    if(dayIdx === offDayIdx) return `${dayLabel} : OFF`;
+    const isWeekend = dayIdx >= 4;
+    const dayTime = `${shiftName} (${isWeekend && dayIdx < 6 ? shiftLabel8 : shiftLabel7})`;
+    if(slots.length){
+      const slotIdx = (memberIdx + dayIdx) % slots.length;
+      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+      const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+      const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
+      return `${dayLabel} : ${dayTime} — ${slotLabel} (${venueList})`;
+    }
+    return `${dayLabel} : ${dayTime}`;
+  });
 
-    const email = NV_EMAILS[name];
-    const subject = `Ton planning de la semaine — ${getNvZoneLabel(zone)}`;
-    const message = `Bonjour ${name.split(' ')[0]},
+  const subject = `Ton planning de la semaine — ${getNvZoneLabel(zone)}`;
+  const message = `Bonjour ${name.split(' ')[0]},
 
 Voici ton planning pour cette semaine — zone : ${getNvZoneLabel(zone)}.
 
@@ -3733,10 +4146,7 @@ Consulte ton espace pour tous les détails (hotspots, lieux exacts) : ${OPS_HQ_U
 
 Bonne semaine !
 L'équipe OPS HQ`;
-    sendNvEmail(email, name, subject, message)
-      .then(() => {})
-      .catch(err => { if(err.message !== 'no email') { console.error(err); alert('Erreur.'); } });
-  });
+  sendNvEmail(email, name, subject, message).catch(() => {});
 }
 
 function ensureNvPins(){
@@ -3759,74 +4169,35 @@ function ensureNvPins(){
   });
 }
 
-document.getElementById('showNvPinsBtn').addEventListener('click', () => {
-  const panel = document.getElementById('nvPinsPanel');
+document.getElementById('showNvFlashBtn').addEventListener('click', () => {
+  const panel = document.getElementById('nvFlashPanel');
   if(!panel.classList.contains('hidden')){ panel.classList.add('hidden'); return; }
   panel.innerHTML = '<p style="color:var(--ink-soft); font-size:13px;">Chargement...</p>';
   panel.classList.remove('hidden');
-  renderNvPinsPanel(panel);
-});
-
-function renderNvPinsPanel(panel){
-  Promise.all([db.collection('agents').get(), ensureNvEmails()]).then(([agentsSnap]) => {
-    const pinByName = {};
-    agentsSnap.docs.forEach(d => { const data = d.data(); if(data.name) pinByName[data.name] = data.pin; });
-
-    const rows = NV_ALL_AGENTS.map(name => `
-      <div style="padding:8px 0; border-bottom:1px solid var(--line);">
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:4px;">
-          <span><b>${name}</b></span>
-          <b style="font-family:var(--font-mono); letter-spacing:1px; color:${pinByName[name] ? 'var(--ink)' : 'var(--red)'};">${pinByName[name] || 'PIN non défini'}</b>
-        </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; font-size:11.5px; color:var(--ink-soft);">
-          <span style="display:flex; align-items:center; gap:6px;">
-            📧 ${NV_EMAILS[name] || 'pas d\'email'}
-            <button class="nv-mini-link" data-edit-nv-email="${name}" style="padding:0;">✏️</button>
-          </span>
-          <span style="display:flex; gap:10px;">
-            <button class="nv-mini-link" data-send-welcome="${name}">✉️ Accès</button>
-            <button class="nv-mini-link" data-send-planning="${name}">✉️ Planning</button>
-          </span>
-        </div>
-      </div>
-    `).join('');
+  db.collection('planningNV').doc('flashInfo').get().then(doc => {
+    const current = (doc.exists && doc.data().message) || '';
     panel.innerHTML = `
-      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">Email des 12 agents Planning NV</div>
-      <div class="modal-hint" style="margin:0 0 10px;">Les PIN se gèrent depuis la page Agents (fiche de chaque agent) — ici c'est juste un rappel en lecture seule. Les boutons ouvrent Gmail (web) avec le message déjà rempli — il ne reste qu'à cliquer Envoyer. Si ton navigateur bloque les fenêtres pour "Envoyer à tous", autorise les pop-ups pour ce site.</div>
-      <div style="display:flex; gap:8px; margin-bottom:12px;">
-        <button class="btn-primary" id="nvSendAllAccessBtn" style="flex:1; font-size:12px; padding:9px;">✉️ Envoyer à tous — Accès</button>
-        <button class="btn-primary" id="nvSendAllPlanningBtn" style="flex:1; font-size:12px; padding:9px;">✉️ Envoyer à tous — Planning</button>
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">📢 Info équipe — visible par tous les agents dans leur portail</div>
+      <textarea id="nvFlashInput" class="login-input" rows="3" style="resize:vertical;" placeholder="Ex: Forte demande prévue à Agdal ce soir entre 20h et 22h, restez proches de Carrefour Gourmet.">${current}</textarea>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-primary" id="nvFlashSaveBtn" style="flex:1;">Enregistrer</button>
+        ${current ? '<button class="btn-ghost" id="nvFlashClearBtn" style="border:1px solid var(--line);">Effacer</button>' : ''}
       </div>
-      ${rows}
     `;
-    document.getElementById('nvSendAllAccessBtn').addEventListener('click', () => {
-      NV_ALL_AGENTS.forEach((name, i) => setTimeout(() => sendNvWelcomeEmail(name), i * 350));
+    document.getElementById('nvFlashSaveBtn').addEventListener('click', () => {
+      const message = document.getElementById('nvFlashInput').value.trim();
+      db.collection('planningNV').doc('flashInfo').set({ message, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => { panel.classList.add('hidden'); })
+        .catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
     });
-    document.getElementById('nvSendAllPlanningBtn').addEventListener('click', () => {
-      NV_ALL_AGENTS.forEach((name, i) => setTimeout(() => sendNvPlanningEmail(name), i * 350));
+    const clearBtn = document.getElementById('nvFlashClearBtn');
+    if(clearBtn) clearBtn.addEventListener('click', () => {
+      db.collection('planningNV').doc('flashInfo').set({ message: '', updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => { panel.classList.add('hidden'); })
+        .catch(err => console.error(err));
     });
-    panel.querySelectorAll('[data-edit-nv-email]').forEach(btn => {
-      btn.addEventListener('click', () => {
-        const name = btn.dataset.editNvEmail;
-        const val = prompt(`Email pour ${name} :`, NV_EMAILS[name] || '');
-        if(val === null) return;
-        const clean = val.trim();
-        if(clean && !/^\S+@\S+\.\S+$/.test(clean)){ alert('Email invalide.'); return; }
-        const updated = { ...NV_EMAILS, [name]: clean };
-        db.collection('planningNV').doc('emails').set(updated).then(() => {
-          NV_EMAILS = updated;
-          renderNvPinsPanel(panel);
-        }).catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
-      });
-    });
-    panel.querySelectorAll('[data-send-welcome]').forEach(btn => {
-      btn.addEventListener('click', () => sendNvWelcomeEmail(btn.dataset.sendWelcome));
-    });
-    panel.querySelectorAll('[data-send-planning]').forEach(btn => {
-      btn.addEventListener('click', () => sendNvPlanningEmail(btn.dataset.sendPlanning));
-    });
-  });
-}
+  }).catch(err => console.error(err));
+});
 
 document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
   stopNvLocationTracking();
@@ -3864,6 +4235,7 @@ function renderNvPortal(){
       <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
       <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
       <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
+      <div id="nvStreakBadge" style="margin-top:12px;"></div>
     </div>
   `;
 
@@ -3915,8 +4287,64 @@ function renderNvPortal(){
   }).catch(err => {
     console.error(err);
     content.innerHTML = `<p style="padding:20px; color:var(--red);">Erreur de chargement.</p>`;
-  });
+  }).finally(() => renderNvStreakBadge());
 }
+
+function renderNvStreakBadge(){
+  const el = document.getElementById('nvStreakBadge');
+  if(!el) return;
+  db.collection('nvCheckins').where('agentName', '==', currentNvAgent).get().then(snap => {
+    const dates = new Set(snap.docs.map(d => d.data().date));
+    const todayKey = dateKeyFor(new Date());
+    let streak = 0;
+    let cursor = new Date();
+    // Si pas encore check-in aujourd'hui, on compte à partir d'hier (le streak d'avant reste valable).
+    if(!dates.has(todayKey)) cursor.setDate(cursor.getDate() - 1);
+    while(dates.has(dateKeyFor(cursor))){
+      streak++;
+      cursor.setDate(cursor.getDate() - 1);
+    }
+    if(streak >= 2){
+      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🔥 ${streak} jours d'affilée</span>`;
+    }
+  }).catch(err => console.error(err));
+}
+
+function renderNvFlashInfoBox(){
+  const box = document.getElementById('nvFlashInfoBox');
+  if(!box) return;
+  db.collection('planningNV').doc('flashInfo').get().then(doc => {
+    const message = doc.exists ? (doc.data().message || '') : '';
+    if(!message){ box.innerHTML = ''; return; }
+    box.innerHTML = `
+      <div style="background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.35); border-radius:14px; padding:14px 16px; margin-bottom:16px;">
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#B45309; margin-bottom:6px;">📢 Info équipe</div>
+        <div style="font-size:13px; color:var(--ink); line-height:1.5; white-space:pre-wrap;">${message}</div>
+      </div>
+    `;
+  }).catch(err => console.error(err));
+}
+
+function renderNvMyReports(){
+  const box = document.getElementById('nvMyReportsBox');
+  if(!box) return;
+  db.collection('rapports').where('agentName', '==', currentNvAgent).orderBy('createdAt', 'desc').limit(5).get().then(snap => {
+    if(snap.empty){ box.innerHTML = ''; return; }
+    const items = snap.docs.map(d => {
+      const r = d.data();
+      const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : (r.date || '');
+      const typeLabel = r.type === 'remarque' ? '💬' : '📩';
+      return `<div style="padding:8px 0; border-bottom:1px solid var(--line); font-size:12px;">
+        <span style="color:var(--ink-soft);">${when}</span> ${typeLabel} <span style="color:var(--ink);">${(r.text || '').slice(0, 60)}${(r.text || '').length > 60 ? '…' : ''}</span>
+      </div>`;
+    }).join('');
+    box.innerHTML = `
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:6px;">Mes derniers envois</div>
+      ${items}
+    `;
+  }).catch(err => console.error(err));
+}
+
 
 function renderNvPortalFull(content, motivationHtml, dateKey){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
@@ -3925,17 +4353,18 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
 
   const { zone, memberIdx } = slot;
   const override = NV_OVERRIDES[currentNvAgent] || {};
-  const shiftKey = override.shiftKey || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+  const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
   const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
-  const shiftLabel7 = SHIFTS_NV[shiftKey].label7;
-  const shiftLabel8 = SHIFTS_NV[shiftKey].label8;
-  const isJourShift = SHIFT_KEYS_NV.indexOf(shiftKey) === 0;
+  const shiftLabel7 = shiftInfo.label7;
+  const shiftLabel8 = shiftInfo.label8;
+  const shiftName = shiftInfo.name;
+  const isJourShift = shiftInfo.isJour;
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
   const slots = HOTSPOTS_NV[zone] || [];
   const zoneColor = NV_ZONE_COLORS[zone] || 'var(--sky)';
   const ALL_DAY_LABELS_NV = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
 
-  window.__nvTodayShiftKey = (todayIdx !== offDayIdx) ? shiftKey : null;
+  window.__nvTodayShiftInfo = (todayIdx !== offDayIdx) ? shiftInfo : null;
 
   let todayVenueHeroHtml = '';
   if(todayIdx === offDayIdx){
@@ -3959,7 +4388,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     const todayTag = isToday ? ' <span class="nv-today-tag">Aujourd\'hui</span>' : '';
     const isWeekend = dayIdx >= 4; // Ven/Sam/Dim
     const dayTime = isWeekend && dayIdx < 6 ? shiftLabel8 : shiftLabel7; // 8h Ven-Sam, 7h le reste
-    const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${isJourShift ? 'nv-time-jour' : 'nv-time-nuit'}">🕐 ${dayTime}</span>`;
+    const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${isJourShift ? 'nv-time-jour' : 'nv-time-nuit'}">🕐 ${shiftName} · ${dayTime}</span>`;
 
     if(dayIdx === offDayIdx){
       weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag}</div><span class="nv-day-chip off">😴 Repos</span></div>`;
@@ -3980,21 +4409,76 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
 
   content.innerHTML = `
     ${motivationHtml}
-    <div class="nv-portal-hero" style="background: linear-gradient(135deg, ${zoneColor}, ${zoneColor}CC);">
-      <div class="nv-portal-hero-label">Zone cette semaine</div>
+    <div id="nvFlashInfoBox"></div>
+    <div class="nv-portal-hero" style="background: linear-gradient(135deg, ${zoneColor}, ${zoneColor}CC);">      <div class="nv-portal-hero-label">Zone cette semaine</div>
       <div class="nv-portal-hero-zone">${getNvZoneLabel(zone)}</div>
-      <div class="nv-portal-hero-shift">🕐 ${shiftLabel7} <span style="opacity:.75; font-weight:500;">(${shiftLabel8} Ven-Sam)</span></div>
+      <div class="nv-portal-hero-shift">🕐 ${shiftName} · ${shiftLabel7} <span style="opacity:.75; font-weight:500;">(${shiftLabel8} Ven-Sam)</span></div>
       ${todayVenueHeroHtml}
     </div>
     <div class="portal-status" style="margin-top:14px;">
-      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📅 Ma semaine complète</div>
-      <div class="nv-day-strip">${weekHtml}</div>
+      <button class="btn-ghost" id="nvToggleWeekBtn" style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);">
+        <span>📅 Voir ma semaine complète</span>
+        <span id="nvToggleWeekIcon">▾</span>
+      </button>
+      <div class="nv-day-strip hidden" id="nvWeekStripWrap" style="margin-top:12px;">${weekHtml}</div>
     </div>
     <div style="margin-top:14px;">
       <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📍 Localisation</div>
       <div id="nvGeoArea"></div>
     </div>
+    <div style="margin-top:14px;">
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📝 Rapport &amp; remarques</div>
+      <div style="background:var(--sand-deep); border-radius:14px; padding:14px; border:1px solid var(--line);">
+        <select id="nvRapportType" class="login-input" style="margin-bottom:8px;">
+          <option value="rapport">📩 Rapport</option>
+          <option value="remarque">💬 Remarque</option>
+        </select>
+        <textarea id="nvRapportText" class="login-input" rows="3" style="resize:vertical; min-height:70px;" placeholder="Écris ton rapport ou ta remarque ici..."></textarea>
+        <button class="portal-btn" id="nvSendRapportBtn" style="padding:12px; font-size:14px;">Envoyer</button>
+        <div id="nvRapportMsg" style="text-align:center; font-size:12px; margin-top:8px;"></div>
+      </div>
+      <div id="nvMyReportsBox" style="margin-top:12px;"></div>
+    </div>
   `;
+
+  renderNvFlashInfoBox();
+  renderNvMyReports();
+
+  document.getElementById('nvSendRapportBtn').addEventListener('click', () => {
+    const type = document.getElementById('nvRapportType').value;
+    const text = document.getElementById('nvRapportText').value.trim();
+    const msgEl = document.getElementById('nvRapportMsg');
+    if(!text){ msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Écris quelque chose avant d\'envoyer.'; return; }
+    const btn = document.getElementById('nvSendRapportBtn');
+    btn.disabled = true;
+    db.collection('rapports').add({
+      agentName: currentNvAgent,
+      type,
+      text,
+      date: dateKeyFor(new Date()),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }).then(() => {
+      document.getElementById('nvRapportText').value = '';
+      msgEl.style.color = 'var(--green)';
+      msgEl.textContent = 'Envoyé ✅';
+      btn.disabled = false;
+      setTimeout(() => { msgEl.textContent = ''; }, 3000);
+      renderNvMyReports();
+    }).catch(err => {
+      console.error(err);
+      msgEl.style.color = 'var(--red)';
+      msgEl.textContent = 'Erreur, réessaie.';
+      btn.disabled = false;
+    });
+  });
+
+  document.getElementById('nvToggleWeekBtn').addEventListener('click', () => {
+    const wrap = document.getElementById('nvWeekStripWrap');
+    const icon = document.getElementById('nvToggleWeekIcon');
+    const nowHidden = wrap.classList.contains('hidden');
+    wrap.classList.toggle('hidden', !nowHidden);
+    icon.textContent = nowHidden ? '▴' : '▾';
+  });
 
   // Reprend automatiquement le suivi si l'agent l'avait activé plus tôt (et que son shift n'est pas fini).
   if(localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1'){
@@ -4010,7 +4494,7 @@ function updateNvGeoButtonVisibility(){
   if(!area) return;
   const isActive = !!nvGeoIntervalId;
   const everActivated = localStorage.getItem('nvGeoEverActivated_' + currentNvAgent) === '1';
-  const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftKey);
+  const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftInfo);
   const minsLeft = shiftEnd ? Math.round((shiftEnd.getTime() - Date.now()) / 60000) : null;
   const nearShiftEnd = isActive && minsLeft !== null && minsLeft <= 10 && minsLeft >= 0;
 
@@ -4039,11 +4523,11 @@ function updateNvGeoButtonVisibility(){
   }
 }
 
-function getShiftEndDateNv(shiftKey){
-  if(!shiftKey) return null;
+function getShiftEndDateNv(shiftInfo){
+  if(!shiftInfo) return null;
   const day = new Date().getDay(); // 0=Dim..6=Sam
   const isWeekendShift = (day === 5 || day === 6); // Ven=5, Sam=6
-  const label = isWeekendShift ? SHIFTS_NV[shiftKey].label8 : SHIFTS_NV[shiftKey].label7;
+  const label = isWeekendShift ? shiftInfo.label8 : shiftInfo.label7;
   const endStr = label.split('-')[1]; // "01:00" etc.
   const [h, m] = endStr.split(':').map(Number);
   const start = new Date();
@@ -4075,7 +4559,7 @@ function startNvLocationTracking(){
   }
   const sendPosition = () => {
     // Arrêt automatique si le shift du jour est terminé.
-    const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftKey);
+    const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftInfo);
     if(shiftEnd && Date.now() > shiftEnd.getTime()){
       stopNvLocationTracking();
       localStorage.removeItem('nvGeoActive_' + currentNvAgent);
