@@ -1480,6 +1480,20 @@ function attemptLogin(){
     errEl.textContent = 'Vérification...';
     const fullName = selectedProfile.fullName;
     db.collection('agents').where('name', '==', fullName).limit(1).get().then(snap => {
+      if(!snap.empty) return snap;
+      // Nom exact introuvable : on retente en tolérant un petit écart (typo/espace) sur les fiches Agents,
+      // pour ne pas bloquer le login à cause d'une orthographe légèrement différente.
+      return db.collection('agents').get().then(allSnap => {
+        let bestDoc = null, bestDist = 3; // tolère jusqu'à 2 caractères d'écart
+        allSnap.docs.forEach(d => {
+          const n = (d.data().name || '').trim();
+          if(!n) return;
+          const dist = levenshtein(n.toLowerCase(), fullName.toLowerCase());
+          if(dist < bestDist){ bestDist = dist; bestDoc = d; }
+        });
+        return bestDoc ? { empty: false, docs: [bestDoc] } : { empty: true, docs: [] };
+      });
+    }).then(snap => {
       if(snap.empty){
         errEl.textContent = "Cet agent n'a pas encore de fiche dans Agents — crée-la d'abord (avec le PIN).";
         return;
