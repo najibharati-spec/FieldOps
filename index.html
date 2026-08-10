@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>OPS HQ</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 
 <!-- Firebase (compat SDK — single file, no build step) -->
 <script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
@@ -16,17 +16,17 @@
 
 <style>
 :root{
-  --sand: #E9E2F9;
-  --sand-deep: #D8CBF2;
-  --sky: #7C3AED;
-  --sky-deep: #5B21B6;
-  --sky-ink: #6423C4;
-  --mustard: #4338CA;
-  --mustard-deep: #3730A3;
-  --ink: #0F0C1A;
-  --ink-soft: #4B4560;
+  --sand: #FFF6DE;
+  --sand-deep: #FDE29E;
+  --sky: #00A082;
+  --sky-deep: #007A63;
+  --sky-ink: #00614E;
+  --mustard: #E8A317;
+  --mustard-deep: #B9800E;
+  --ink: #1F1B0E;
+  --ink-soft: #6B5D3D;
   --paper: #FFFFFF;
-  --line: rgba(30,20,60,0.22);
+  --line: rgba(80,64,20,0.26);
   --green: #047857;
   --red: #DC2626;
   --radius: 14px;
@@ -38,8 +38,8 @@ html{ background: var(--sand); }
 body{
   font-family: var(--font-display);
   background:
-    radial-gradient(circle at 12% 0%, rgba(124,58,237,0.07), transparent 42%),
-    radial-gradient(circle at 88% 18%, rgba(79,70,229,0.06), transparent 40%),
+    radial-gradient(circle at 12% 0%, rgba(0,160,130,0.07), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(232,163,23,0.06), transparent 40%),
     var(--sand);
   background-attachment: fixed;
   color: var(--ink);
@@ -52,9 +52,9 @@ input, select{font-family: inherit;}
 
 /* ============ LOGIN SCREEN ============ */
 :root{
-  --login-navy: #F0EBFB;
-  --login-navy-2: #E0D6F7;
-  --login-amber: #7C3AED;
+  --login-navy: #FFF6DE;
+  --login-navy-2: #FDE29E;
+  --login-amber: #FFC244;
   --login-cream: #FFFFFF;
 }
 #loginScreen{ min-height: 100vh; }
@@ -64,7 +64,7 @@ input, select{font-family: inherit;}
 .login-hero-panel{
   flex: 1 1 46%; min-width: 340px;
   background:
-    radial-gradient(circle at 20% 10%, rgba(124,58,237,0.16), transparent 40%),
+    radial-gradient(circle at 20% 10%, rgba(0,160,130,0.16), transparent 40%),
     linear-gradient(160deg, var(--login-navy), var(--login-navy-2));
   color: #2B2440;
   display:flex; flex-direction:column; justify-content:space-between;
@@ -129,7 +129,7 @@ input, select{font-family: inherit;}
   transition: all .15s ease;
 }
 .profile-btn:hover{ border-color: var(--sky); background: var(--paper); transform: translateY(-1px); box-shadow: 0 4px 14px -8px rgba(30,20,60,0.2); }
-.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(124,58,237,0.16); }
+.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,160,130,0.16); }
 .profile-avatar{
   width: 40px; height: 40px; border-radius: 50%;
   display:flex; align-items:center; justify-content:center;
@@ -145,7 +145,7 @@ input, select{font-family: inherit;}
   font-size: 14px; margin-bottom: 12px; color: var(--ink);
   transition: border-color .15s, box-shadow .15s;
 }
-.login-input:focus{ outline:none; border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(124,58,237,0.14); }
+.login-input:focus{ outline:none; border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,160,130,0.14); }
 .login-submit{
   width:100%; padding: 14px; border-radius: var(--radius);
   background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px;
@@ -160,17 +160,40 @@ input, select{font-family: inherit;}
 /* ============ LOGIN TABS ============ */
 .login-tabs{ display:flex; gap:6px; background: var(--sand-deep); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
 .ltab{ flex:1; padding: 9px; border-radius: 7px; font-size: 12.5px; font-weight:700; color: var(--ink-soft); background: transparent; }
-.ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(91,33,182,0.35); }
+.ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(0,122,99,0.35); }
 
 /* ============ AGENT PORTAL ============ */
 #agentPortal, #nvAgentPortal{
   min-height: 100vh; display:flex; align-items:center; justify-content:center;
-  padding: 24px;
+  padding: 24px; position: relative; overflow:hidden;
   background:
-    radial-gradient(circle at 15% 15%, rgba(124,58,237,0.10), transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(79,70,229,0.08), transparent 45%),
+    radial-gradient(circle at 15% 15%, rgba(0,160,130,0.10), transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(232,163,23,0.08), transparent 45%),
     radial-gradient(circle at 1px 1px, rgba(30,20,60,0.05) 1px, transparent 0) 0 0/28px 28px,
     var(--sand);
+}
+.portal-bg-doodle{ display:none; }
+@media (min-width: 900px){
+  .portal-bg-doodle{
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
+    box-shadow:none; padding:14px 8px;
+  }
+  .portal-bg-doodle .dd-badge{
+    width:62px; height:62px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+    box-shadow:none; flex-shrink:0;
+  }
+  .portal-bg-doodle .dd-badge svg{ width:34px; height:34px; }
+  .portal-bg-doodle .dd-label{
+    font-family: 'Baloo 2', var(--font-display); font-size:17px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+    color: #fff; text-align:center; line-height:1.05;
+  }
+  .portal-bg-doodle.dd-tl{ top:7%; left:5%; }
+  .portal-bg-doodle.dd-bl{ bottom:9%; left:8%; }
+  .portal-bg-doodle.dd-tr{ top:9%; right:6%; }
+  .portal-bg-doodle.dd-br{ bottom:8%; right:5%; }
+  .portal-bg-doodle.dd-ml{ top:44%; left:2%; }
+  .portal-bg-doodle.dd-mr{ top:46%; right:3%; }
 }
 .portal-card{
   width:100%; max-width: 420px; background: var(--paper); border-radius: 20px; padding: 28px;
@@ -230,7 +253,7 @@ input, select{font-family: inherit;}
   background: linear-gradient(135deg, var(--sky), var(--sky-deep));
   display:flex; align-items:center; justify-content:center;
   font-weight:800; color:#fff; font-size:14px;
-  box-shadow: 0 8px 18px -8px rgba(124,58,237,0.55);
+  box-shadow: 0 8px 18px -8px rgba(0,160,130,0.55);
 }
 .sidebar-brand h2{ font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); }
 .nav-group{ margin-bottom: 18px; }
@@ -248,7 +271,7 @@ input, select{font-family: inherit;}
 .nav-item.active{
   background: linear-gradient(135deg, var(--sky), var(--sky-deep));
   color: #fff;
-  box-shadow: 0 6px 18px -8px rgba(124,58,237,0.5);
+  box-shadow: 0 6px 18px -8px rgba(0,160,130,0.5);
 }
 .nav-item svg{ width:16px; height:16px; flex-shrink:0; }
 .sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid var(--line); }
@@ -291,11 +314,11 @@ input, select{font-family: inherit;}
   box-shadow: 0 4px 16px -8px rgba(30,20,60,0.12);
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px -20px rgba(124,58,237,0.25); }
+.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px -20px rgba(0,160,130,0.25); }
 .stat-card.accent-green{ border-left-color: #059669; }
 .stat-card.accent-blue{ border-left-color: #0284C7; }
 .stat-card.accent-amber{ border-left-color: #B45309; }
-.stat-card.accent-purple{ border-left-color: #7C3AED; }
+.stat-card.accent-purple{ border-left-color: #00A082; }
 .stat-card.accent-red{ border-left-color: #DC2626; }
 .stat-card.accent-orange{ border-left-color: #EA580C; }
 .stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600; margin-bottom: 8px;}
@@ -325,11 +348,11 @@ input, select{font-family: inherit;}
 .nv-member-hotspot{ font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; line-height: 1.5; }
 .nv-chip{ font-size: 12.5px; font-weight: 700; padding: 6px 13px; border-radius: 20px; white-space:nowrap; }
 .nv-chip.shift-jour{ background: rgba(5,150,105,0.18); color: #047857; }
-.nv-chip.shift-nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
+.nv-chip.shift-nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
 .nv-chip.off{ background: rgba(107,114,128,0.12); color: #6B7280; }
 .nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
 .nv-day-block{ border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-.nv-day-today{ background: rgba(124,58,237,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
+.nv-day-today{ background: rgba(0,160,130,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
 .nv-today-tag{ background: var(--sky-deep); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-portal-hero{
   border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: 0 16px 34px -20px rgba(30,20,60,0.35);
@@ -341,7 +364,7 @@ input, select{font-family: inherit;}
 .nv-portal-day:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
 .nv-time-chip{ font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-left: 6px; display:inline-block; }
 .nv-time-chip.nv-time-jour{ background: rgba(5,150,105,0.18); color: #047857; }
-.nv-time-chip.nv-time-nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
+.nv-time-chip.nv-time-nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
 .nv-day-block:last-child{ border-bottom: none; padding-bottom: 0; }
 .nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
@@ -350,7 +373,7 @@ input, select{font-family: inherit;}
   padding: 8px 12px; line-height: 1.3; display:inline-block; text-decoration:none; font-weight:600;
 }
 .nv-day-chip-link{ cursor:pointer; }
-.nv-day-chip-link:hover{ background: #DDD6F5; text-decoration: underline; }
+.nv-day-chip-link:hover{ background: #FDE29E; text-decoration: underline; }
 .nv-day-chip.off{ background: rgba(107,114,128,0.10); color: #6B7280; font-weight: 700; }
 .nv-today-hero{
   border-radius: 12px; padding: 12px 14px; color:#fff; display:flex; flex-direction:column; gap: 4px;
@@ -385,6 +408,16 @@ input, select{font-family: inherit;}
   border:none; background:none; color: var(--sky-ink); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0;
 }
 .nv-mini-link.nv-mini-danger{ color: var(--red); }
+.agent-pin-chip{
+  display:inline-block; font-family: var(--font-mono); font-weight:800; font-size:13px;
+  background: var(--sand-deep); color: var(--ink); padding: 4px 10px; border-radius: 8px; letter-spacing: 0.02em;
+}
+.agent-access-btn{
+  border:1px solid var(--line); background: var(--paper); color: var(--sky-ink); font-size: 11.5px; font-weight:700;
+  cursor:pointer; padding: 5px 10px; border-radius: 8px; display:inline-flex; align-items:center; gap:4px;
+  transition: background 0.15s, border-color 0.15s;
+}
+.agent-access-btn:hover{ background: rgba(0,160,130,0.08); border-color: var(--sky); }
 .nv-fulllist-row b{ color: var(--ink-soft); margin-right: 6px; }
 .nv-loc-badge{
   display:block; text-align:center; font-size: 11px; font-weight: 700; padding: 6px 10px;
@@ -411,13 +444,13 @@ th{ text-align:left; font-size: 11px; text-transform:uppercase; letter-spacing:.
 td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line); color: var(--ink); }
 tr:last-child td{ border-bottom:none; }
 .badge{ display:inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.badge.fix{ background: rgba(124,58,237,0.16); color: #5B21B6; }
+.badge.fix{ background: rgba(0,160,130,0.16); color: #00614E; }
 .badge.var{ background: rgba(180,83,9,0.20); color: #92400E; }
 .badge.jour{ background: rgba(5,150,105,0.18); color: #047857; }
-.badge.nuit{ background: rgba(79,70,229,0.18); color: #3730A3; }
+.badge.nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
 .badge.abs-maladie{ background: rgba(220,38,38,0.16); color: #B91C1C; }
 .badge.abs-injustifiee{ background: rgba(107,114,128,0.18); color: #374151; }
-.badge.abs-conge{ background: rgba(124,58,237,0.16); color: #5B21B6; }
+.badge.abs-conge{ background: rgba(0,160,130,0.16); color: #00614E; }
 .badge.abs-ferie{ background: rgba(5,150,105,0.18); color: #047857; }
 .badge.abs-double{ background: rgba(180,83,9,0.20); color: #92400E; }
 .badge.abs-off{ background: rgba(2,132,199,0.18); color: #0369A1; }
@@ -448,9 +481,9 @@ tr:last-child td{ border-bottom:none; }
   color: #fff; font-weight: 700; font-size: 13px;
   padding: 10px 18px; border-radius: var(--radius); white-space: nowrap;
   transition: transform .15s, box-shadow .15s;
-  box-shadow: 0 10px 22px -10px rgba(79,70,229,0.45);
+  box-shadow: 0 10px 22px -10px rgba(232,163,23,0.45);
 }
-.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px -10px rgba(79,70,229,0.55); }
+.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px -10px rgba(232,163,23,0.55); }
 .btn-ghost{
   background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px;
   padding: 10px 16px; border-radius: var(--radius);
@@ -520,7 +553,7 @@ tr:last-child td{ border-bottom:none; }
   background: var(--sand-deep); border-bottom: 2px solid var(--line); padding-top: 12px; padding-bottom: 12px;
 }
 .planning-table tbody tr:nth-child(even){ background: rgba(30,20,60,0.015); }
-.planning-table tbody tr:hover{ background: rgba(124,58,237,0.04); }
+.planning-table tbody tr:hover{ background: rgba(0,160,130,0.04); }
 .planning-table td.agent-name-cell{ text-align:left; font-weight: 700; color: var(--ink); }
 .planning-table td.zone-cell{ text-align:left; font-size: 11.5px; color: var(--ink-soft); }
 .agent-name-edit{
@@ -544,7 +577,7 @@ tr:last-child td{ border-bottom:none; }
 }
 .shift-pill:hover{ filter: brightness(1.08); transform: translateY(-1px); }
 .shift-pill.s-jour{ background: #059669; color: #fff; }
-.shift-pill.s-nuit{ background: #4338CA; color: #fff; }
+.shift-pill.s-nuit{ background: #B9800E; color: #fff; }
 .shift-pill.s-quiet{ background: var(--sand-deep); color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--line); }
 .cell-select{
   width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--sky); font-size: 11px;
@@ -637,7 +670,9 @@ tr:last-child td{ border-bottom:none; }
 
       <div class="hero-foot">
         <span id="heroClock">--:--</span>
+        <div id="heroDate" style="font-size:12px; font-weight:700; color:rgba(43,36,64,0.7); text-transform:capitalize; margin-bottom:8px;"></div>
         <p>Gestion opérationnelle terrain — Rabat &amp; environs</p>
+        <div id="heroMotivation" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(43,36,64,0.14); font-style:italic; font-size:12.5px; color:rgba(43,36,64,0.65); max-width:280px; line-height:1.5;"></div>
       </div>
     </aside>
 
@@ -660,20 +695,44 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- AGENT PORTAL (écran simplifié pour un agent connecté) -->
 <div id="agentPortal" class="hidden">
+  <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#fff" stroke="none"/></svg></div>
+    <div class="dd-label">Zone</div>
+  </div>
+  <div class="portal-bg-doodle dd-bl" style="background:#E8A317;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+    <div class="dd-label">Livraison</div>
+  </div>
+  <div class="portal-bg-doodle dd-tr" style="background:#DC7A0E;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2l2.9 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.5 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg></div>
+    <div class="dd-label">Bravo</div>
+  </div>
+  <div class="portal-bg-doodle dd-br" style="background:#0284C7;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg></div>
+    <div class="dd-label">Équipe</div>
+  </div>
+  <div class="portal-bg-doodle dd-ml" style="background:#DC2626;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+    <div class="dd-label">Ponctuel</div>
+  </div>
+  <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="dd-label">Check-in</div>
+  </div>
   <div class="portal-side-art">
     <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="artGlow" cx="50%" cy="35%" r="60%">
-          <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#00A082" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#00A082" stop-opacity="0"/>
         </radialGradient>
         <linearGradient id="artScooter" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#A78BFA"/>
-          <stop offset="100%" stop-color="#6D28D9"/>
+          <stop offset="0%" stop-color="#4FBFA8"/>
+          <stop offset="100%" stop-color="#007A63"/>
         </linearGradient>
       </defs>
       <circle cx="160" cy="120" r="140" fill="url(#artGlow)"/>
-      <g opacity="0.5" fill="#1B2540">
+      <g opacity="0.5" fill="#4A3B1F">
         <rect x="10" y="230" width="26" height="60" rx="2"/>
         <rect x="42" y="200" width="30" height="90" rx="2"/>
         <rect x="80" y="220" width="24" height="70" rx="2"/>
@@ -681,7 +740,7 @@ tr:last-child td{ border-bottom:none; }
         <rect x="254" y="235" width="24" height="55" rx="2"/>
         <rect x="284" y="195" width="30" height="95" rx="2"/>
       </g>
-      <line x1="0" y1="290" x2="320" y2="290" stroke="#2A3352" stroke-width="2"/>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#5C4A28" stroke-width="2"/>
       <g transform="translate(90,150)">
         <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
         <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter)" stroke-width="6"/>
@@ -693,7 +752,7 @@ tr:last-child td{ border-bottom:none; }
         <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter)"/>
         <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
       </g>
-      <g fill="#A78BFA" opacity="0.8">
+      <g fill="#4FBFA8" opacity="0.8">
         <circle cx="45" cy="60" r="3"/>
         <circle cx="270" cy="45" r="4"/>
         <circle cx="290" cy="140" r="3"/>
@@ -723,20 +782,44 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
 <div id="nvAgentPortal" class="hidden">
+  <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#fff" stroke="none"/></svg></div>
+    <div class="dd-label">Zone</div>
+  </div>
+  <div class="portal-bg-doodle dd-bl" style="background:#E8A317;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+    <div class="dd-label">Livraison</div>
+  </div>
+  <div class="portal-bg-doodle dd-tr" style="background:#DC7A0E;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="#fff" stroke="none"><path d="M12 2l2.9 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.5 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg></div>
+    <div class="dd-label">Bravo</div>
+  </div>
+  <div class="portal-bg-doodle dd-br" style="background:#0284C7;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg></div>
+    <div class="dd-label">Équipe</div>
+  </div>
+  <div class="portal-bg-doodle dd-ml" style="background:#DC2626;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+    <div class="dd-label">Ponctuel</div>
+  </div>
+  <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="dd-label">Check-in</div>
+  </div>
   <div class="portal-side-art">
     <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <radialGradient id="artGlow2" cx="50%" cy="35%" r="60%">
-          <stop offset="0%" stop-color="#8B5CF6" stop-opacity="0.35"/>
-          <stop offset="100%" stop-color="#8B5CF6" stop-opacity="0"/>
+          <stop offset="0%" stop-color="#00A082" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#00A082" stop-opacity="0"/>
         </radialGradient>
         <linearGradient id="artScooter2" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stop-color="#A78BFA"/>
-          <stop offset="100%" stop-color="#6D28D9"/>
+          <stop offset="0%" stop-color="#4FBFA8"/>
+          <stop offset="100%" stop-color="#007A63"/>
         </linearGradient>
       </defs>
       <circle cx="160" cy="120" r="140" fill="url(#artGlow2)"/>
-      <g opacity="0.5" fill="#1B2540">
+      <g opacity="0.5" fill="#4A3B1F">
         <rect x="10" y="230" width="26" height="60" rx="2"/>
         <rect x="42" y="200" width="30" height="90" rx="2"/>
         <rect x="80" y="220" width="24" height="70" rx="2"/>
@@ -744,7 +827,7 @@ tr:last-child td{ border-bottom:none; }
         <rect x="254" y="235" width="24" height="55" rx="2"/>
         <rect x="284" y="195" width="30" height="95" rx="2"/>
       </g>
-      <line x1="0" y1="290" x2="320" y2="290" stroke="#2A3352" stroke-width="2"/>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#5C4A28" stroke-width="2"/>
       <g transform="translate(90,150)">
         <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
         <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter2)" stroke-width="6"/>
@@ -756,7 +839,7 @@ tr:last-child td{ border-bottom:none; }
         <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter2)"/>
         <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
       </g>
-      <g fill="#A78BFA" opacity="0.8">
+      <g fill="#4FBFA8" opacity="0.8">
         <circle cx="45" cy="60" r="3"/>
         <circle cx="270" cy="45" r="4"/>
         <circle cx="290" cy="140" r="3"/>
@@ -772,7 +855,10 @@ tr:last-child td{ border-bottom:none; }
         <b id="nvPortalAgentName">—</b>
         <span id="nvPortalClock">--:--</span>
       </div>
-      <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="agent-access-btn" id="nvPortalRapportBtn" title="Rapport &amp; remarques" style="font-size:14px; padding:9px 16px; font-weight:800;">📝 Rapport</button>
+        <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
+      </div>
     </div>
     <div id="nvPortalContent"></div>
   </div>
@@ -1530,7 +1616,7 @@ function enterAgentPortal(agent){
   ];
   const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
   document.getElementById('portalMotivation').innerHTML = `
-    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(0,160,130,0.55);">
       <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
       <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
       <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
@@ -1676,6 +1762,26 @@ function tickHeroClock(){
 }
 setInterval(tickHeroClock, 1000);
 tickHeroClock();
+
+const HERO_MOTIVATIONAL_QUOTES = [
+  "Chaque course compte. Bonne journée sur le terrain !",
+  "L'équipe compte sur vous aujourd'hui — donnez le meilleur !",
+  "Un jour à la fois, une livraison à la fois. On avance !",
+  "Votre travail fait la différence pour toute l'équipe.",
+  "Restez concentrés, restez safe — et faites du bon boulot !",
+  "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
+];
+function renderHeroDateAndQuote(){
+  const dateEl = document.getElementById('heroDate');
+  const quoteEl = document.getElementById('heroMotivation');
+  const now = new Date();
+  if(dateEl) dateEl.textContent = now.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+  if(quoteEl){
+    const quoteIdx = now.getDate() % HERO_MOTIVATIONAL_QUOTES.length;
+    quoteEl.textContent = `"${HERO_MOTIVATIONAL_QUOTES[quoteIdx]}"`;
+  }
+}
+renderHeroDateAndQuote();
 
 function tickClock(){
   const now = new Date();
@@ -1965,12 +2071,12 @@ function renderAgentsTable(){
     const tr = document.createElement('tr');
     tr.innerHTML = `
       <td><b>${a.name}</b>${typoMatch ? `<div style="font-size:10.5px; color:var(--red); font-weight:600; margin-top:2px;">⚠️ Nom différent de "${typoMatch}" (Planning NV) — PIN et email ne marcheront pas tant que ce n'est pas corrigé</div>` : ''}</td>
-      <td style="font-family: var(--font-mono); font-weight:700;">${a.pin || '<span style="color:var(--ink-soft); font-weight:400;">—</span>'}</td>
-      <td style="font-size:11.5px;">
-        ${a.email ? `<div style="color:var(--ink-soft); margin-bottom:4px;">${a.email}</div>` : '<div style="color:var(--ink-soft); margin-bottom:4px;">—</div>'}
-        ${a.email ? `<div style="display:flex; gap:8px;">
-          <button class="nv-mini-link" data-send-access="${a.id}">✉️ Accès</button>
-          ${isNvAgent ? `<button class="nv-mini-link" data-send-planning="${a.id}">✉️ Planning</button>` : ''}
+      <td>${a.pin ? `<span class="agent-pin-chip">${a.pin}</span>` : '<span style="color:var(--ink-soft); font-weight:400;">—</span>'}</td>
+      <td style="font-size:12px; min-width:170px;">
+        ${a.email ? `<div style="color:var(--ink); font-weight:600; margin-bottom:6px;">✉️ ${a.email}</div>` : '<div style="color:var(--ink-soft); margin-bottom:6px;">Pas d\'email</div>'}
+        ${a.email ? `<div style="display:flex; gap:6px; flex-wrap:wrap;">
+          <button class="agent-access-btn" data-send-access="${a.id}">🔑 Accès</button>
+          ${isNvAgent ? `<button class="agent-access-btn" data-send-planning="${a.id}">📅 Planning</button>` : ''}
         </div>` : ''}
       </td>
       <td><span class="zone-dot" style="background:${ZONE_COLORS[zone] || 'var(--ink-soft)'}"></span>${getZoneLabel(zone)}</td>
@@ -2073,7 +2179,7 @@ const TEAM_IMPORT = [
   { name: "Achraf Akhlij",     nickname: "Akhlij",     group: "trio2", defaultPeriod: "JOUR", defaultOffDay: 0 },
   { name: "Islam Elmardi",     nickname: "Elmardi",    group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 2 },
   { name: "Oussama El Atrach", nickname: "El Atrach",  group: "trio2", defaultPeriod: "NUIT", defaultOffDay: 3 },
-  { name: "Youssef Derkoui",   nickname: "Derkoui",    group: "trio3", defaultPeriod: "JOUR", defaultOffDay: 0 },
+  { name: "Youssef Derkaoui",  nickname: "Derkaoui",   group: "trio3", defaultPeriod: "JOUR", defaultOffDay: 0 },
   { name: "Mourad Cherradi",   nickname: "Cherradi",   group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 1 },
   { name: "Ayoub Abssi",       nickname: "Abssi",      group: "trio3", defaultPeriod: "NUIT", defaultOffDay: 3 },
   { name: "Charaf Loummihi",   nickname: "Loummihi",   group: "sale",  defaultPeriod: "JOUR", defaultOffDay: 0 },
@@ -3354,6 +3460,7 @@ function isValidHotspotShapeNv(data){
 
 function listenHotspotsNv(){
   listenNvZoneLabels();
+  listenNvRowOrder();
   listenNvVenueLinks();
   listenNvOverrides();
   if(hotspotsNvUnsub) hotspotsNvUnsub();
@@ -3502,6 +3609,29 @@ function listenNvZoneLabels(){
   }, err => console.error(err));
 }
 
+// Ordre d'affichage personnalisé des agents dans Vue Semaine (persistant, indépendant de la semaine).
+let NV_ROW_ORDER = [];
+let nvRowOrderUnsub = null;
+
+function listenNvRowOrder(){
+  if(nvRowOrderUnsub) nvRowOrderUnsub();
+  nvRowOrderUnsub = db.collection('planningNV').doc('rowOrder').onSnapshot(doc => {
+    NV_ROW_ORDER = (doc.exists && doc.data() && doc.data().order) || [];
+    refreshNvViews();
+  }, err => console.error(err));
+}
+
+function moveNvAgentRow(name, direction, currentOrderNames){
+  const order = NV_ROW_ORDER.length ? [...NV_ROW_ORDER] : [...currentOrderNames];
+  // S'assure que tous les agents actuellement affichés sont présents dans l'ordre stocké.
+  currentOrderNames.forEach(n => { if(!order.includes(n)) order.push(n); });
+  const idx = order.indexOf(name);
+  const swapIdx = idx + direction;
+  if(idx < 0 || swapIdx < 0 || swapIdx >= order.length) return;
+  [order[idx], order[swapIdx]] = [order[swapIdx], order[idx]];
+  db.collection('planningNV').doc('rowOrder').set({ order }).catch(err => console.error(err));
+}
+
 function renameNvZone(zone){
   const value = prompt(`Nouveau nom affiché pour "${getNvZoneLabel(zone)}" :`, getNvZoneLabel(zone));
   if(!value || !value.trim()) return;
@@ -3567,25 +3697,12 @@ function resolveNvShiftInfo(override, memberIdx, weekIdx){
   return { name: s.name, label7: s.label7, label8: s.label8, isJour: SHIFT_KEYS_NV.indexOf(shiftKey) === 0, shiftKey };
 }
 
-function editNvShift(agentName){
-  const choice = prompt(`Shift de "${agentName}" cette semaine :\n\n1. ${SHIFTS_NV.S1.name} — ${SHIFTS_NV.S1.label7}\n2. ${SHIFTS_NV.S2.name} — ${SHIFTS_NV.S2.label7}\n3. ${SHIFTS_NV.S3.name} — ${SHIFTS_NV.S3.label7}\n\nTape 1, 2 ou 3 — ou tape directement une heure de début personnalisée (ex: 14:00) :`);
-  if(!choice) return;
-  const trimmed = choice.trim();
-  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+function applyNvShiftChoice(agentName, weekIdx, shiftKey){
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), shiftKey, customShift: null } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
 
-  const map = { '1': 'S1', '2': 'S2', '3': 'S3' };
-  if(map[trimmed]){
-    const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), shiftKey: map[trimmed], customShift: null } };
-    db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
-    return;
-  }
-
-  // Heure personnalisée, ex: "14:00" ou "14h30"
-  const match = trimmed.match(/^(\d{1,2})[:h](\d{2})?$/i);
-  if(!match){ alert('Choix invalide. Tape 1, 2, 3 ou une heure au format HH:MM (ex: 14:00).'); return; }
-  const startH = parseInt(match[1], 10);
-  const startM = match[2] ? parseInt(match[2], 10) : 0;
-  if(startH > 23 || startM > 59){ alert('Heure invalide.'); return; }
+function applyNvCustomHour(agentName, weekIdx, startH, startM){
   const startLabel = `${String(startH).padStart(2, '0')}:${String(startM).padStart(2, '0')}`;
   const endLabel7 = formatHourNv(startH + 7);
   const endLabel8 = formatHourNv(startH + 8);
@@ -3599,30 +3716,115 @@ function editNvShift(agentName){
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
 }
 
-function editNvOffDay(agentName){
-  const choice = prompt(`Jour OFF de "${agentName}" cette semaine :\n\n1. Lundi\n2. Mardi\n3. Mercredi\n4. Jeudi\n\nTape 1, 2, 3 ou 4 :`);
-  if(!choice) return;
-  const offDayIdx = parseInt(choice.trim(), 10) - 1;
-  if(isNaN(offDayIdx) || offDayIdx < 0 || offDayIdx > 3){ alert('Choix invalide.'); return; }
+function editNvShift(agentName){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const hourOptions = [];
+  for(let h = 6; h <= 23; h++) hourOptions.push(h);
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:460px; max-height:85vh; display:flex; flex-direction:column;">
+      <h3>⏱️ Shift de "${agentName}"</h3>
+      <p class="modal-hint" style="margin-top:0;">Choisis un shift fixe ou une heure de début.</p>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;" id="nvShiftPresets">
+        <button type="button" class="btn-ghost" data-preset="S1" style="text-align:left;">${SHIFTS_NV.S1.name} — ${SHIFTS_NV.S1.label7}</button>
+        <button type="button" class="btn-ghost" data-preset="S2" style="text-align:left;">${SHIFTS_NV.S2.name} — ${SHIFTS_NV.S2.label7}</button>
+        <button type="button" class="btn-ghost" data-preset="S3" style="text-align:left;">${SHIFTS_NV.S3.name} — ${SHIFTS_NV.S3.label7}</button>
+      </div>
+      <p class="modal-hint" style="margin-bottom:8px;">Ou choisis une heure de début personnalisée :</p>
+      <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; overflow-y:auto; padding-bottom:4px;" id="nvShiftHourGrid">
+        ${hourOptions.map(h => `<button type="button" class="btn-ghost" data-hour="${h}" style="padding:8px 4px; font-family:var(--font-mono); font-size:13px;">${String(h).padStart(2,'0')}:00</button>`).join('')}
+      </div>
+      <p class="modal-hint" style="margin:12px 0 6px;">Ou tape une heure exacte (ex: 14:30) :</p>
+      <div style="display:flex; gap:8px;">
+        <input type="text" id="nvShiftCustomInput" placeholder="HH:MM" class="login-input" style="flex:1; padding:8px 10px; font-family:var(--font-mono);" />
+        <button type="button" class="btn-primary" id="nvShiftCustomApply" style="padding:8px 14px;">OK</button>
+      </div>
+      <div class="modal-error" id="nvShiftCustomError"></div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvShiftCloseBtn">Annuler</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvShiftCloseBtn').addEventListener('click', close);
+  overlay.querySelectorAll('[data-preset]').forEach(btn => {
+    btn.addEventListener('click', () => { applyNvShiftChoice(agentName, weekIdx, btn.dataset.preset); close(); });
+  });
+  overlay.querySelectorAll('[data-hour]').forEach(btn => {
+    btn.addEventListener('click', () => { applyNvCustomHour(agentName, weekIdx, parseInt(btn.dataset.hour, 10), 0); close(); });
+  });
+  overlay.querySelector('#nvShiftCustomApply').addEventListener('click', () => {
+    const raw = overlay.querySelector('#nvShiftCustomInput').value.trim();
+    const match = raw.match(/^(\d{1,2})[:h](\d{2})$/i);
+    const errorEl = overlay.querySelector('#nvShiftCustomError');
+    if(!match){ errorEl.textContent = 'Format invalide. Exemple : 14:30'; return; }
+    const startH = parseInt(match[1], 10);
+    const startM = parseInt(match[2], 10);
+    if(startH > 23 || startM > 59){ errorEl.textContent = 'Heure invalide.'; return; }
+    applyNvCustomHour(agentName, weekIdx, startH, startM);
+    close();
+  });
+}
+
+function applyNvOffDay(agentName, weekIdx, offDayIdx){
   const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), offDayIdx } };
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
 }
 
-function editNvZone(agentName){
-  const zoneNames = Object.keys(NV_ZONE_COLORS);
-  const choice = prompt(`Zone de "${agentName}" cette semaine :\n\n${zoneNames.map((z, i) => `${i + 1}. ${z}`).join('\n')}\n\nTape le numéro (laisse vide pour revenir à la rotation automatique) :`);
-  if(choice === null) return;
+function editNvOffDay(agentName){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
-  const trimmed = choice.trim();
-  let zoneOverride = null;
-  if(trimmed){
-    const idx = parseInt(trimmed, 10) - 1;
-    if(isNaN(idx) || idx < 0 || idx >= zoneNames.length){ alert('Choix invalide.'); return; }
-    zoneOverride = zoneNames[idx];
-  }
+  const dayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi'];
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:400px;">
+      <h3>🛌 Jour OFF de "${agentName}"</h3>
+      <p class="modal-hint" style="margin-top:0;">Uniquement Lundi à Jeudi.</p>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+        ${dayNames.map((d, i) => `<button type="button" class="btn-ghost" data-off-idx="${i}" style="text-align:left;">${d}</button>`).join('')}
+      </div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvOffCloseBtn">Annuler</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvOffCloseBtn').addEventListener('click', close);
+  overlay.querySelectorAll('[data-off-idx]').forEach(btn => {
+    btn.addEventListener('click', () => { applyNvOffDay(agentName, weekIdx, parseInt(btn.dataset.offIdx, 10)); close(); });
+  });
+}
+
+function applyNvZoneChoice(agentName, weekIdx, zoneOverride){
   const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), zoneOverride } };
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
+
+function editNvZone(agentName){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const zoneNames = Object.keys(NV_ZONE_COLORS);
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:400px;">
+      <h3>📍 Zone de "${agentName}"</h3>
+      <p class="modal-hint" style="margin-top:0;">Choisis une zone pour cette semaine, ou reviens à la rotation automatique.</p>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:14px;">
+        ${zoneNames.map(z => `<button type="button" class="btn-ghost" data-zone="${z}" style="text-align:left;">${getNvZoneLabel(z)}</button>`).join('')}
+        <button type="button" class="btn-ghost" data-zone="" style="text-align:left; color:var(--ink-soft);">↩️ Rotation automatique</button>
+      </div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvZoneCloseBtn">Annuler</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvZoneCloseBtn').addEventListener('click', close);
+  overlay.querySelectorAll('[data-zone]').forEach(btn => {
+    btn.addEventListener('click', () => { applyNvZoneChoice(agentName, weekIdx, btn.dataset.zone || null); close(); });
+  });
 }
 
 function buildZoneAssignmentsNv(weekIdx){
@@ -3706,7 +3908,7 @@ function renderNvWeekGridView(){
   const ALL_DAY_LABELS_NV = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
   const todayIdx = (new Date().getDay() + 6) % 7;
 
-  let bodyRows = '';
+  const rows = [];
   Object.keys(HOTSPOTS_NV).forEach(zone => {
     const members = zones[zone];
     const slots = HOTSPOTS_NV[zone] || [];
@@ -3731,7 +3933,7 @@ function renderNvWeekGridView(){
       const dayCells = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
         const isToday = dayIdx === todayIdx;
         if(dayIdx === offDayIdx){
-          return `<td style="${isToday ? 'background:rgba(139,92,246,0.06);' : ''}"><span class="cell-pill" style="background:var(--sand-deep); color:var(--ink-soft); display:block; font-size:10.5px;">OFF</span></td>`;
+          return `<td style="${isToday ? 'background:rgba(0,160,130,0.06);' : ''}"><span class="cell-pill" style="background:var(--sand-deep); color:var(--ink-soft); display:block; font-size:10.5px;">OFF</span></td>`;
         }
         let hotspotLine = '';
         if(slots.length){
@@ -3740,19 +3942,27 @@ function renderNvWeekGridView(){
           const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
           hotspotLine = `<div style="font-size:9.5px; color:var(--ink-soft); margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${venues.join(', ')}">📍 ${label}</div>`;
         }
-        return `<td style="${isToday ? 'background:rgba(139,92,246,0.06);' : ''}">
-          <span class="cell-pill ${isJour ? 'jour' : 'nuit'}" style="display:block; background:${isJour ? 'rgba(52,211,153,0.15)' : 'rgba(99,102,241,0.18)'}; color:${isJour ? '#34D399' : '#A5B4FC'}; font-size:10.5px;">${isJour ? '☀️' : '🌙'} ${shiftInfo.name}</span>
+        const isWeekendShortDay = dayIdx >= 4 && dayIdx < 6; // Ven, Sam
+        const cellTimeLabel = isWeekendShortDay ? shiftInfo.label8 : shiftInfo.label7;
+        return `<td style="${isToday ? 'background:rgba(0,160,130,0.06);' : ''}">
+          <span class="cell-pill ${isJour ? 'jour' : 'nuit'}" data-cell-edit-shift="${name}" title="Cliquer pour changer l'heure" style="display:block; cursor:pointer; background:${isJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${isJour ? '#047857' : '#8A6208'}; border:1.5px solid ${isJour ? 'rgba(4,120,87,0.35)' : 'rgba(184,128,14,0.4)'}; font-size:15.5px; font-weight:800; font-family:var(--font-mono); letter-spacing:-0.01em; padding:5px 6px; border-radius:8px;">${isJour ? '☀️' : '🌙'} ${cellTimeLabel}</span>
           ${hotspotLine}
         </td>`;
       }).join('');
 
-      bodyRows += `
+      const rowHtml = `
         <tr>
           <td class="sticky-col agent-name-cell">
-            <span class="agent-row-avatar" style="display:flex; align-items:center; gap:8px;">
-              <span class="avatar" style="width:26px; height:26px; border-radius:50%; background:${color}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0;">${initials}</span>
-              ${name}
-            </span>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <div style="display:flex; flex-direction:column; gap:1px;">
+                <button type="button" class="nv-mini-link" data-move-up="${name}" title="Monter" style="padding:0; line-height:1; font-size:11px;">▲</button>
+                <button type="button" class="nv-mini-link" data-move-down="${name}" title="Descendre" style="padding:0; line-height:1; font-size:11px;">▼</button>
+              </div>
+              <span class="agent-row-avatar" style="display:flex; align-items:center; gap:8px;">
+                <span class="avatar" style="width:26px; height:26px; border-radius:50%; background:${color}; color:#fff; display:inline-flex; align-items:center; justify-content:center; font-size:10px; font-weight:800; flex-shrink:0;">${initials}</span>
+                ${name}
+              </span>
+            </div>
           </td>
           <td class="zone-cell">
             ${getNvZoneLabel(zone)}${override.zoneOverride ? ' <span title="Zone modifiée manuellement">✏️</span>' : ''}
@@ -3768,8 +3978,18 @@ function renderNvWeekGridView(){
           </td>
         </tr>
       `;
+      rows.push({ name, html: rowHtml });
     });
   });
+
+  // Applique l'ordre d'affichage personnalisé (persistant), agents non classés à la fin dans l'ordre naturel.
+  const allNames = rows.map(r => r.name);
+  const orderedNames = [
+    ...NV_ROW_ORDER.filter(n => allNames.includes(n)),
+    ...allNames.filter(n => !NV_ROW_ORDER.includes(n)),
+  ];
+  const rowsByName = Object.fromEntries(rows.map(r => [r.name, r.html]));
+  const bodyRows = orderedNames.map(n => rowsByName[n]).join('');
 
   container.innerHTML = `
     <table class="planning-table">
@@ -3784,8 +4004,17 @@ function renderNvWeekGridView(){
   container.querySelectorAll('[data-grid-edit-shift]').forEach(btn => {
     btn.addEventListener('click', () => { editNvShift(btn.dataset.gridEditShift); });
   });
+  container.querySelectorAll('[data-cell-edit-shift]').forEach(el => {
+    el.addEventListener('click', () => { editNvShift(el.dataset.cellEditShift); });
+  });
   container.querySelectorAll('[data-grid-edit-off]').forEach(btn => {
     btn.addEventListener('click', () => { editNvOffDay(btn.dataset.gridEditOff); });
+  });
+  container.querySelectorAll('[data-move-up]').forEach(btn => {
+    btn.addEventListener('click', () => { moveNvAgentRow(btn.dataset.moveUp, -1, orderedNames); });
+  });
+  container.querySelectorAll('[data-move-down]').forEach(btn => {
+    btn.addEventListener('click', () => { moveNvAgentRow(btn.dataset.moveDown, 1, orderedNames); });
   });
 }
 
@@ -4204,6 +4433,8 @@ document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
   auth.signOut().finally(() => location.reload());
 });
 
+document.getElementById('nvPortalRapportBtn').addEventListener('click', () => { openNvRapportModal(); });
+
 function findNvAgentSlot(agentName){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
   const zones = buildZoneAssignmentsNv(weekIdx);
@@ -4231,7 +4462,7 @@ function renderNvPortal(){
   ];
   const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
   const motivationHtml = `
-    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(139,92,246,0.55);">
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(0,160,130,0.55);">
       <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
       <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
       <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
@@ -4245,11 +4476,11 @@ function renderNvPortal(){
     if(!isCheckedIn){
       content.innerHTML = `
         ${motivationHtml}
-        <div style="text-align:center; padding:24px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
-          <div style="font-size:30px; margin-bottom:8px;">✅</div>
-          <div style="font-size:14px; font-weight:800; margin-bottom:6px;">Commence ton shift</div>
-          <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Fais ton check-in pour accéder à ton planning et ta zone du jour.</div>
-          <button class="portal-btn" id="nvCheckinBtn" style="width:auto; padding:12px 28px;">Check-in</button>
+        <div style="text-align:center; padding:28px 18px; background:var(--sand-deep); border-radius:14px; border:1.5px solid var(--line);">
+          <div style="width:64px; height:64px; border-radius:50%; background:rgba(0,160,130,0.14); display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 12px;">✅</div>
+          <div style="font-size:15px; font-weight:800; margin-bottom:6px;">Commence ton shift</div>
+          <div style="font-size:12.5px; color:var(--ink-soft); max-width:260px; margin:0 auto 18px; line-height:1.5;">Fais ton check-in pour accéder à ton planning, ta zone et ton hotspot du jour.</div>
+          <button class="portal-btn" id="nvCheckinBtn" style="width:auto; padding:13px 30px;">✅ Check-in</button>
         </div>
       `;
       document.getElementById('nvCheckinBtn').addEventListener('click', () => {
@@ -4258,27 +4489,6 @@ function renderNvPortal(){
         db.collection('nvCheckins').doc(checkinId).set({
           agentName: currentNvAgent, date: dateKey, checkInAt: firebase.firestore.FieldValue.serverTimestamp(),
         }).then(() => renderNvPortal()).catch(err => { console.error(err); btn.disabled = false; });
-      });
-      return;
-    }
-
-    const geoActive = !!nvGeoIntervalId || localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1';
-    if(!geoActive){
-      content.innerHTML = `
-        ${motivationHtml}
-        <div style="text-align:center; padding:24px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
-          <div style="font-size:30px; margin-bottom:8px;">📍</div>
-          <div style="font-size:14px; font-weight:800; margin-bottom:6px;">Check-in fait ✅</div>
-          <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Active ta position pour accéder à ton planning et ta zone du jour.</div>
-          <button class="portal-btn" id="nvGeoActivateBtn" style="width:auto; padding:12px 24px;">Activer la localisation</button>
-          <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
-        </div>
-      `;
-      document.getElementById('nvGeoActivateBtn').addEventListener('click', () => {
-        localStorage.setItem('nvGeoActive_' + currentNvAgent, '1');
-        localStorage.setItem('nvGeoEverActivated_' + currentNvAgent, '1');
-        startNvLocationTracking();
-        renderNvPortal();
       });
       return;
     }
@@ -4422,13 +4632,26 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
       </button>
       <div class="nv-day-strip hidden" id="nvWeekStripWrap" style="margin-top:12px;">${weekHtml}</div>
     </div>
-    <div style="margin-top:14px;">
-      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📍 Localisation</div>
-      <div id="nvGeoArea"></div>
-    </div>
-    <div style="margin-top:14px;">
-      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:10px;">📝 Rapport &amp; remarques</div>
-      <div style="background:var(--sand-deep); border-radius:14px; padding:14px; border:1px solid var(--line);">
+  `;
+
+  renderNvFlashInfoBox();
+
+  document.getElementById('nvToggleWeekBtn').addEventListener('click', () => {
+    const wrap = document.getElementById('nvWeekStripWrap');
+    const icon = document.getElementById('nvToggleWeekIcon');
+    const nowHidden = wrap.classList.contains('hidden');
+    wrap.classList.toggle('hidden', !nowHidden);
+    icon.textContent = nowHidden ? '▴' : '▾';
+  });
+}
+
+function openNvRapportModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:420px; max-height:85vh; display:flex; flex-direction:column; overflow-y:auto;">
+      <h3>📝 Rapport &amp; remarques</h3>
+      <div style="background:var(--sand-deep); border-radius:14px; padding:14px; border:1px solid var(--line); margin-top:10px;">
         <select id="nvRapportType" class="login-input" style="margin-bottom:8px;">
           <option value="rapport">📩 Rapport</option>
           <option value="remarque">💬 Remarque</option>
@@ -4438,18 +4661,22 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
         <div id="nvRapportMsg" style="text-align:center; font-size:12px; margin-top:8px;"></div>
       </div>
       <div id="nvMyReportsBox" style="margin-top:12px;"></div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvRapportCloseBtn">Fermer</button></div>
     </div>
   `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvRapportCloseBtn').addEventListener('click', close);
 
-  renderNvFlashInfoBox();
   renderNvMyReports();
 
-  document.getElementById('nvSendRapportBtn').addEventListener('click', () => {
-    const type = document.getElementById('nvRapportType').value;
-    const text = document.getElementById('nvRapportText').value.trim();
-    const msgEl = document.getElementById('nvRapportMsg');
+  overlay.querySelector('#nvSendRapportBtn').addEventListener('click', () => {
+    const type = overlay.querySelector('#nvRapportType').value;
+    const text = overlay.querySelector('#nvRapportText').value.trim();
+    const msgEl = overlay.querySelector('#nvRapportMsg');
     if(!text){ msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Écris quelque chose avant d\'envoyer.'; return; }
-    const btn = document.getElementById('nvSendRapportBtn');
+    const btn = overlay.querySelector('#nvSendRapportBtn');
     btn.disabled = true;
     db.collection('rapports').add({
       agentName: currentNvAgent,
@@ -4458,7 +4685,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
       date: dateKeyFor(new Date()),
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     }).then(() => {
-      document.getElementById('nvRapportText').value = '';
+      overlay.querySelector('#nvRapportText').value = '';
       msgEl.style.color = 'var(--green)';
       msgEl.textContent = 'Envoyé ✅';
       btn.disabled = false;
@@ -4471,22 +4698,6 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
       btn.disabled = false;
     });
   });
-
-  document.getElementById('nvToggleWeekBtn').addEventListener('click', () => {
-    const wrap = document.getElementById('nvWeekStripWrap');
-    const icon = document.getElementById('nvToggleWeekIcon');
-    const nowHidden = wrap.classList.contains('hidden');
-    wrap.classList.toggle('hidden', !nowHidden);
-    icon.textContent = nowHidden ? '▴' : '▾';
-  });
-
-  // Reprend automatiquement le suivi si l'agent l'avait activé plus tôt (et que son shift n'est pas fini).
-  if(localStorage.getItem('nvGeoActive_' + currentNvAgent) === '1'){
-    startNvLocationTracking();
-  }
-  updateNvGeoButtonVisibility();
-  if(nvUiIntervalId) clearInterval(nvUiIntervalId);
-  nvUiIntervalId = setInterval(updateNvGeoButtonVisibility, 30000);
 }
 
 function updateNvGeoButtonVisibility(){
