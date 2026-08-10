@@ -1434,7 +1434,7 @@ function renderProfiles(){
       // L'ancien système (collection "agents", 13 agents historiques) est retiré de la grille de
       // connexion : Planning NV est désormais le seul système actif pour les agents de terrain.
       const nvProfiles = NV_ALL_AGENTS
-        .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: 'Agent', authType: 'nv-pin' }))
+        .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: fullName.split(' ').slice(1).join(' '), authType: 'nv-pin' }))
         .sort((a, b) => a.name.localeCompare(b.name));
 
       const allProfiles = [...PROFILES, ...nvProfiles]
