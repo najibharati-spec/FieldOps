@@ -3470,6 +3470,11 @@ const DEFAULT_HOTSPOTS_NV = {
     { venues: ["Harhoura", "Quick", "Agha Cham", "Paul Harhoura", "Wifak"] },
     { venues: ["McDonald's Temara", "Chawarma Ibn Acham", "Primo", "Michwat Al Akhawayn", "Qrouch"] },
   ],
+  "Technopolis": [
+    { venues: ["Shawarma Ostorat Sham", "S Tacos", "Primos Chicken", "Yours Brunch", "Boca Mia"] },
+    { venues: ["Sushi ARIJ", "Gusto Chicken", "Bocadillos Tanjaoui", "Mahaj Alfawakih", "Vida Souss"] },
+    { venues: ["Crepti", "Bari bana", "Shamiyat", "Grill vibe", "175 kg"] },
+  ],
 };
 // État en direct (Firestore) — permet d'ajouter des hotspots depuis l'interface, sans toucher au code.
 // NB: chaque slot est un OBJET {venues:[...]} et non un tableau brut, car Firestore interdit
@@ -3715,12 +3720,30 @@ function formatHourNv(h){
   return `${String(((h % 24) + 24) % 24).padStart(2, '0')}:00`;
 }
 
-function resolveNvShiftInfo(override, memberIdx, weekIdx){
+// Agents avec un horaire fixe non-standard par défaut (coupure, mi-temps...), différent des 3 shifts
+// classiques (Matin/Après-midi/Nuit). Reste modifiable via override normal (jour ou semaine) si besoin.
+const NV_FIXED_SHIFTS_NV = {
+  "Zakariae Benali": {
+    name: "Coupure",
+    label7: "11:00-15:00 · 19:00-22:00",
+    label8: "11:00-15:00 · 19:00-23:00",
+    isJour: true,
+  },
+};
+
+function resolveNvShiftInfo(override, memberIdx, weekIdx, agentName){
   if(override && override.customShift){
     const c = override.customShift;
     return { name: c.name, label7: c.label7, label8: c.label8, isJour: c.isJour, shiftKey: null };
   }
-  const shiftKey = (override && override.shiftKey) || SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
+  if(override && override.shiftKey){
+    const s = SHIFTS_NV[override.shiftKey];
+    return { name: s.name, label7: s.label7, label8: s.label8, isJour: SHIFT_KEYS_NV.indexOf(override.shiftKey) === 0, shiftKey: override.shiftKey };
+  }
+  if(agentName && NV_FIXED_SHIFTS_NV[agentName]){
+    return { ...NV_FIXED_SHIFTS_NV[agentName], shiftKey: null };
+  }
+  const shiftKey = SHIFT_KEYS_NV[(memberIdx + weekIdx) % SHIFT_KEYS_NV.length];
   const s = SHIFTS_NV[shiftKey];
   return { name: s.name, label7: s.label7, label8: s.label8, isJour: SHIFT_KEYS_NV.indexOf(shiftKey) === 0, shiftKey };
 }
@@ -3731,6 +3754,13 @@ function resolveNvHotspotIndex(slots, memberIdx, dayIdx){
   const cycleLen = Math.min(3, slots.length);
   if(cycleLen === 0) return 0;
   return (memberIdx + dayIdx) % cycleLen;
+}
+
+// Comme resolveNvHotspotIndex, mais respecte un éventuel override manuel du hotspot pour CE jour précis.
+function resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx){
+  const forced = override && override.hotspotOverrides && override.hotspotOverrides[dayIdx];
+  if(typeof forced === 'number' && slots[forced]) return forced;
+  return resolveNvHotspotIndex(slots, memberIdx, dayIdx);
 }
 
 function applyNvShiftChoice(agentName, weekIdx, shiftKey, dayIdx){
@@ -3835,6 +3865,57 @@ function editNvShift(agentName, dayIdx){
   });
 }
 
+function applyNvHotspotChoice(agentName, weekIdx, dayIdx, slotIdx){
+  const current = NV_OVERRIDES[agentName] || {};
+  const hotspotOverrides = { ...(current.hotspotOverrides || {}), [dayIdx]: slotIdx };
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...current, hotspotOverrides } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
+
+function clearNvHotspotOverride(agentName, weekIdx, dayIdx){
+  const current = NV_OVERRIDES[agentName] || {};
+  const hotspotOverrides = { ...(current.hotspotOverrides || {}) };
+  delete hotspotOverrides[dayIdx];
+  const updated = { ...NV_OVERRIDES, [agentName]: { ...current, hotspotOverrides } };
+  db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
+}
+
+function editNvHotspotForDay(agentName, dayIdx, zone){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const dayNames = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+  const slots = HOTSPOTS_NV[zone] || [];
+  const current = NV_OVERRIDES[agentName] || {};
+  const hasOverride = current.hotspotOverrides && typeof current.hotspotOverrides[dayIdx] === 'number';
+
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:440px; max-height:85vh; display:flex; flex-direction:column; overflow-y:auto;">
+      <h3>📍 Hotspot de "${agentName}" — ${dayNames[dayIdx]}</h3>
+      <p class="modal-hint" style="margin-top:0;">Ce choix ne s'applique qu'au ${dayNames[dayIdx]}, pas au reste de la semaine.</p>
+      ${hasOverride ? `<button type="button" class="btn-ghost" id="nvHotspotClearBtn" style="text-align:left; margin-bottom:10px; color:var(--red);">↩️ Revenir à la rotation automatique pour ce jour</button>` : ''}
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        ${slots.map((s, i) => {
+          const label = s.label || `Hotspot ${i + 1}`;
+          const venues = (s.venues || []).join(', ');
+          return `<button type="button" class="btn-ghost" data-slot="${i}" style="text-align:left;"><b>${label}</b><br><span style="font-size:11.5px; color:var(--ink-soft);">${venues}</span></button>`;
+        }).join('')}
+      </div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvHotspotCloseBtn">Annuler</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvHotspotCloseBtn').addEventListener('click', close);
+  if(hasOverride){
+    overlay.querySelector('#nvHotspotClearBtn').addEventListener('click', () => { clearNvHotspotOverride(agentName, weekIdx, dayIdx); close(); });
+  }
+  overlay.querySelectorAll('[data-slot]').forEach(btn => {
+    btn.addEventListener('click', () => { applyNvHotspotChoice(agentName, weekIdx, dayIdx, parseInt(btn.dataset.slot, 10)); close(); });
+  });
+}
+
 function applyNvOffDay(agentName, weekIdx, offDayIdx){
   const updated = { ...NV_OVERRIDES, [agentName]: { ...(NV_OVERRIDES[agentName] || {}), offDayIdx } };
   db.collection('planningNV').doc('overrides_W' + weekIdx).set(updated).catch(err => console.error(err));
@@ -3894,12 +3975,20 @@ function editNvZone(agentName){
   });
 }
 
+const NV_FIXED_ZONE_AGENTS = {
+  "Technopolis": ["Zakariae Benali"],
+};
+
 function buildZoneAssignmentsNv(weekIdx){
-  const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [] };
+  const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [], "Technopolis": [] };
   ROTATING_TEAMS_NV.forEach((team, teamIdx) => {
     const zoneIdx = ((teamIdx + weekIdx) % 4 + 4) % 4;
     const zone = ROTATING_ZONES_NV[zoneIdx];
     zones[zone].push(...team);
+  });
+  // Agents à zone fixe (ex: Zakariae Benali à Technopolis) — ne tournent pas avec les 4 groupes.
+  Object.entries(NV_FIXED_ZONE_AGENTS).forEach(([zone, names]) => {
+    if(zones[zone]) zones[zone].push(...names);
   });
   // Overrides manuels de zone pour la semaine en cours : on déplace l'agent de sa zone
   // calculée automatiquement vers la zone choisie par l'admin.
@@ -3919,12 +4008,14 @@ const NV_ZONE_COLORS = {
   "Agdal": "#FBBF24",
   "Hay Riad": "#A78BFA",
   "Temara": "#38BDF8",
+  "Technopolis": "#34D399",
 };
 const NV_ZONE_GRADIENTS = {
   "Salé-Rabat": "linear-gradient(135deg,#FB7185,#E11D48)",
   "Agdal": "linear-gradient(135deg,#FBBF24,#D97706)",
   "Hay Riad": "linear-gradient(135deg,#A78BFA,#7C3AED)",
   "Temara": "linear-gradient(135deg,#38BDF8,#0284C7)",
+  "Technopolis": "linear-gradient(135deg,#34D399,#059669)",
 };
 
 function renderPlanningNV(){
@@ -3983,7 +4074,7 @@ function renderNvWeekGridView(){
 
     members.forEach((name, memberIdx) => {
       const override = NV_OVERRIDES[name] || {};
-      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
+      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, name);
       const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
       const isJour = shiftInfo.isJour;
       const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
@@ -4004,10 +4095,11 @@ function renderNvWeekGridView(){
         }
         let hotspotLine = '';
         if(slots.length){
-          const slotIdx = resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+          const hotspotOverride = override.hotspotOverrides && override.hotspotOverrides[dayIdx];
+          const slotIdx = (typeof hotspotOverride === 'number' && slots[hotspotOverride]) ? hotspotOverride : resolveNvHotspotIndex(slots, memberIdx, dayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
-          hotspotLine = `<div style="font-size:9.5px; color:var(--ink-soft); margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${venues.join(', ')}">📍 ${label}</div>`;
+          hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="${typeof hotspotOverride === 'number' ? 'Hotspot modifié pour ce jour — cliquer pour changer' : 'Cliquer pour changer le hotspot de ce jour'}" style="cursor:pointer; font-size:9.5px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
         }
         // Un shift modifié pour CE jour précis prime sur le shift par défaut de la semaine.
         const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
@@ -4078,6 +4170,9 @@ function renderNvWeekGridView(){
   container.querySelectorAll('[data-cell-edit-shift]').forEach(el => {
     el.addEventListener('click', () => { editNvShift(el.dataset.cellEditShift, parseInt(el.dataset.cellEditDay, 10)); });
   });
+  container.querySelectorAll('[data-cell-edit-hotspot]').forEach(el => {
+    el.addEventListener('click', () => { editNvHotspotForDay(el.dataset.cellEditHotspot, parseInt(el.dataset.cellEditHotspotDay, 10), el.dataset.cellEditHotspotZone); });
+  });
   container.querySelectorAll('[data-grid-edit-off]').forEach(btn => {
     btn.addEventListener('click', () => { editNvOffDay(btn.dataset.gridEditOff); });
   });
@@ -4110,7 +4205,7 @@ function renderNvZonesView(){
     let membersHtml = '';
     members.forEach((name, memberIdx) => {
       const override = NV_OVERRIDES[name] || {};
-      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
+      const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, name);
       const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${shiftInfo.name} · ${shiftInfo.label7} / ${shiftInfo.label8} (Ven-Sam)`;
       const isJour = shiftInfo.isJour;
@@ -4120,7 +4215,7 @@ function renderNvZonesView(){
       if(todayIdx === offDayIdx){
         heroHtml = `<div class="nv-today-hero nv-today-hero-off">😴 OFF aujourd'hui</div>`;
       } else if(slots.length){
-        const todaySlotIdx = resolveNvHotspotIndex(slots, memberIdx, todayIdx);
+        const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx);
         const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
         const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
         const todayVenueHtml = todayVenues.length
@@ -4138,7 +4233,7 @@ function renderNvZonesView(){
         } else if(slots.length){
           // Le hotspot ENTIER (zone/slot) tourne chaque jour entre les membres de l'équipe :
           // aujourd'hui c'est Charaf qui y est, demain ce sera Islam, etc.
-          const slotIdx = resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+          const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const venueChips = venues.length
             ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
@@ -4301,6 +4396,7 @@ function viewNvAgentRoute(agentName){
 /* ================= PLANNING NV — accès agent (PIN + localisation live) ================= */
 const NV_ALL_AGENTS = [
   ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1], ...ROTATING_TEAMS_NV[2], ...ROTATING_TEAMS_NV[3],
+  ...Object.values(NV_FIXED_ZONE_AGENTS).flat(),
 ];
 
 let NV_PINS = {};
@@ -4401,7 +4497,7 @@ function sendNvPlanningEmail(name){
   const { zone, memberIdx } = slot;
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
   const override = NV_OVERRIDES[name] || {};
-  const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
+  const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, name);
   const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
   const shiftLabel7 = shiftInfo.label7;
   const shiftLabel8 = shiftInfo.label8;
@@ -4416,7 +4512,7 @@ function sendNvPlanningEmail(name){
     const dayShiftInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : shiftInfo;
     const dayTime = `${dayShiftInfo.name} (${isWeekend && dayIdx < 6 ? dayShiftInfo.label8 : dayShiftInfo.label7})`;
     if(slots.length){
-      const slotIdx = resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
@@ -4625,7 +4721,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
   const { zone, memberIdx } = slot;
   const override = NV_OVERRIDES[currentNvAgent] || {};
   const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
-  const weekShiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx);
+  const weekShiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, currentNvAgent);
   const todayOverride = (override.dayOverrides && override.dayOverrides[todayIdx]) || null;
   const shiftInfo = todayOverride ? resolveNvShiftInfo(todayOverride, memberIdx, weekIdx) : weekShiftInfo;
   const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
@@ -4643,7 +4739,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
   if(todayIdx === offDayIdx){
     todayVenueHeroHtml = `<div class="nv-portal-hero-shift" style="margin-top:8px;">😴 Repos aujourd'hui</div>`;
   } else if(slots.length){
-    const todaySlotIdx = resolveNvHotspotIndex(slots, memberIdx, todayIdx);
+    const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx);
     const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
     const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
     const todayVenueHtml = todayVenues.length
@@ -4669,7 +4765,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     if(dayIdx === offDayIdx){
       weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
     } else if(slots.length){
-      const slotIdx = resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueChips = venues.length
