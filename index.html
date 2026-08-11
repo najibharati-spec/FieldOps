@@ -3471,7 +3471,7 @@ const DEFAULT_HOTSPOTS_NV = {
     { venues: ["McDonald's Temara", "Chawarma Ibn Acham", "Primo", "Michwat Al Akhawayn", "Qrouch"] },
   ],
   "Technopolis": [
-    { venues: ["Mcdonald's Arjat", "Carrefour Technopolis", "Marjane Technopolis"] },
+    { venues: ["Mcdonald's Arjat", "Carrefour Technopolis", "Marjane Technopolis", "Shawarma Ostorat Sham", "S Tacos", "Primos Chicken", "Yours Brunch", "Boca Mia", "Sushi ARIJ", "Gusto Chicken", "Bocadillos Tanjaoui", "Mahaj Alfawakih", "Vida Souss", "Crepti", "Bari bana", "Shamiyat", "Grill vibe", "175 kg"] },
   ],
 };
 // État en direct (Firestore) — permet d'ajouter des hotspots depuis l'interface, sans toucher au code.
@@ -3513,18 +3513,18 @@ function listenHotspotsNv(){
       // re-synchronise UNE FOIS avec le hotspot unique voulu, puis on ne touche plus jamais à
       // Technopolis automatiquement — toute modification faite ensuite depuis Vue Zones
       // (+ lieu, + nouveau hotspot, supprimer un hotspot ou un lieu...) est définitive.
-      if(!merged._technopolisFixedV1){
+      if(!merged._technopolisFixedV2){
         merged["Technopolis"] = DEFAULT_HOTSPOTS_NV["Technopolis"];
-        merged._technopolisFixedV1 = true;
+        merged._technopolisFixedV2 = true;
         needsWrite = true;
       }
       if(needsWrite){
         db.collection('planningNV').doc('hotspots').set(merged).catch(err => console.error(err));
       }
-      // Le marqueur `_technopolisFixedV1` est utile uniquement dans Firestore pour ne pas refaire
+      // Le marqueur `_technopolisFixedV2` est utile uniquement dans Firestore pour ne pas refaire
       // la correction — on ne le garde jamais dans HOTSPOTS_NV, sinon il serait traité comme une
       // zone à part entière partout où le code boucle sur `Object.keys(HOTSPOTS_NV)`.
-      const { _technopolisFixedV1, ...zonesOnly } = merged;
+      const { _technopolisFixedV2, ...zonesOnly } = merged;
       HOTSPOTS_NV = zonesOnly;
     } else {
       // Absent, vide, ou ancien format : on réinitialise proprement.
@@ -3775,17 +3775,21 @@ function resolveNvShiftInfo(override, memberIdx, weekIdx, agentName){
 
 // Rotation du hotspot en cycle fixe de 3 jours (hotspot 1 → 2 → 3 → 1 → 2 → 3...),
 // même si la zone contient plus de 3 hotspots configurés (seuls les 3 premiers tournent).
-function resolveNvHotspotIndex(slots, memberIdx, dayIdx){
+function resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx){
   const cycleLen = Math.min(3, slots.length);
   if(cycleLen === 0) return 0;
-  return (memberIdx + dayIdx) % cycleLen;
+  // Le jour OFF ne doit pas "consommer" une place dans le cycle 1→2→3, sinon la rotation saute
+  // un cran après le repos (ex: Lun=1, Mar=OFF, Mer=3 au lieu de 2). On compte uniquement les
+  // jours réellement travaillés depuis le début de la semaine pour faire avancer le cycle.
+  const workingDayIdx = (typeof offDayIdx === 'number' && dayIdx > offDayIdx) ? dayIdx - 1 : dayIdx;
+  return (memberIdx + workingDayIdx) % cycleLen;
 }
 
 // Comme resolveNvHotspotIndex, mais respecte un éventuel override manuel du hotspot pour CE jour précis.
-function resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx){
+function resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx){
   const forced = override && override.hotspotOverrides && override.hotspotOverrides[dayIdx];
   if(typeof forced === 'number' && slots[forced]) return forced;
-  return resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+  return resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx);
 }
 
 function applyNvShiftChoice(agentName, weekIdx, shiftKey, dayIdx){
@@ -4121,7 +4125,7 @@ function renderNvWeekGridView(){
         let hotspotLine = '';
         if(slots.length){
           const hotspotOverride = override.hotspotOverrides && override.hotspotOverrides[dayIdx];
-          const slotIdx = (typeof hotspotOverride === 'number' && slots[hotspotOverride]) ? hotspotOverride : resolveNvHotspotIndex(slots, memberIdx, dayIdx);
+          const slotIdx = (typeof hotspotOverride === 'number' && slots[hotspotOverride]) ? hotspotOverride : resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
           hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="${typeof hotspotOverride === 'number' ? 'Hotspot modifié pour ce jour — cliquer pour changer' : 'Cliquer pour changer le hotspot de ce jour'}" style="cursor:pointer; font-size:9.5px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
@@ -4240,7 +4244,7 @@ function renderNvZonesView(){
       if(todayIdx === offDayIdx){
         heroHtml = `<div class="nv-today-hero nv-today-hero-off">😴 OFF aujourd'hui</div>`;
       } else if(slots.length){
-        const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx);
+        const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx, offDayIdx);
         const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
         const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
         const todayVenueHtml = todayVenues.length
@@ -4258,7 +4262,7 @@ function renderNvZonesView(){
         } else if(slots.length){
           // Le hotspot ENTIER (zone/slot) tourne chaque jour entre les membres de l'équipe :
           // aujourd'hui c'est Charaf qui y est, demain ce sera Islam, etc.
-          const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
+          const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const venueChips = venues.length
             ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
@@ -4537,7 +4541,7 @@ function sendNvPlanningEmail(name){
     const dayShiftInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : shiftInfo;
     const dayTime = `${dayShiftInfo.name} (${isWeekend && dayIdx < 6 ? dayShiftInfo.label8 : dayShiftInfo.label7})`;
     if(slots.length){
-      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
+      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
@@ -4764,7 +4768,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
   if(todayIdx === offDayIdx){
     todayVenueHeroHtml = `<div class="nv-portal-hero-shift" style="margin-top:8px;">😴 Repos aujourd'hui</div>`;
   } else if(slots.length){
-    const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx);
+    const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx, offDayIdx);
     const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
     const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
     const todayVenueHtml = todayVenues.length
@@ -4790,7 +4794,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     if(dayIdx === offDayIdx){
       weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
     } else if(slots.length){
-      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx);
+      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueChips = venues.length
