@@ -3500,7 +3500,20 @@ function listenHotspotsNv(){
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
     const data = doc.exists ? doc.data() : null;
     if(isValidHotspotShapeNv(data)){
-      HOTSPOTS_NV = data;
+      // Fusionne toute zone présente dans le code (ex: nouvelle zone ajoutée) mais absente
+      // des données déjà enregistrées sur Firestore, sans écraser ce qui existe déjà.
+      const merged = { ...data };
+      let needsWrite = false;
+      Object.keys(DEFAULT_HOTSPOTS_NV).forEach(zone => {
+        if(!merged[zone]){
+          merged[zone] = DEFAULT_HOTSPOTS_NV[zone];
+          needsWrite = true;
+        }
+      });
+      HOTSPOTS_NV = merged;
+      if(needsWrite){
+        db.collection('planningNV').doc('hotspots').set(merged).catch(err => console.error(err));
+      }
     } else {
       // Absent, vide, ou ancien format : on réinitialise proprement.
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
