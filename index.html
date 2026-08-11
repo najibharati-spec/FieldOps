@@ -3484,9 +3484,9 @@ let NV_LOCATIONS = {};
 
 function isValidHotspotShapeNv(data){
   if(!data || typeof data !== 'object') return false;
-  const zones = Object.values(data);
-  if(zones.length === 0) return false;
-  return zones.every(slots => Array.isArray(slots) && slots.every(s => s && Array.isArray(s.venues)));
+  const zoneEntries = Object.entries(data).filter(([k]) => !k.startsWith('_'));
+  if(zoneEntries.length === 0) return false;
+  return zoneEntries.every(([, slots]) => Array.isArray(slots) && slots.every(s => s && Array.isArray(s.venues)));
 }
 
 function listenHotspotsNv(){
@@ -3508,10 +3508,24 @@ function listenHotspotsNv(){
           needsWrite = true;
         }
       });
-      HOTSPOTS_NV = merged;
+      // Correction ponctuelle (une seule fois) : Technopolis vient d'être mis en place et ses
+      // hotspots avaient été scindés par erreur dans une précédente sauvegarde. On les
+      // re-synchronise UNE FOIS avec le hotspot unique voulu, puis on ne touche plus jamais à
+      // Technopolis automatiquement — toute modification faite ensuite depuis Vue Zones
+      // (+ lieu, + nouveau hotspot, supprimer un hotspot ou un lieu...) est définitive.
+      if(!merged._technopolisFixedV1){
+        merged["Technopolis"] = DEFAULT_HOTSPOTS_NV["Technopolis"];
+        merged._technopolisFixedV1 = true;
+        needsWrite = true;
+      }
       if(needsWrite){
         db.collection('planningNV').doc('hotspots').set(merged).catch(err => console.error(err));
       }
+      // Le marqueur `_technopolisFixedV1` est utile uniquement dans Firestore pour ne pas refaire
+      // la correction — on ne le garde jamais dans HOTSPOTS_NV, sinon il serait traité comme une
+      // zone à part entière partout où le code boucle sur `Object.keys(HOTSPOTS_NV)`.
+      const { _technopolisFixedV1, ...zonesOnly } = merged;
+      HOTSPOTS_NV = zonesOnly;
     } else {
       // Absent, vide, ou ancien format : on réinitialise proprement.
       db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
