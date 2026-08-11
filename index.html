@@ -173,7 +173,7 @@ input, select{font-family: inherit;}
     var(--sand);
 }
 .portal-bg-doodle{ display:none; }
-@media (min-width: 900px){
+@media (min-width: 1280px){
   .portal-bg-doodle{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
     position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
@@ -4635,7 +4635,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
   const isJourShift = shiftInfo.isJour;
   const slots = HOTSPOTS_NV[zone] || [];
   const zoneColor = NV_ZONE_COLORS[zone] || 'var(--sky)';
-  const ALL_DAY_LABELS_NV = ['Lun', 'Mar', 'Mer', 'Jeu', 'Ven', 'Sam', 'Dim'];
+  const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
   window.__nvTodayShiftInfo = (todayIdx !== offDayIdx) ? shiftInfo : null;
 
@@ -4663,10 +4663,11 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
     const dayInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : weekShiftInfo;
     const dayTime = isWeekend && dayIdx < 6 ? dayInfo.label8 : dayInfo.label7; // 8h Ven-Sam, 7h le reste
-    const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${dayInfo.isJour ? 'nv-time-jour' : 'nv-time-nuit'}">🕐 ${dayInfo.name} · ${dayTime}</span>`;
+    const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${dayInfo.isJour ? 'nv-time-jour' : 'nv-time-nuit'}" style="font-size:13px; padding:5px 12px; margin-left:0;">🕐 ${dayTime}</span>`;
+    const dayNameLine = `<div class="nv-day-label" style="font-size:15px; margin-bottom:8px;">${dayLabel}${todayTag}</div>`;
 
     if(dayIdx === offDayIdx){
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag}</div><span class="nv-day-chip off">😴 Repos</span></div>`;
+      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
     } else if(slots.length){
       const slotIdx = resolveNvHotspotIndex(slots, memberIdx, dayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
@@ -4674,9 +4675,9 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
       const venueChips = venues.length
         ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
         : `<span class="nv-day-chip">—</span>`;
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag} · ${slotLabel} ${timeChip}</div><div class="nv-day-venues">${venueChips}</div></div>`;
+      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div><div class="nv-day-venues">${venueChips}</div></div>`;
     } else {
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}"><div class="nv-day-label">${dayLabel}${todayTag} ${timeChip}</div><span class="nv-day-chip">—</span></div>`;
+      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<div style="margin-bottom:8px;">${timeChip}</div><span class="nv-day-chip">—</span></div>`;
     }
   });
 
