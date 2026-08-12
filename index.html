@@ -2873,23 +2873,38 @@ function renderPointageDay(){
   document.getElementById('pointageDayLabel').textContent = pointageCurrentDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
   document.getElementById('pointageDateSub').textContent = dateKey;
 
-  // Filtre d'égalité unique sur "date" — pas d'index composite nécessaire.
-  db.collection('pointage').where('date', '==', dateKey).get().then(snap => {
+  // Deux sources : l'ancien système "pointage" (par agentId, check-in/check-out manuels) ET
+  // les check-ins réels des agents Planning NV (collection nvCheckins, par nom) — un agent
+  // Planning NV n'a jamais de doc dans "pointage" puisqu'il ne passe pas par cet ancien portail.
+  Promise.all([
+    db.collection('pointage').where('date', '==', dateKey).get(),
+    db.collection('nvCheckins').where('date', '==', dateKey).get(),
+  ]).then(([pointageSnap, nvSnap]) => {
     const byAgent = {};
-    snap.docs.forEach(doc => { byAgent[doc.data().agentId] = doc.data(); });
+    pointageSnap.docs.forEach(doc => { byAgent[doc.data().agentId] = doc.data(); });
+    const nvByName = {};
+    nvSnap.docs.forEach(doc => { nvByName[doc.data().agentName] = doc.data(); });
 
     const tbody = document.getElementById('pointageTableBody');
     tbody.innerHTML = '';
     const sortedAgents = [...AGENTS].sort((a, b) => a.name.localeCompare(b.name));
 
     sortedAgents.forEach(a => {
-      const d = byAgent[a.id];
-      const inT = d && d.checkIn && d.checkIn.toDate ? d.checkIn.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
-      const outT = d && d.checkOut && d.checkOut.toDate ? d.checkOut.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
-      let statusHtml;
-      if(!d || !d.checkIn) statusHtml = `<span class="badge" style="background:rgba(196,89,58,0.14); color:var(--red);">Absent</span>`;
-      else if(d.checkIn && !d.checkOut) statusHtml = `<span class="badge jour">En service</span>`;
-      else statusHtml = `<span class="badge fix">Terminé</span>`;
+      const nvCheckin = nvByName[a.name];
+      let inT, outT, statusHtml;
+      if(nvCheckin){
+        // Agent Planning NV : check-in réel via le portail (pas de check-out — flux simplifié).
+        inT = nvCheckin.checkInAt && nvCheckin.checkInAt.toDate ? nvCheckin.checkInAt.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
+        outT = '—';
+        statusHtml = `<span class="badge jour">✅ Check-in fait</span>`;
+      } else {
+        const d = byAgent[a.id];
+        inT = d && d.checkIn && d.checkIn.toDate ? d.checkIn.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
+        outT = d && d.checkOut && d.checkOut.toDate ? d.checkOut.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
+        if(!d || !d.checkIn) statusHtml = `<span class="badge" style="background:rgba(196,89,58,0.14); color:var(--red);">Absent</span>`;
+        else if(d.checkIn && !d.checkOut) statusHtml = `<span class="badge jour">En service</span>`;
+        else statusHtml = `<span class="badge fix">Terminé</span>`;
+      }
 
       const tr = document.createElement('tr');
       tr.innerHTML = `<td><b>${a.name}</b></td><td>${inT}</td><td>${outT}</td><td>${statusHtml}</td>`;
