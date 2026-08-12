@@ -2094,7 +2094,6 @@ function renderAgentsTable(){
         ${a.email ? `<div style="color:var(--ink); font-weight:600; margin-bottom:6px;">✉️ ${a.email}</div>` : '<div style="color:var(--ink-soft); margin-bottom:6px;">Pas d\'email</div>'}
         ${a.email ? `<div style="display:flex; gap:6px; flex-wrap:wrap;">
           <button class="agent-access-btn" data-send-access="${a.id}">🔑 Accès</button>
-          ${isNvAgent ? `<button class="agent-access-btn" data-send-planning="${a.id}">📅 Planning</button>` : ''}
         </div>` : ''}
       </td>
       <td><span class="zone-dot" style="background:${ZONE_COLORS[zone] || 'var(--ink-soft)'}"></span>${getZoneLabel(zone)}</td>
@@ -2115,10 +2114,6 @@ function renderAgentsTable(){
   tbody.querySelectorAll('[data-send-access]').forEach(btn => btn.addEventListener('click', () => {
     const a = AGENTS.find(x => x.id === btn.dataset.sendAccess);
     if(a) sendAgentAccessEmail(a);
-  }));
-  tbody.querySelectorAll('[data-send-planning]').forEach(btn => btn.addEventListener('click', () => {
-    const a = AGENTS.find(x => x.id === btn.dataset.sendPlanning);
-    if(a) sendNvPlanningEmail(a.name);
   }));
 }
 
@@ -4563,57 +4558,6 @@ function sendNvWelcomeEmail(name){
   sendAgentAccessEmail(agent);
 }
 
-function sendNvPlanningEmail(name){
-  const agent = AGENTS.find(a => a.name === name);
-  const email = agent && agent.email;
-  const slot = findNvAgentSlot(name);
-  if(!slot){ alert('Aucune affectation cette semaine pour ' + name + '.'); return; }
-  const { zone, memberIdx } = slot;
-  const weekIdx = getISOWeekIndex(currentWeekStartNv);
-  const override = NV_OVERRIDES[name] || {};
-  const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, name);
-  const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
-  const shiftLabel7 = shiftInfo.label7;
-  const shiftLabel8 = shiftInfo.label8;
-  const shiftName = shiftInfo.name;
-  const slots = HOTSPOTS_NV[zone] || [];
-  const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
-
-  let lines = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
-    const dayHeader = `📅 ${dayLabel.toUpperCase()}`;
-    if(dayIdx === offDayIdx) return `${dayHeader}\n😴 Repos (OFF)`;
-    const isWeekend = dayIdx >= 4;
-    const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
-    const dayShiftInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : shiftInfo;
-    const dayTime = isWeekend && dayIdx < 6 ? dayShiftInfo.label8 : dayShiftInfo.label7;
-    const shiftIcon = dayShiftInfo.isJour ? '☀️' : '🌙';
-    let block = `${dayHeader}\n${shiftIcon} ${dayShiftInfo.name} · ${dayTime}`;
-    if(slots.length){
-      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
-      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
-      const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
-      const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
-      block += `\n📍 ${slotLabel} : ${venueList}`;
-    }
-    return block;
-  });
-
-  const subject = `Ton planning de la semaine — ${getNvZoneLabel(zone)}`;
-  const message = `Bonjour ${name.split(' ')[0]},
-
-Voici ton planning pour cette semaine — Zone : ${getNvZoneLabel(zone)}
-────────────────────────
-
-${lines.join('\n\n')}
-
-────────────────────────
-Consulte ton espace pour tous les détails : ${OPS_HQ_URL}
-
-Bonne semaine !
-L'équipe OPS HQ`;
-  sendNvEmail(email, name, subject, message).catch(() => {});
-}
-
 function ensureNvPins(){
   return db.collection('planningNV').doc('pins').get().then(doc => {
     const stored = (doc.exists && doc.data()) || {};
@@ -4814,24 +4758,9 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
 
   window.__nvTodayShiftInfo = (todayIdx !== offDayIdx) ? shiftInfo : null;
 
-  let todayVenueHeroHtml = '';
-  if(todayIdx === offDayIdx){
-    todayVenueHeroHtml = `<div class="nv-portal-hero-shift" style="margin-top:8px;">😴 Repos aujourd'hui</div>`;
-  } else if(slots.length){
-    const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx, offDayIdx);
-    const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
-    const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
-    const todayVenueHtml = todayVenues.length
-      ? todayVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener" style="color:#fff;">📍 ${v}</a>`).join('<span style="opacity:.6;"> · </span>')
-      : '<span style="opacity:.75;">Aucun lieu défini</span>';
-    todayVenueHeroHtml = `<div style="margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2);">
-      <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; opacity:.85; margin-bottom:3px;">Hotspot aujourd'hui · ${todaySlotLabel}</div>
-      <div style="font-size:16px; font-weight:800;">${todayVenueHtml}</div>
-    </div>`;
-  }
-
-  let weekHtml = '';
-  ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
+  // Génère le bloc d'un jour (nom, heure, hotspot + tous les lieux) — réutilisé pour la carte
+  // "aujourd'hui" mise en avant ET pour chaque ligne de "Voir ma semaine complète".
+  function buildNvDayBlock(dayIdx, dayLabel, featured){
     const isToday = dayIdx === todayIdx;
     const todayTag = isToday ? ' <span class="nv-today-tag">Aujourd\'hui</span>' : '';
     const isWeekend = dayIdx >= 4; // Ven/Sam/Dim
@@ -4839,21 +4768,32 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     const dayInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : weekShiftInfo;
     const dayTime = isWeekend && dayIdx < 6 ? dayInfo.label8 : dayInfo.label7; // 8h Ven-Sam, 7h le reste
     const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${dayInfo.isJour ? 'nv-time-jour' : 'nv-time-nuit'}" style="font-size:13px; padding:5px 12px; margin-left:0;">🕐 ${dayTime}</span>`;
-    const dayNameLine = `<div class="nv-day-label" style="font-size:15px; margin-bottom:8px;">${dayLabel}${todayTag}</div>`;
+    const dayNameLine = `<div class="nv-day-label" style="font-size:${featured ? '19px' : '15px'}; margin-bottom:8px; ${featured ? 'text-align:center; text-transform:uppercase;' : ''}">${dayLabel}${featured ? '' : todayTag}</div>`;
+    const wrapClass = featured ? 'nv-portal-day nv-day-today' : `nv-portal-day${isToday ? ' nv-day-today' : ''}`;
+    const wrapStyle = featured ? ' style="background:var(--sand-deep); border-radius:16px; padding:18px; border:none; text-align:center;"' : '';
 
     if(dayIdx === offDayIdx){
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
-    } else if(slots.length){
+      return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
+    }
+    if(slots.length){
       const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueChips = venues.length
         ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
         : `<span class="nv-day-chip">—</span>`;
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap;">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div><div class="nv-day-venues">${venueChips}</div></div>`;
-    } else {
-      weekHtml += `<div class="nv-portal-day${isToday ? ' nv-day-today' : ''}">${dayNameLine}<div style="margin-bottom:8px;">${timeChip}</div><span class="nv-day-chip">—</span></div>`;
+      const metaLine = `<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; ${featured ? 'justify-content:center;' : ''}">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div>`;
+      const venuesWrap = featured ? `<div class="nv-day-venues" style="justify-content:center;">${venueChips}</div>` : `<div class="nv-day-venues">${venueChips}</div>`;
+      return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}${metaLine}${venuesWrap}</div>`;
     }
+    return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}<div style="margin-bottom:8px;">${timeChip}</div><span class="nv-day-chip">—</span></div>`;
+  }
+
+  const todayBlockHtml = buildNvDayBlock(todayIdx, ALL_DAY_LABELS_NV[todayIdx], true);
+
+  let weekHtml = '';
+  ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
+    weekHtml += buildNvDayBlock(dayIdx, dayLabel, false);
   });
 
   const firstName = currentNvAgent.split(' ')[0];
@@ -4863,9 +4803,8 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     <div id="nvFlashInfoBox"></div>
     <div class="nv-portal-hero" style="background: linear-gradient(135deg, ${zoneColor}, ${zoneColor}CC);">      <div class="nv-portal-hero-label">Zone cette semaine</div>
       <div class="nv-portal-hero-zone">${getNvZoneLabel(zone)}</div>
-      <div class="nv-portal-hero-shift">🕐 ${shiftName} · ${shiftLabel7} <span style="opacity:.75; font-weight:500;">(${shiftLabel8} Ven-Sam)</span></div>
-      ${todayVenueHeroHtml}
     </div>
+    <div style="margin-top:14px;">${todayBlockHtml}</div>
     <div class="portal-status" style="margin-top:14px;">
       <button class="btn-ghost" id="nvToggleWeekBtn" style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);">
         <span>📅 Voir ma semaine complète</span>
