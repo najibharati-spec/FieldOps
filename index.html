@@ -1182,6 +1182,10 @@ tr:last-child td{ border-bottom:none; }
           <button class="ptab" data-nv-view="zones">🗺️ Vue Zones</button>
         </div>
         <div class="card planning-card hidden" id="nvWeekGrid"></div>
+        <div class="hidden" id="nvZoneRestoreWrap" style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-ghost" id="nvExportHotspotsBtn" style="border:1px solid var(--sky); color:var(--sky-ink); font-size:12px;">💾 Sauvegarder les hotspots (copier le texte)</button>
+          <button class="btn-ghost" id="nvRestoreHotspotsBtn" style="border:1px solid var(--red); color:var(--red); font-size:12px;">🔄 Restaurer les hotspots par défaut (Agdal + Hay Riad reconstruits)</button>
+        </div>
         <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
     </main>
@@ -3458,12 +3462,12 @@ const DEFAULT_HOTSPOTS_NV = {
   "Agdal": [
     { venues: ["Av. Fal Ould Oumeir", "Pizza Hut Agdal"] },
     { venues: ["Mall Rabat Center", "Mall Carrousel Rabat", "McDonald's Gare Rabat Agdal"] },
-    { venues: ["Souissi", "Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat"] },
+    { venues: ["Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat", "Polyvalente", "Centre commercial Jasmin", "Maymana Souissi", "Carrefour Market Souissi", "snack monalisa", "Mega Mall Rabat"] },
   ],
   "Hay Riad": [
     { venues: ["Marjane Hyper Hay Riad", "McDonald's Hay Riad", "Pizza Hut Marjane Hay Riad", "KFC Marjane Hay Riad"] },
-    { venues: ["Carrefour Mehdi Ben Barka", "Av. Annakhil"] },
-    { venues: ["Prestigia", "Polyvalente"] },
+    { venues: ["Carrefour Mehdi Ben Barka", "Av. Annakhil", "Blue Berry Rabat", "Carrefour Market Riad", "Kool Smoothie Almelia", "Marjane Market A.V BENBARKA", "Mahaj Ryad Center"] },
+    { venues: ["Prestigia", "Agha Acham Prestigia", "Grillade Al Andalous prestigia", "Marjane Market Prestigia Hay Riad", "L'Atelier Burger Hay riad", "Yoka Sushi Hay Riad", "La Grillardière Hay riad", "Oh My Bun : Buntastic Burgers"] },
   ],
   "Temara": [
     { venues: ["Oulad Mtaa", "Primo Massira 1", "Polyvalente"] },
@@ -3508,28 +3512,26 @@ function listenHotspotsNv(){
           needsWrite = true;
         }
       });
-      // Correction ponctuelle (une seule fois) : Technopolis vient d'être mis en place et ses
-      // hotspots avaient été scindés par erreur dans une précédente sauvegarde. On les
-      // re-synchronise UNE FOIS avec le hotspot unique voulu, puis on ne touche plus jamais à
-      // Technopolis automatiquement — toute modification faite ensuite depuis Vue Zones
-      // (+ lieu, + nouveau hotspot, supprimer un hotspot ou un lieu...) est définitive.
-      if(!merged._technopolisFixedV2){
-        merged["Technopolis"] = DEFAULT_HOTSPOTS_NV["Technopolis"];
-        merged._technopolisFixedV2 = true;
-        needsWrite = true;
-      }
       if(needsWrite){
-        db.collection('planningNV').doc('hotspots').set(merged).catch(err => console.error(err));
+        db.collection('planningNV').doc('hotspots').set(merged, { merge: true }).catch(err => console.error(err));
       }
-      // Le marqueur `_technopolisFixedV2` est utile uniquement dans Firestore pour ne pas refaire
-      // la correction — on ne le garde jamais dans HOTSPOTS_NV, sinon il serait traité comme une
-      // zone à part entière partout où le code boucle sur `Object.keys(HOTSPOTS_NV)`.
-      const { _technopolisFixedV2, ...zonesOnly } = merged;
+      // D'éventuelles clés internes commençant par "_" (anciens marqueurs de correction) ne sont
+      // jamais traitées comme des zones, sinon elles casseraient toutes les boucles sur
+      // `Object.keys(HOTSPOTS_NV)` ailleurs dans le code.
+      const zonesOnly = {};
+      Object.keys(merged).forEach(k => { if(!k.startsWith('_')) zonesOnly[k] = merged[k]; });
       HOTSPOTS_NV = zonesOnly;
     } else {
-      // Absent, vide, ou ancien format : on réinitialise proprement.
-      db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
-      HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
+      // Absent, vide, ou format invalide : on n'écrase JAMAIS automatiquement avec les valeurs
+      // par défaut du code (elles sont volontairement minimales et ne doivent pas remplacer les
+      // hotspots réels ajoutés au fil du temps par l'admin) — on initialise seulement si le
+      // document n'existe pas du tout.
+      if(!doc.exists){
+        db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
+        HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
+      } else {
+        console.error('Document hotspots présent mais de forme invalide — HOTSPOTS_NV conservé tel quel pour éviter toute perte de données.', data);
+      }
     }
     refreshNvViews();
   }, err => console.error(err));
@@ -4073,6 +4075,7 @@ function renderPlanningNVInner(){
   updateWeekHeaderNv();
   document.getElementById('nvWeekGrid').classList.toggle('hidden', nvPlanningView !== 'week');
   document.getElementById('nvZoneGrid').classList.toggle('hidden', nvPlanningView !== 'zones');
+  document.getElementById('nvZoneRestoreWrap').classList.toggle('hidden', nvPlanningView !== 'zones');
   if(nvPlanningView === 'week'){
     renderNvWeekGridView();
   } else {
@@ -4086,6 +4089,33 @@ document.querySelectorAll('#view-planningnv .planning-tabs [data-nv-view]').forE
     document.querySelectorAll('#view-planningnv .planning-tabs [data-nv-view]').forEach(b => b.classList.toggle('active', b === btn));
     renderPlanningNVInner();
   });
+});
+
+document.getElementById('nvExportHotspotsBtn').addEventListener('click', () => {
+  let text = 'HOTSPOTS OPS HQ — sauvegarde du ' + new Date().toLocaleString('fr-FR') + '\n\n';
+  Object.keys(HOTSPOTS_NV).forEach(zone => {
+    text += `=== ${zone} ===\n`;
+    (HOTSPOTS_NV[zone] || []).forEach((slot, i) => {
+      text += `Hotspot ${i + 1}${slot.label ? ' (' + slot.label + ')' : ''} : ${(slot.venues || []).join(', ')}\n`;
+    });
+    text += '\n';
+  });
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(() => {
+      alert('Copié ! Colle ce texte dans une note, un WhatsApp à toi-même, ou un fichier — garde-le comme sauvegarde. Fais ça de temps en temps, surtout après avoir ajouté des lieux.');
+    }).catch(() => {
+      prompt('Copie ce texte manuellement (Ctrl+A puis Ctrl+C) :', text);
+    });
+  } else {
+    prompt('Copie ce texte manuellement (Ctrl+A puis Ctrl+C) :', text);
+  }
+});
+
+document.getElementById('nvRestoreHotspotsBtn').addEventListener('click', () => {
+  if(!confirm(`Ceci va remplacer les hotspots de TOUTES les zones par les valeurs par défaut du code (Agdal et Hay Riad reconstruits à partir de tes captures d'écran ; Salé-Rabat, Temara et Technopolis restent tels quels dans le code).\n\n⚠️ Tout ajout fait depuis Vue Zones qui ne serait pas dans ces valeurs par défaut sera perdu.\n\nContinuer ?`)) return;
+  db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV)
+    .then(() => alert('Hotspots restaurés.'))
+    .catch(err => { console.error(err); alert('Erreur pendant la restauration.'); });
 });
 
 function renderNvWeekGridView(){
