@@ -4580,29 +4580,34 @@ function sendNvPlanningEmail(name){
   const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
 
   let lines = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
-    if(dayIdx === offDayIdx) return `${dayLabel} : OFF`;
+    const dayHeader = `📅 ${dayLabel.toUpperCase()}`;
+    if(dayIdx === offDayIdx) return `${dayHeader}\n😴 Repos (OFF)`;
     const isWeekend = dayIdx >= 4;
     const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
     const dayShiftInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : shiftInfo;
-    const dayTime = `${dayShiftInfo.name} (${isWeekend && dayIdx < 6 ? dayShiftInfo.label8 : dayShiftInfo.label7})`;
+    const dayTime = isWeekend && dayIdx < 6 ? dayShiftInfo.label8 : dayShiftInfo.label7;
+    const shiftIcon = dayShiftInfo.isJour ? '☀️' : '🌙';
+    let block = `${dayHeader}\n${shiftIcon} ${dayShiftInfo.name} · ${dayTime}`;
     if(slots.length){
       const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
       const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
       const venueList = venues.length ? venues.join(', ') : 'aucun lieu défini';
-      return `${dayLabel} : ${dayTime} — ${slotLabel} (${venueList})`;
+      block += `\n📍 ${slotLabel} : ${venueList}`;
     }
-    return `${dayLabel} : ${dayTime}`;
+    return block;
   });
 
   const subject = `Ton planning de la semaine — ${getNvZoneLabel(zone)}`;
   const message = `Bonjour ${name.split(' ')[0]},
 
-Voici ton planning pour cette semaine — zone : ${getNvZoneLabel(zone)}.
+Voici ton planning pour cette semaine — Zone : ${getNvZoneLabel(zone)}
+────────────────────────
 
-${lines.join('\n')}
+${lines.join('\n\n')}
 
-Consulte ton espace pour tous les détails (hotspots, lieux exacts) : ${OPS_HQ_URL}
+────────────────────────
+Consulte ton espace pour tous les détails : ${OPS_HQ_URL}
 
 Bonne semaine !
 L'équipe OPS HQ`;
