@@ -173,7 +173,9 @@ input, select{font-family: inherit;}
     var(--sand);
 }
 .portal-bg-doodle{ display:none; }
+.nv-portal-top-week{ display:none; }
 @media (min-width: 1280px){
+  #agentPortal, #nvAgentPortal{ padding-top: 150px; }
   .portal-bg-doodle{
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
     position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
@@ -194,6 +196,11 @@ input, select{font-family: inherit;}
   .portal-bg-doodle.dd-br{ bottom:8%; right:5%; }
   .portal-bg-doodle.dd-ml{ top:44%; left:2%; }
   .portal-bg-doodle.dd-mr{ top:46%; right:3%; }
+  .nv-portal-top-week{
+    display:block; position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    width:min(94%, 1100px); background:#fff; border-radius:16px; padding:16px 20px;
+    box-shadow: 0 14px 30px -14px rgba(30,20,60,0.25); pointer-events:none; z-index:1;
+  }
 }
 .portal-card{
   width:100%; max-width: 420px; background: var(--paper); border-radius: 20px; padding: 28px;
@@ -782,6 +789,7 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
 <div id="nvAgentPortal" class="hidden">
+  <div id="nvPortalTopWeekWrap" class="nv-portal-top-week hidden"></div>
   <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
     <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
     <div class="dd-label">Zone</div>
@@ -4777,12 +4785,18 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
     }
     if(slots.length){
       const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
-      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+      const metaLine = `<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; ${featured ? 'justify-content:center;' : ''}">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div>`;
+      // Les lieux précis (venues) ne sont montrés QUE pour aujourd'hui — pour les autres jours de
+      // "Voir ma semaine complète", seule l'heure et le numéro de hotspot sont visibles (pas les
+      // adresses), pour ne pas exposer les hotspots à l'avance ou après coup.
+      if(!isToday){
+        return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}${metaLine}</div>`;
+      }
+      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
       const venueChips = venues.length
         ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
         : `<span class="nv-day-chip">—</span>`;
-      const metaLine = `<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; ${featured ? 'justify-content:center;' : ''}">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div>`;
       const venuesWrap = featured ? `<div class="nv-day-venues" style="justify-content:center;">${venueChips}</div>` : `<div class="nv-day-venues">${venueChips}</div>`;
       return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}${metaLine}${venuesWrap}</div>`;
     }
@@ -4815,6 +4829,48 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
   `;
 
   renderNvFlashInfoBox();
+
+  // Grille horizontale (façon Vue Semaine admin) affichée en arrière-plan tout en haut de la
+  // page, uniquement sur grand écran — juste un aperçu visuel, non cliquable.
+  const topWeekWrap = document.getElementById('nvPortalTopWeekWrap');
+  if(topWeekWrap){
+    const topCells = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
+      const isToday = dayIdx === todayIdx;
+      if(dayIdx === offDayIdx){
+        return `<div style="flex:1; text-align:center;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--ink-soft); margin-bottom:4px;">${dayLabel.slice(0,3)}${isToday ? ' •' : ''}</div><span class="cell-pill" style="background:var(--sand-deep); color:var(--ink-soft); display:block; font-size:11px; padding:5px 4px;">OFF</span></div>`;
+      }
+      const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
+      const dayInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : weekShiftInfo;
+      const isWeekend = dayIdx >= 4;
+      const dayTime = isWeekend && dayIdx < 6 ? dayInfo.label8 : dayInfo.label7;
+      let hotspotLabel = '';
+      if(slots.length){
+        const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
+        const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+        if(isToday){
+          const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+          hotspotLabel = venues.length
+            ? `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">📍 ${venues[0]}${venues.length > 1 ? '…' : ''}</div>`
+            : `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px;">📍 ${slotLabel}</div>`;
+        } else {
+          hotspotLabel = `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px;">📍 ${slotLabel}</div>`;
+        }
+      }
+      return `<div style="flex:1; text-align:center; min-width:0;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:${isToday ? 'var(--sky-ink)' : 'var(--ink-soft)'}; margin-bottom:4px;">${dayLabel.slice(0,3)}${isToday ? ' •' : ''}</div>
+        <span class="cell-pill ${dayInfo.isJour ? 'jour' : 'nuit'}" style="display:block; background:${dayInfo.isJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayInfo.isJour ? '#047857' : '#8A6208'}; font-size:11.5px; font-weight:800; font-family:var(--font-mono); padding:5px 4px; border-radius:6px;">${dayTime}</span>
+        ${hotspotLabel}
+      </div>`;
+    }).join('');
+    topWeekWrap.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <b style="font-size:13px;">${currentNvAgent}</b>
+        <span style="font-size:11px; color:var(--ink-soft);">${getNvZoneLabel(zone)}</span>
+      </div>
+      <div style="display:flex; gap:6px;">${topCells}</div>
+    `;
+    topWeekWrap.classList.remove('hidden');
+  }
 
   document.getElementById('nvToggleWeekBtn').addEventListener('click', () => {
     const wrap = document.getElementById('nvWeekStripWrap');
