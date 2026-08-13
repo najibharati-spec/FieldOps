@@ -164,20 +164,38 @@ input, select{font-family: inherit;}
 
 /* ============ AGENT PORTAL ============ */
 #agentPortal, #nvAgentPortal{
-  min-height: 100vh; display:flex; align-items:center; justify-content:center;
-  padding: 24px; position: relative; overflow:hidden;
+  min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+  gap: 16px; padding: 20px 16px; position: relative; overflow-x:hidden;
   background:
     radial-gradient(circle at 15% 15%, rgba(0,160,130,0.10), transparent 45%),
     radial-gradient(circle at 85% 85%, rgba(232,163,23,0.08), transparent 45%),
     radial-gradient(circle at 1px 1px, rgba(30,20,60,0.05) 1px, transparent 0) 0 0/28px 28px,
     var(--sand);
 }
-.portal-bg-doodle{ display:none; }
-.nv-portal-top-week{ display:none; }
+.nv-portal-top-week{
+  display:block; position:static; width:100%; max-width:460px; background:#fff; border-radius:16px;
+  padding:14px 16px; box-shadow: 0 10px 24px -14px rgba(30,20,60,0.22);
+}
+.nv-badges-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%; max-width:460px; }
+.portal-bg-doodle{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  position:static; width:80px; height:80px; border-radius:14px; pointer-events:none;
+  box-shadow:none; padding:8px 4px;
+}
+.portal-bg-doodle .dd-badge{
+  width:36px; height:36px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.portal-bg-doodle .dd-badge svg{ width:20px; height:20px; }
+.portal-bg-doodle .dd-label{
+  font-family: 'Baloo 2', var(--font-display); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+  color: #fff; text-align:center; line-height:1.05;
+}
 @media (min-width: 1280px){
-  #agentPortal, #nvAgentPortal{ padding-top: 150px; }
+  #agentPortal, #nvAgentPortal{ flex-direction:row; align-items:center; justify-content:center; padding-top: 150px; overflow:hidden; gap:0; }
+  .nv-badges-row{ display:contents; max-width:none; }
   .portal-bg-doodle{
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    flex-direction:column; align-items:center; justify-content:center; gap:14px;
     position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
     box-shadow:none; padding:14px 8px;
   }
@@ -702,6 +720,7 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- AGENT PORTAL (écran simplifié pour un agent connecté) -->
 <div id="agentPortal" class="hidden">
+  <div class="nv-badges-row">
   <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
     <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
     <div class="dd-label">Zone</div>
@@ -725,6 +744,7 @@ tr:last-child td{ border-bottom:none; }
   <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
     <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
     <div class="dd-label">Check-in</div>
+  </div>
   </div>
   <div class="portal-side-art">
     <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
@@ -790,6 +810,7 @@ tr:last-child td{ border-bottom:none; }
 <!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
 <div id="nvAgentPortal" class="hidden">
   <div id="nvPortalTopWeekWrap" class="nv-portal-top-week hidden"></div>
+  <div class="nv-badges-row">
   <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
     <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
     <div class="dd-label">Zone</div>
@@ -813,6 +834,7 @@ tr:last-child td{ border-bottom:none; }
   <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
     <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
     <div class="dd-label">Check-in</div>
+  </div>
   </div>
   <div class="portal-side-art">
     <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
@@ -893,7 +915,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="nav-label">Ressources</div>
         <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg><span>Agents</span></button>
         <button class="nav-item" data-view="paie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/><path d="M6 6V5a2 2 0 012-2h8a2 2 0 012 2v1"/></svg><span>Paie</span></button>
-        <button class="nav-item" data-view="rapports"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg><span>Rapports</span></button>
+        <button class="nav-item" data-view="rapports" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg><span>Rapports</span><span id="rapportsNavBadge" class="hidden" style="position:absolute; top:4px; right:8px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center; padding:0 4px;"></span></button>
       </div>
 
       <div class="nav-group">
@@ -925,6 +947,7 @@ tr:last-child td{ border-bottom:none; }
 
       <!-- DASHBOARD -->
       <section class="view" id="view-dashboard">
+        <div id="dashboardNewRapportsBanner" class="hidden"></div>
         <div class="stat-grid">
           <div class="stat-card">
             <div class="label">Agents actifs</div>
@@ -1574,6 +1597,63 @@ function enterApp(profile){
   populateZoneSelect();
   listenAgents();
   listenZoneLabels();
+  listenNewRapportsNotifications();
+}
+
+/* ================= NOTIFICATIONS: NOUVEAUX RAPPORTS/REMARQUES ================= */
+let newRapportsUnsub = null;
+
+function getRapportsLastSeenAt(){
+  return parseInt(localStorage.getItem('opsHqRapportsLastSeen') || '0', 10);
+}
+
+function markRapportsSeenNow(){
+  localStorage.setItem('opsHqRapportsLastSeen', String(Date.now()));
+  const badge = document.getElementById('rapportsNavBadge');
+  if(badge) badge.classList.add('hidden');
+  const banner = document.getElementById('dashboardNewRapportsBanner');
+  if(banner) banner.classList.add('hidden');
+}
+
+function listenNewRapportsNotifications(){
+  if(newRapportsUnsub) newRapportsUnsub();
+  // Écoute en continu (pas juste au chargement) — la pastille et la bannière se mettent à jour
+  // dès qu'un nouveau rapport/remarque arrive, même si l'admin est déjà en train d'utiliser l'app.
+  newRapportsUnsub = db.collection('rapports').orderBy('createdAt', 'desc').limit(50).onSnapshot(snap => {
+    const lastSeen = getRapportsLastSeenAt();
+    const fresh = snap.docs
+      .map(d => d.data())
+      .filter(r => r.createdAt && r.createdAt.toMillis && r.createdAt.toMillis() > lastSeen);
+
+    const badge = document.getElementById('rapportsNavBadge');
+    const onRapportsPage = !document.getElementById('view-rapports').classList.contains('hidden');
+    if(fresh.length === 0 || onRapportsPage){
+      if(badge) badge.classList.add('hidden');
+    } else if(badge){
+      badge.textContent = fresh.length > 9 ? '9+' : String(fresh.length);
+      badge.classList.remove('hidden');
+    }
+
+    const banner = document.getElementById('dashboardNewRapportsBanner');
+    if(!banner) return;
+    if(fresh.length === 0 || onRapportsPage){
+      banner.classList.add('hidden');
+      return;
+    }
+    const nUrgent = fresh.filter(r => r.urgent).length;
+    banner.innerHTML = `
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:${nUrgent ? 'rgba(220,38,38,0.1)' : 'rgba(0,160,130,0.1)'}; border:1px solid ${nUrgent ? 'rgba(220,38,38,0.3)' : 'rgba(0,160,130,0.3)'}; border-radius:14px; padding:14px 18px; margin-bottom:16px;">
+        <div style="font-size:13.5px; font-weight:700;">
+          ${nUrgent ? '🚨' : '🔔'} ${fresh.length} nouveau(x) rapport(s)/remarque(s)${nUrgent ? ` — dont ${nUrgent} urgent(s) !` : ''}
+        </div>
+        <button class="btn-ghost" id="dashboardGoToRapportsBtn" style="border:1px solid var(--line); font-size:12px;">Voir les rapports →</button>
+      </div>
+    `;
+    banner.classList.remove('hidden');
+    document.getElementById('dashboardGoToRapportsBtn').addEventListener('click', () => {
+      document.querySelector('[data-view="rapports"]').click();
+    });
+  }, err => console.error(err));
 }
 
 document.getElementById('logoutBtn').addEventListener('click', () => {
@@ -2970,6 +3050,7 @@ let rapportsUnsub = null;
 let rapportsFilterBuilt = false;
 
 function renderRapportsView(){
+  markRapportsSeenNow();
   if(!rapportsFilterBuilt){
     const agentSelect = document.getElementById('rapportsFilterAgent');
     NV_ALL_AGENTS.forEach(name => {
@@ -4888,7 +4969,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
           hotspotLabel = `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px;">📍 ${slotLabel}</div>`;
         }
       }
-      return `<div style="flex:1; text-align:center; min-width:0;">
+      return `<div style="flex:0 0 62px; text-align:center;">
         <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:${isToday ? 'var(--sky-ink)' : 'var(--ink-soft)'}; margin-bottom:4px;">${dayLabel.slice(0,3)}${isToday ? ' •' : ''}</div>
         <span class="cell-pill ${dayInfo.isJour ? 'jour' : 'nuit'}" style="display:block; background:${dayInfo.isJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayInfo.isJour ? '#047857' : '#8A6208'}; font-size:11.5px; font-weight:800; font-family:var(--font-mono); padding:5px 4px; border-radius:6px;">${dayTime}</span>
         ${hotspotLabel}
@@ -4899,7 +4980,7 @@ function renderNvPortalFull(content, motivationHtml, dateKey){
         <b style="font-size:13px;">${currentNvAgent}</b>
         <span style="font-size:11px; color:var(--ink-soft);">${getNvZoneLabel(zone)}</span>
       </div>
-      <div style="display:flex; gap:6px;">${topCells}</div>
+      <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;">${topCells}</div>
     `;
     topWeekWrap.classList.remove('hidden');
   }
