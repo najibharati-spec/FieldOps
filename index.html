@@ -312,7 +312,7 @@ input, select{font-family: inherit;}
 }
 .logout-btn:hover{ background: var(--line); color: var(--ink); }
 
-.main{ flex:1; overflow-x:hidden; }
+.main{ flex:1; overflow-x:auto; max-width:100vw; }
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
   padding: 18px 32px; border-bottom: 1px solid var(--line);
@@ -571,8 +571,11 @@ tr:last-child td{ border-bottom:none; }
 .ptab:not(.active):hover{ background: var(--sand-deep); }
 
 .planning-card{ overflow-x: auto; }
-.planning-table{ width: 100%; border-collapse: collapse; min-width: 920px; }
-.planning-table th, .planning-table td{ padding: 10px 10px; font-size: 12.5px; border-bottom: 1px solid var(--line); text-align:center; white-space: nowrap; }
+.planning-table{ width: 100%; border-collapse: collapse; min-width: 780px; table-layout: fixed; }
+.planning-table th, .planning-table td{ padding: 6px 4px; font-size: 12px; border-bottom: 1px solid var(--line); text-align:center; white-space: nowrap; }
+.planning-table th:not(.sticky-col), .planning-table td:not(.sticky-col):not(.zone-cell){ width: 78px; }
+.planning-table th.sticky-col, .planning-table td.sticky-col{ width: 140px; }
+.planning-table td.zone-cell{ width: 92px; white-space: normal; text-align:left; font-size:11px; }
 .planning-table thead th{
   text-transform:uppercase; font-size: 10px; letter-spacing:.05em; color: var(--ink-soft); font-weight: 800;
   background: var(--sand-deep); border-bottom: 2px solid var(--line); padding-top: 12px; padding-bottom: 12px;
@@ -587,7 +590,7 @@ tr:last-child td{ border-bottom:none; }
 }
 .agent-name-edit:hover{ background: var(--sand-deep); }
 .agent-name-edit:focus{ outline: none; background: var(--paper); box-shadow: 0 0 0 1.5px var(--sky); }
-.sticky-col{ position: sticky; left: 0; background: var(--paper); text-align:left !important; z-index: 2; }
+.sticky-col{ position: sticky; left: 0; background: var(--paper); text-align:left !important; white-space: normal !important; z-index: 2; }
 .planning-table tbody tr:nth-child(even) .sticky-col{ background: #F3F1FA; }
 .planning-table td.total-cell{
   font-family: var(--font-mono); font-weight: 800; color: var(--sky-ink); font-size: 13px;
@@ -913,14 +916,9 @@ tr:last-child td{ border-bottom:none; }
 
       <div class="nav-group">
         <div class="nav-label">Ressources</div>
-        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg><span>Agents</span></button>
+        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
         <button class="nav-item" data-view="paie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/><path d="M6 6V5a2 2 0 012-2h8a2 2 0 012 2v1"/></svg><span>Paie</span></button>
         <button class="nav-item" data-view="rapports" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg><span>Rapports</span><span id="rapportsNavBadge" class="hidden" style="position:absolute; top:4px; right:8px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center; padding:0 4px;"></span></button>
-      </div>
-
-      <div class="nav-group">
-        <div class="nav-label">Système</div>
-        <button class="nav-item" data-view="parametres"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
       </div>
 
       <div class="sidebar-footer">
@@ -1190,7 +1188,6 @@ tr:last-child td{ border-bottom:none; }
         </div>
       </section>
       <section class="view hidden" id="view-paie"></section>
-      <section class="view hidden" id="view-parametres"></section>
       <section class="view hidden" id="view-planningnv">
         <div class="planning-header">
           <div class="week-nav">
@@ -1831,7 +1828,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
     const target = document.getElementById('view-' + view);
     target.classList.remove('hidden');
     document.getElementById('viewTitle').textContent = btn.querySelector('span').textContent;
-    if(['paie','parametres'].includes(view) && !target.dataset.built){
+    if(['paie'].includes(view) && !target.dataset.built){
       renderPlaceholder(target, btn.querySelector('span').textContent);
       target.dataset.built = '1';
     }
@@ -4300,7 +4297,7 @@ function renderNvWeekGridView(){
           const slotIdx = (typeof hotspotOverride === 'number' && slots[hotspotOverride]) ? hotspotOverride : resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
-          hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="${typeof hotspotOverride === 'number' ? 'Hotspot modifié pour ce jour — cliquer pour changer' : 'Cliquer pour changer le hotspot de ce jour'}" style="cursor:pointer; font-size:9.5px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:90px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
+          hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="${typeof hotspotOverride === 'number' ? 'Hotspot modifié pour ce jour — cliquer pour changer' : 'Cliquer pour changer le hotspot de ce jour'}" style="cursor:pointer; font-size:9px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:78px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:auto; margin-right:auto;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
         }
         // Un shift modifié pour CE jour précis prime sur le shift par défaut de la semaine.
         const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
@@ -4309,7 +4306,7 @@ function renderNvWeekGridView(){
         const isWeekendShortDay = dayIdx >= 4 && dayIdx < 6; // Ven, Sam
         const cellTimeLabel = isWeekendShortDay ? dayShiftInfo.label8 : dayShiftInfo.label7;
         return `<td style="${isToday ? 'background:rgba(0,160,130,0.06);' : ''}">
-          <span class="cell-pill ${dayIsJour ? 'jour' : 'nuit'}" data-cell-edit-shift="${name}" data-cell-edit-day="${dayIdx}" title="${dayOverride ? 'Heure modifiée pour ce jour — cliquer pour changer' : 'Cliquer pour changer l\'heure de ce jour'}" style="display:block; cursor:pointer; position:relative; background:${dayIsJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayIsJour ? '#047857' : '#8A6208'}; border:1.5px solid ${dayOverride ? 'var(--sky)' : (dayIsJour ? 'rgba(4,120,87,0.35)' : 'rgba(184,128,14,0.4)')}; font-size:15.5px; font-weight:800; font-family:var(--font-mono); letter-spacing:-0.01em; padding:5px 6px; border-radius:8px;">${dayOverride ? '✏️ ' : (dayIsJour ? '☀️ ' : '🌙 ')}${cellTimeLabel}</span>
+          <span class="cell-pill ${dayIsJour ? 'jour' : 'nuit'}" data-cell-edit-shift="${name}" data-cell-edit-day="${dayIdx}" title="${dayOverride ? 'Heure modifiée pour ce jour — cliquer pour changer' : 'Cliquer pour changer l\'heure de ce jour'}" style="display:block; cursor:pointer; position:relative; background:${dayIsJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayIsJour ? '#047857' : '#8A6208'}; border:1.5px solid ${dayOverride ? 'var(--sky)' : (dayIsJour ? 'rgba(4,120,87,0.35)' : 'rgba(184,128,14,0.4)')}; font-size:12px; font-weight:800; font-family:var(--font-mono); letter-spacing:-0.02em; padding:3px 3px; border-radius:6px;">${dayOverride ? '✏️ ' : (dayIsJour ? '☀️ ' : '🌙 ')}${cellTimeLabel}</span>
           ${hotspotLine}
         </td>`;
       }).join('');
@@ -4330,10 +4327,10 @@ function renderNvWeekGridView(){
           </td>
           <td class="zone-cell">
             ${getNvZoneLabel(zone)}${override.zoneOverride ? ' <span title="Zone modifiée manuellement">✏️</span>' : ''}
-            <div style="display:flex; gap:6px; margin-top:4px;">
-              <button class="nv-mini-link" data-grid-edit-zone="${name}" style="padding:0; font-size:10px;">Zone</button>
-              <button class="nv-mini-link" data-grid-edit-shift="${name}" style="padding:0; font-size:10px;">Shift</button>
-              <button class="nv-mini-link" data-grid-edit-off="${name}" style="padding:0; font-size:10px;">OFF</button>
+            <div style="display:flex; gap:4px; margin-top:3px; flex-wrap:wrap;">
+              <button class="nv-mini-link" data-grid-edit-zone="${name}" style="padding:0; font-size:9px;">Zone</button>
+              <button class="nv-mini-link" data-grid-edit-shift="${name}" style="padding:0; font-size:9px;">Shift</button>
+              <button class="nv-mini-link" data-grid-edit-off="${name}" style="padding:0; font-size:9px;">OFF</button>
             </div>
           </td>
           ${dayCells}
