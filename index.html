@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPS HQ</title>
+<title>FieldOps</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
 
@@ -638,7 +638,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="login-mark">
           <svg viewBox="0 0 24 24" fill="none" stroke="#101D30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2 4 4 8-8 2 2"/><path d="M3 18l2-2 4 4 8-8 2 2"/></svg>
         </div>
-        <span>OPS HQ</span>
+        <span>FieldOps</span>
       </div>
 
       <div class="route-map">
@@ -707,7 +707,7 @@ tr:last-child td{ border-bottom:none; }
     <main class="login-form-panel">
       <div class="login-card">
         <div class="login-brand">
-          <h1>OPS HQ</h1>
+          <h1>FieldOps</h1>
           <p>Système Central de Gestion RH</p>
         </div>
 
@@ -903,7 +903,7 @@ tr:last-child td{ border-bottom:none; }
     <aside class="sidebar">
       <div class="sidebar-brand">
         <div class="mark">O</div>
-        <h2>OPS HQ</h2>
+        <h2>FieldOps</h2>
       </div>
 
       <div class="nav-group">
@@ -4231,7 +4231,7 @@ document.querySelectorAll('#view-planningnv .planning-tabs [data-nv-view]').forE
 });
 
 document.getElementById('nvExportHotspotsBtn').addEventListener('click', () => {
-  let text = 'HOTSPOTS OPS HQ — sauvegarde du ' + new Date().toLocaleString('fr-FR') + '\n\n';
+  let text = 'HOTSPOTS FieldOps — sauvegarde du ' + new Date().toLocaleString('fr-FR') + '\n\n';
   Object.keys(HOTSPOTS_NV).forEach(zone => {
     text += `=== ${zone} ===\n`;
     (HOTSPOTS_NV[zone] || []).forEach((slot, i) => {
@@ -4614,7 +4614,7 @@ function stableNvPin(name){
 
 /* ================= EMAIL (EmailJS — envoi manuel, pas d'automatisation serveur) ================= */
 let NV_EMAILS = {};
-const OPS_HQ_URL = 'https://najibharati-spec.github.io/ops-hq/';
+const OPS_HQ_URL = 'https://najibharati-spec.github.io/FieldOps/';
 
 const DEFAULT_NV_EMAILS = {
   "Charaf Loummihi": "loummihic@gmail.com",
@@ -4666,10 +4666,10 @@ function sendNvEmail(toEmail, toName, subject, message){
 function sendAgentAccessEmail(agent){
   if(!agent.email){ alert(`${agent.name} n'a pas d'email enregistré.`); return; }
   if(!agent.pin){ alert(`${agent.name} n'a pas encore de PIN.`); return; }
-  const subject = 'Bienvenue sur OPS HQ — ton accès';
+  const subject = 'Bienvenue sur FieldOps — ton accès';
   const message = `Bonjour ${agent.name.split(' ')[0]},
 
-Ton accès à l'espace Planning OPS HQ est prêt.
+Ton accès à l'espace Planning FieldOps est prêt.
 
 Lien de connexion : ${OPS_HQ_URL}
 Ton code PIN : ${agent.pin}
@@ -4677,7 +4677,7 @@ Ton code PIN : ${agent.pin}
 Connecte-toi, sélectionne ton profil, fais ton check-in et active ta localisation pour voir ton planning de la semaine.
 
 Bonne journée sur le terrain !
-L'équipe OPS HQ`;
+L'équipe FieldOps`;
   sendNvEmail(agent.email, agent.name, subject, message).catch(() => {});
 }
 
