@@ -1146,6 +1146,7 @@ tr:last-child td{ border-bottom:none; }
             <select id="rapportsFilterType" class="login-input" style="width:auto; margin:0; padding:8px 12px;">
               <option value="">Tous les types</option>
               <option value="rapport">Rapport</option>
+              <option value="urgent">🚨 Urgent</option>
               <option value="remarque">Remarque</option>
             </select>
             <button class="btn-ghost" id="rapportsExportBtn" style="border:1px solid var(--line);">↓ Export CSV</button>
@@ -2996,6 +2997,7 @@ function renderRapportsStats(){
   const total = RAPPORTS_CACHE.length;
   const nRapports = RAPPORTS_CACHE.filter(r => r.type === 'rapport').length;
   const nRemarques = RAPPORTS_CACHE.filter(r => r.type === 'remarque').length;
+  const nUrgent = RAPPORTS_CACHE.filter(r => r.urgent).length;
   const weekAgo = Date.now() - 7 * 86400000;
   const thisWeek = RAPPORTS_CACHE.filter(r => r.createdAt && r.createdAt.toMillis && r.createdAt.toMillis() >= weekAgo).length;
   const counts = {};
@@ -3003,6 +3005,11 @@ function renderRapportsStats(){
   const topAgent = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
 
   grid.innerHTML = `
+    <div class="stat-card" style="border-left-color:var(--red);">
+      <div class="label">🚨 Urgents</div>
+      <div class="value" style="color:${nUrgent ? 'var(--red)' : 'inherit'};">${nUrgent}</div>
+      <div class="sub">Nécessitent une attention</div>
+    </div>
     <div class="stat-card accent-blue">
       <div class="label">Total envoyés</div>
       <div class="value">${total}</div>
@@ -3040,10 +3047,10 @@ function renderRapportsMissing(){
 }
 
 function exportRapportsCsv(){
-  const rows = [['Date', 'Agent', 'Type', 'Texte']];
+  const rows = [['Date', 'Agent', 'Type', 'Urgent', 'Texte']];
   RAPPORTS_CACHE.forEach(r => {
     const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('fr-FR') : (r.date || '');
-    rows.push([when, r.agentName, r.type, (r.text || '').replace(/\n/g, ' ')]);
+    rows.push([when, r.agentName, r.type, r.urgent ? 'Oui' : 'Non', (r.text || '').replace(/\n/g, ' ')]);
   });
   const csv = rows.map(row => row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n');
   const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -3065,7 +3072,7 @@ function renderRapportsList(){
   const filtered = RAPPORTS_CACHE.filter(r =>
     (!agentFilter || r.agentName === agentFilter) &&
     (!typeFilter || r.type === typeFilter)
-  );
+  ).sort((a, b) => (b.urgent ? 1 : 0) - (a.urgent ? 1 : 0));
 
   if(filtered.length === 0){
     list.innerHTML = '';
@@ -3076,12 +3083,15 @@ function renderRapportsList(){
 
   list.innerHTML = filtered.map(r => {
     const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleString('fr-FR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : (r.date || '');
-    const typeLabel = r.type === 'remarque' ? '💬 Remarque' : '📩 Rapport';
-    const typeColor = r.type === 'remarque' ? '#FBBF24' : '#38BDF8';
+    const typeLabel = r.type === 'remarque' ? '💬 Remarque' : r.type === 'urgent' ? '🚨 Urgent' : '📩 Rapport';
+    const typeColor = r.type === 'remarque' ? '#FBBF24' : r.type === 'urgent' ? 'var(--red)' : '#38BDF8';
     return `
-      <div style="padding:14px 18px; border-bottom:1px solid var(--line);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-          <span style="font-weight:700; font-size:13.5px;">${r.agentName}</span>
+      <div style="padding:14px 18px; border-bottom:1px solid var(--line); ${r.urgent ? 'background:rgba(220,38,38,0.06); border-left:4px solid var(--red);' : ''}">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; flex-wrap:wrap; gap:6px;">
+          <span style="display:flex; align-items:center; gap:8px;">
+            ${r.urgent ? '<span style="font-size:11px; font-weight:800; color:#fff; background:var(--red); padding:2px 8px; border-radius:20px;">🚨 URGENT</span>' : ''}
+            <span style="font-weight:700; font-size:13.5px;">${r.agentName}</span>
+          </span>
           <span style="display:flex; align-items:center; gap:8px;">
             <span style="font-size:11px; font-weight:700; color:${typeColor};">${typeLabel}</span>
             <span style="font-size:11px; color:var(--ink-soft);">${when}</span>
@@ -4691,19 +4701,40 @@ function renderNvPortal(){
 function renderNvStreakBadge(){
   const el = document.getElementById('nvStreakBadge');
   if(!el) return;
-  db.collection('nvCheckins').where('agentName', '==', currentNvAgent).get().then(snap => {
-    const dates = new Set(snap.docs.map(d => d.data().date));
-    const todayKey = dateKeyFor(new Date());
-    let streak = 0;
-    let cursor = new Date();
-    // Si pas encore check-in aujourd'hui, on compte à partir d'hier (le streak d'avant reste valable).
-    if(!dates.has(todayKey)) cursor.setDate(cursor.getDate() - 1);
-    while(dates.has(dateKeyFor(cursor))){
-      streak++;
-      cursor.setDate(cursor.getDate() - 1);
+  // Une seule requête sur toute la collection : permet de calculer le streak de CHAQUE agent
+  // (pour le classement) sans multiplier les lectures Firestore.
+  db.collection('nvCheckins').get().then(snap => {
+    const byAgent = {};
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if(!byAgent[data.agentName]) byAgent[data.agentName] = new Set();
+      byAgent[data.agentName].add(data.date);
+    });
+
+    function computeStreak(dates){
+      const todayKey = dateKeyFor(new Date());
+      let streak = 0;
+      let cursor = new Date();
+      if(!dates.has(todayKey)) cursor.setDate(cursor.getDate() - 1);
+      while(dates.has(dateKeyFor(cursor))){
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
     }
-    if(streak >= 2){
-      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🔥 ${streak} jours d'affilée</span>`;
+
+    const myStreak = computeStreak(byAgent[currentNvAgent] || new Set());
+
+    const ranking = NV_ALL_AGENTS
+      .map(name => ({ name, streak: computeStreak(byAgent[name] || new Set()) }))
+      .sort((a, b) => b.streak - a.streak);
+    const myRank = ranking.findIndex(r => r.name === currentNvAgent) + 1;
+    const rankTag = myStreak >= 1 ? ` · <b>#${myRank}</b>/${ranking.length}` : '';
+
+    if(myStreak >= 2){
+      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🔥 ${myStreak} jours d'affilée${rankTag}</span>`;
+    } else if(myStreak === 1 && myRank <= 3){
+      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🏆 #${myRank}/${ranking.length} de l'équipe</span>`;
     }
   }).catch(err => console.error(err));
 }
@@ -4731,9 +4762,10 @@ function renderNvMyReports(){
     const items = snap.docs.map(d => {
       const r = d.data();
       const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : (r.date || '');
-      const typeLabel = r.type === 'remarque' ? '💬' : '📩';
+      const typeLabel = r.type === 'remarque' ? '💬' : r.type === 'urgent' ? '🚨' : '📩';
+      const urgentTag = r.urgent ? ' <span style="color:var(--red); font-weight:800;">URGENT</span>' : '';
       return `<div style="padding:8px 0; border-bottom:1px solid var(--line); font-size:12px;">
-        <span style="color:var(--ink-soft);">${when}</span> ${typeLabel} <span style="color:var(--ink);">${(r.text || '').slice(0, 60)}${(r.text || '').length > 60 ? '…' : ''}</span>
+        <span style="color:var(--ink-soft);">${when}</span> ${typeLabel}${urgentTag} <span style="color:var(--ink);">${(r.text || '').slice(0, 60)}${(r.text || '').length > 60 ? '…' : ''}</span>
       </div>`;
     }).join('');
     box.innerHTML = `
@@ -4890,6 +4922,7 @@ function openNvRapportModal(){
       <div style="background:var(--sand-deep); border-radius:14px; padding:14px; border:1px solid var(--line); margin-top:10px;">
         <select id="nvRapportType" class="login-input" style="margin-bottom:8px;">
           <option value="rapport">📩 Rapport</option>
+          <option value="urgent">🚨 Urgent</option>
           <option value="remarque">💬 Remarque</option>
         </select>
         <textarea id="nvRapportText" class="login-input" rows="3" style="resize:vertical; min-height:70px;" placeholder="Écris ton rapport ou ta remarque ici..."></textarea>
@@ -4910,6 +4943,7 @@ function openNvRapportModal(){
   overlay.querySelector('#nvSendRapportBtn').addEventListener('click', () => {
     const type = overlay.querySelector('#nvRapportType').value;
     const text = overlay.querySelector('#nvRapportText').value.trim();
+    const urgent = type === 'urgent';
     const msgEl = overlay.querySelector('#nvRapportMsg');
     if(!text){ msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Écris quelque chose avant d\'envoyer.'; return; }
     const btn = overlay.querySelector('#nvSendRapportBtn');
@@ -4918,6 +4952,7 @@ function openNvRapportModal(){
       agentName: currentNvAgent,
       type,
       text,
+      urgent,
       date: dateKeyFor(new Date()),
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
     }).then(() => {
