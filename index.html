@@ -886,7 +886,7 @@ tr:last-child td{ border-bottom:none; }
         <span id="nvPortalClock">--:--</span>
       </div>
       <div style="display:flex; align-items:center; gap:8px;">
-        <button class="agent-access-btn" id="nvPortalRapportBtn" title="Rapport &amp; remarques" style="font-size:14px; padding:9px 16px; font-weight:800;">📝 Rapport</button>
+        <button class="agent-access-btn" id="nvPortalRapportBtn" title="Rapport &amp; remarques" style="font-size:14px; padding:9px 16px; font-weight:800; position:relative;">📝 Rapport<span id="nvRapportReplyBadge" class="hidden" style="position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;">●</span></button>
         <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
       </div>
     </div>
@@ -1554,6 +1554,7 @@ function attemptLogin(){
           document.getElementById('nvAgentPortal').classList.remove('hidden');
           listenHotspotsNv();
           renderNvPortal();
+          listenNvReplyNotifications();
         });
     }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
     return;
@@ -4870,9 +4871,19 @@ function renderNvFlashInfoBox(){
 function renderNvMyReports(){
   const box = document.getElementById('nvMyReportsBox');
   if(!box) return;
-  db.collection('rapports').where('agentName', '==', currentNvAgent).orderBy('createdAt', 'desc').limit(5).get().then(snap => {
+  // Pas de orderBy() ici volontairement : évite de dépendre d'un index composite Firestore
+  // (agentName + createdAt) qui pourrait ne pas exister — on trie côté client à la place.
+  db.collection('rapports').where('agentName', '==', currentNvAgent).limit(20).get().then(snap => {
     if(snap.empty){ box.innerHTML = ''; return; }
-    const items = snap.docs.map(d => {
+    const docs = snap.docs
+      .slice()
+      .sort((a, b) => {
+        const ta = a.data().createdAt && a.data().createdAt.toMillis ? a.data().createdAt.toMillis() : 0;
+        const tb = b.data().createdAt && b.data().createdAt.toMillis ? b.data().createdAt.toMillis() : 0;
+        return tb - ta;
+      })
+      .slice(0, 5);
+    const items = docs.map(d => {
       const r = d.data();
       const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : (r.date || '');
       const typeLabel = r.type === 'remarque' ? '💬' : r.type === 'urgent' ? '🚨' : '📩';
@@ -4890,7 +4901,29 @@ function renderNvMyReports(){
       <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:6px;">Mes derniers envois</div>
       ${items}
     `;
+    // L'agent vient de voir ses réponses : on marque tout comme lu pour la pastille de
+    // notification, et on retire la pastille immédiatement.
+    const repliedIds = snap.docs.filter(d => d.data().adminReply).map(d => d.id);
+    if(repliedIds.length){
+      localStorage.setItem('nvRepliesSeen_' + currentNvAgent, JSON.stringify(repliedIds));
+    }
+    const badge = document.getElementById('nvRapportReplyBadge');
+    if(badge) badge.classList.add('hidden');
   }).catch(err => console.error(err));
+}
+
+let nvReplyNotifUnsub = null;
+function listenNvReplyNotifications(){
+  if(nvReplyNotifUnsub) nvReplyNotifUnsub();
+  // Écoute en continu (pas juste à l'ouverture de la modale) : la pastille rouge sur le bouton
+  // "Rapport" s'allume dès qu'une réponse admin arrive sur un de mes envois, même si je n'ai
+  // jamais ouvert la modale pour la voir.
+  nvReplyNotifUnsub = db.collection('rapports').where('agentName', '==', currentNvAgent).onSnapshot(snap => {
+    const seen = new Set(JSON.parse(localStorage.getItem('nvRepliesSeen_' + currentNvAgent) || '[]'));
+    const hasUnseenReply = snap.docs.some(d => d.data().adminReply && !seen.has(d.id));
+    const badge = document.getElementById('nvRapportReplyBadge');
+    if(badge) badge.classList.toggle('hidden', !hasUnseenReply);
+  }, err => console.error(err));
 }
 
 
