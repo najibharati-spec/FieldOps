@@ -1,3 +1,19 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FieldOps</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Baloo+2:wght@700;800&display=swap" rel="stylesheet">
+
+<!-- Firebase (compat SDK — single file, no build step) -->
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.13.0/firebase-firestore-compat.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+
 <style>
 :root{
   /* Glovo Brand Palette */
@@ -34,7 +50,6 @@
   --font-mono: 'JetBrains Mono', monospace;
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 16px 36px rgba(0, 160, 130, 0.12);
 }
 
 *{ box-sizing:border-box; margin:0; padding:0; }
@@ -143,9 +158,74 @@ input, select{ font-family: inherit; }
   min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
   gap: 16px; padding: 24px 16px; position: relative; background: var(--glovo-bg);
 }
+.nv-portal-top-week{
+  display:block; position:static; width:100%; max-width:460px; background:#fff; border-radius:16px;
+  padding:14px 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--glovo-line);
+}
+.nv-badges-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%; max-width:460px; }
+.portal-bg-doodle{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  position:static; width:80px; height:80px; border-radius:14px; pointer-events:none;
+  padding:8px 4px;
+}
+.portal-bg-doodle .dd-badge{
+  width:36px; height:36px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.portal-bg-doodle .dd-badge svg{ width:20px; height:20px; }
+.portal-bg-doodle .dd-label{
+  font-family: 'Baloo 2', var(--font-display); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+  color: #fff; text-align:center; line-height:1.05;
+}
+@media (min-width: 1280px){
+  #agentPortal, #nvAgentPortal{ flex-direction:row; align-items:center; justify-content:center; padding-top: 150px; overflow:hidden; gap:0; }
+  .nv-badges-row{ display:contents; max-width:none; }
+  .portal-bg-doodle{
+    flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
+    padding:14px 8px;
+  }
+  .portal-bg-doodle .dd-badge{
+    width:62px; height:62px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0;
+  }
+  .portal-bg-doodle .dd-badge svg{ width:34px; height:34px; }
+  .portal-bg-doodle .dd-label{
+    font-family: 'Baloo 2', var(--font-display); font-size:17px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+    color: #fff; text-align:center; line-height:1.05;
+  }
+  .portal-bg-doodle.dd-tl{ top:7%; left:5%; }
+  .portal-bg-doodle.dd-bl{ bottom:9%; left:8%; }
+  .portal-bg-doodle.dd-tr{ top:9%; right:6%; }
+  .portal-bg-doodle.dd-br{ bottom:8%; right:5%; }
+  .portal-bg-doodle.dd-ml{ top:44%; left:2%; }
+  .portal-bg-doodle.dd-mr{ top:46%; right:3%; }
+  .nv-portal-top-week{
+    display:block; position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    width:min(94%, 1100px); background:#fff; border-radius:16px; padding:16px 20px;
+    box-shadow: var(--shadow-md); pointer-events:none; z-index:1;
+  }
+}
 .portal-card{
   width:100%; max-width: 440px; background: #FFFFFF; border-radius: 24px; padding: 30px;
   box-shadow: var(--shadow-md); border: 1px solid var(--glovo-line);
+}
+.portal-side-art{ display:none; }
+@media (min-width: 900px){
+  #agentPortal, #nvAgentPortal{ gap: 48px; }
+  .portal-side-art{ display:flex; flex-direction:column; align-items:center; width: 320px; flex-shrink:0; }
+  .portal-side-art svg{ width:100%; max-width:320px; height:auto; }
+  .portal-side-art-quote{
+    font-family: var(--font-display); font-style:italic; font-weight:600; font-size:15px;
+    color: var(--glovo-ink-soft); text-align:center; margin-top:8px; line-height:1.5; max-width:260px;
+  }
+}
+.portal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
+.portal-header b{ font-size: 16px; display:block; color: var(--glovo-ink); }
+.portal-header span{ font-size: 12px; color: var(--glovo-ink-soft); font-family: var(--font-mono); }
+.portal-status{
+  text-align:center; padding: 14px; border-radius: 12px; background: var(--glovo-bg-subtle);
+  font-size: 13px; font-weight:700; color: var(--glovo-ink-soft); margin-bottom: 18px;
 }
 .portal-btn{
   width:100%; padding: 16px; border-radius: 28px; background: var(--glovo-green); color:#fff;
@@ -153,8 +233,14 @@ input, select{ font-family: inherit; }
 }
 .portal-btn:hover{ background: var(--glovo-green-deep); transform: translateY(-1px); }
 .portal-btn.is-checkedin{ background: var(--red); box-shadow: 0 8px 20px rgba(235,87,87,0.25); }
+.portal-history{ margin-top: 4px; }
+.portal-history-item{
+  display:flex; justify-content:space-between; padding: 9px 0; border-bottom: 1px solid var(--glovo-line);
+  font-size: 12.5px;
+}
+.portal-history-item:last-child{ border-bottom:none; }
 
-/* ============ SIDEBAR & NAVIGATION ============ */
+/* ============ SHELL & SIDEBAR ============ */
 .shell{ display:flex; min-height: 100vh; }
 .sidebar{
   width: 240px; flex-shrink:0;
@@ -194,29 +280,169 @@ input, select{ font-family: inherit; }
 }
 .nav-item.active svg{ stroke: var(--glovo-green-deep); }
 .nav-item svg{ width:18px; height:18px; flex-shrink:0; }
+.sidebar-footer{ margin-top:auto; padding-top: 16px; border-top: 1.5px solid var(--glovo-line); }
+.user-chip{ display:flex; align-items:center; gap:10px; padding: 8px 10px; }
+.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--glovo-green); flex-shrink:0; }
+.user-chip-text b{ font-size: 13px; color: var(--glovo-ink); }
+.user-chip-text span{ font-size: 11px; color: var(--glovo-ink-soft); }
+.logout-btn{
+  width:100%; margin-top:8px; padding: 10px; border-radius: 8px;
+  background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft);
+  font-size: 12.5px; font-weight:600;
+}
+.logout-btn:hover{ background: #E2E6EA; color: var(--glovo-ink); }
 
-.main{ flex:1; overflow-x:auto; background: var(--glovo-bg); }
+.main{ flex:1; overflow-x:auto; max-width:100vw; background: var(--glovo-bg); }
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
-  padding: 20px 36px; border-bottom: 1.5px solid var(--glovo-line);
+  padding: 18px 32px; border-bottom: 1.5px solid var(--glovo-line);
   background: rgba(255,255,255,0.92);
   backdrop-filter: blur(12px);
   position: sticky; top: 0; z-index: 5;
 }
 .topbar h1{ font-size: 20px; font-weight: 800; color: var(--glovo-ink); }
+.topbar-meta{ display:flex; align-items:center; gap: 14px; font-size: 12.5px; color: var(--glovo-ink-soft); font-family: var(--font-mono); }
+.sync-pill{
+  display:flex; align-items:center; gap:6px; padding: 5px 12px;
+  background: var(--glovo-green-light); color: var(--glovo-green-deep); border-radius: 20px; font-weight:700; font-size: 11.5px;
+}
+.sync-pill .dot{ width:6px; height:6px; border-radius:50%; background: var(--glovo-green); }
 
-/* ============ CARDS & STATS ============ */
-.card{ background: #FFFFFF; border: 1.5px solid var(--glovo-line); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+.view{ padding: 28px 32px; }
+.hidden{ display:none !important; }
+
+/* Dashboard cards */
+.stat-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
 .stat-card{
   background: #FFFFFF; border: 1.5px solid var(--glovo-line); border-left: 5px solid var(--glovo-green);
-  border-radius: var(--radius); padding: 20px;
+  border-radius: var(--radius); padding: 18px;
   box-shadow: var(--shadow-sm);
+  transition: transform .18s ease, box-shadow .18s ease;
 }
 .stat-card:hover{ transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-card.accent-green{ border-left-color: #059669; }
+.stat-card.accent-blue{ border-left-color: #0284C7; }
 .stat-card.accent-amber{ border-left-color: var(--glovo-yellow); }
+.stat-card.accent-purple{ border-left-color: var(--glovo-green); }
+.stat-card.accent-red{ border-left-color: var(--red); }
+.stat-card.accent-orange{ border-left-color: #EA580C; }
+.stat-card .label{ font-size: 11.5px; color: var(--glovo-ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:700; margin-bottom: 8px;}
 .stat-card .value{ font-size: 30px; font-weight: 800; color: var(--glovo-ink); font-family: var(--font-mono); }
+.stat-card .sub{ font-size: 12px; color: var(--glovo-ink-soft); margin-top: 4px; }
 
-/* ============ BUTTONS & BADGES ============ */
+.zone-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
+.zone-card{
+  background: #FFFFFF; border: 1.5px solid var(--glovo-line); border-radius: var(--radius); padding: 16px;
+  border-left: 5px solid var(--glovo-yellow);
+}
+.zone-card h3{ font-size: 14px; font-weight:700; margin-bottom: 10px; color: var(--glovo-ink); }
+.zone-card .count{ font-size: 24px; font-weight: 800; color: var(--glovo-ink); font-family: var(--font-mono); }
+.zone-card .count-label{ font-size: 11.5px; color: var(--glovo-ink-soft); }
+.zone-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
+
+/* ============ PLANNING NV — zone cards ============ */
+.nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
+.nv-zone-card{
+  border-radius: var(--radius); overflow:hidden; background: #FFFFFF;
+  border: 1.5px solid var(--glovo-line); box-shadow: var(--shadow-sm);
+}
+.nv-zone-head{ padding: 16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between; }
+.nv-zone-head h3{ font-size: 18px; font-weight: 800; }
+.nv-zone-head span{ font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.28); padding: 4px 10px; border-radius: 20px; }
+.nv-member-row{
+  display:flex; align-items:center; justify-content:space-between; gap: 10px;
+  padding: 14px 20px; border-bottom: 1px solid var(--glovo-line);
+}
+.nv-member-row:last-child{ border-bottom:none; }
+.nv-member-name{ font-weight: 800; font-size: 15px; flex: 1; color: var(--glovo-ink); }
+.nv-chip{ font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 20px; white-space:nowrap; }
+.nv-chip.shift-jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.nv-chip.shift-nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
+.nv-chip.off{ background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft); }
+.nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
+.nv-day-block{ border-bottom: 1px solid var(--glovo-line); padding-bottom: 8px; }
+.nv-day-block:last-child{ border-bottom:none; }
+.nv-day-today{ background: rgba(0,160,130,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
+.nv-today-tag{ background: var(--glovo-green-deep); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
+.nv-portal-hero{ border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: var(--shadow-md); }
+.nv-portal-hero-label{ font-size: 12px; font-weight:600; opacity:.85; margin-bottom:4px; }
+.nv-portal-hero-zone{ font-size: 24px; font-weight: 800; margin-bottom: 10px; }
+.nv-portal-day{ border-bottom: 1px solid var(--glovo-line); padding-bottom: 10px; margin-bottom: 10px; }
+.nv-portal-day:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
+.nv-time-chip{ font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-left: 6px; display:inline-block; }
+.nv-time-chip.nv-time-jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.nv-time-chip.nv-time-nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
+.nv-day-label{ font-size: 12px; font-weight: 800; color: var(--glovo-ink); margin-bottom: 5px; text-transform:uppercase; }
+.nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
+.nv-day-chip{
+  font-size: 13.5px; color: var(--glovo-ink); background: var(--glovo-bg-subtle); border-radius: 8px;
+  padding: 8px 12px; line-height: 1.3; display:inline-block; text-decoration:none; font-weight:600;
+}
+.nv-day-chip-link{ cursor:pointer; }
+.nv-day-chip-link:hover{ background: #E2E6EA; text-decoration: underline; }
+.nv-day-chip.off{ background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft); font-weight: 700; }
+.nv-today-hero{
+  border-radius: 12px; padding: 12px 14px; color:#fff; display:flex; flex-direction:column; gap: 4px;
+}
+.nv-today-hero-label{ font-size: 11px; font-weight: 800; text-transform:uppercase; opacity:.9; }
+.nv-today-hero-venues{ font-size: 15px; font-weight: 800; }
+.nv-today-hero-venues a{ color:#fff; text-decoration:none; }
+.nv-today-hero.nv-today-hero-off{ background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft); font-size: 13px; font-weight: 700; border-radius: 12px; padding: 12px 14px; text-align:center; }
+.nv-fulllist{ padding: 12px 20px 16px; background: var(--glovo-bg); border-top: 1px solid var(--glovo-line); }
+.nv-fulllist-title{ font-size: 11px; text-transform:uppercase; font-weight:700; color: var(--glovo-ink-soft); margin-bottom: 8px; }
+.nv-fulllist-row{ font-size: 12.5px; color: var(--glovo-ink); padding: 8px 0; border-bottom: 1px solid var(--glovo-line); }
+.nv-fulllist-row:last-of-type{ border-bottom: none; }
+.nv-venue-tag{
+  display:inline-flex; align-items:center; gap:5px; background: #FFFFFF; border:1px solid var(--glovo-line);
+  border-radius: 6px; padding: 4px 8px; margin: 2px 3px 2px 0; font-size: 11.5px;
+}
+.nv-venue-tag button{ border:none; background:none; color: var(--red); cursor:pointer; font-size:11px; }
+.nv-venue-tag a{ color: var(--glovo-ink); text-decoration:none; }
+.nv-mini-link{ border:none; background:none; color: var(--glovo-green-deep); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0; }
+.nv-mini-link.nv-mini-danger{ color: var(--red); }
+.agent-pin-chip{
+  display:inline-block; font-family: var(--font-mono); font-weight:800; font-size:13px;
+  background: var(--glovo-bg-subtle); color: var(--glovo-ink); padding: 4px 10px; border-radius: 8px;
+}
+.agent-access-btn{
+  border:1px solid var(--glovo-line); background: #FFFFFF; color: var(--glovo-green-deep); font-size: 11.5px; font-weight:700;
+  cursor:pointer; padding: 5px 10px; border-radius: 8px; display:inline-flex; align-items:center; gap:4px;
+}
+
+.section-title{ font-size: 15px; font-weight: 800; margin: 26px 0 14px; color: var(--glovo-ink); }
+.card{ background: #FFFFFF; border:1.5px solid var(--glovo-line); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+
+table{ width:100%; border-collapse: collapse; }
+th{ text-align:left; font-size: 11px; text-transform:uppercase; letter-spacing:.04em; color: var(--glovo-ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1.5px solid var(--glovo-line); }
+td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--glovo-line); color: var(--glovo-ink); }
+tr:last-child td{ border-bottom:none; }
+.badge{ display:inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge.fix{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.badge.var{ background: var(--glovo-yellow-light); color: #B9800E; }
+.badge.jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.badge.nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
+.badge.abs-maladie{ background: rgba(235,87,87,0.14); color: var(--red); }
+.badge.abs-injustifiee{ background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft); }
+.badge.abs-conge{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.badge.abs-ferie{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
+.badge.abs-double{ background: var(--glovo-yellow-light); color: #B9800E; }
+.badge.abs-off{ background: rgba(2,132,199,0.15); color: #0284C7; }
+
+.placeholder-view{ display:flex; flex-direction:column; align-items:center; justify-content:center; padding: 80px 20px; text-align:center; color: var(--glovo-ink-soft); }
+.placeholder-view svg{ width:44px; height:44px; opacity:.35; margin-bottom:14px; }
+.placeholder-view h3{ font-size: 16px; color: var(--glovo-ink); margin-bottom: 6px; }
+.placeholder-view p{ font-size: 13px; max-width: 320px; }
+
+@media (max-width: 900px){
+  .stat-grid{ grid-template-columns: repeat(2,1fr); }
+  .sidebar{ width: 72px; }
+  .sidebar-brand h2, .nav-item span, .user-chip-text, .logout-btn span{ display:none; }
+  .nav-item{ justify-content:center; }
+}
+
+/* ============ VIEW HEADER / BUTTONS ============ */
+.view-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px; gap: 16px; }
+.view-subtitle{ font-size: 13px; color: var(--glovo-ink-soft); }
 .btn-primary{
   background: var(--glovo-yellow);
   color: #1C2321; font-weight: 700; font-size: 13.5px;
@@ -229,10 +455,1202 @@ input, select{ font-family: inherit; }
   padding: 9px 16px; border-radius: 20px;
 }
 .btn-ghost:hover{ background: var(--glovo-bg-subtle); color: var(--glovo-ink); }
+.icon-btn{
+  width: 28px; height: 28px; border-radius: 7px; background: transparent;
+  display:inline-flex; align-items:center; justify-content:center; color: var(--glovo-ink-soft);
+}
+.icon-btn:hover{ background: var(--glovo-bg-subtle); color: var(--glovo-ink); }
+.icon-btn svg{ width: 15px; height: 15px; }
+.icon-btn.danger:hover{ background: rgba(235,87,87,0.12); color: var(--red); }
+.row-actions{ display:flex; gap: 4px; justify-content:flex-end; }
 
-.ptab.active{ background: var(--glovo-green); color: #FFFFFF; border-radius: 20px; }
-.badge.fix{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.badge.var{ background: var(--glovo-yellow-light); color: #B9800E; }
-.shift-pill.s-jour{ background: var(--glovo-green); color: #FFFFFF; }
-.shift-pill.s-nuit{ background: #374151; color: #FFFFFF; }
+/* ============ MODAL ============ */
+.modal-overlay{
+  position: fixed; inset: 0; background: rgba(28, 35, 33, 0.4);
+  backdrop-filter: blur(4px);
+  display:flex; align-items:center; justify-content:center; z-index: 100;
+  padding: 20px;
+}
+.modal-card{
+  width: 100%; max-width: 420px; background: #FFFFFF;
+  border: 1.5px solid var(--glovo-line);
+  border-radius: var(--radius); padding: 28px 26px 22px;
+  box-shadow: var(--shadow-md);
+}
+.modal-card h3{ font-size: 17px; font-weight: 800; margin-bottom: 18px; color: var(--glovo-ink); }
+.form-label{ display:block; font-size: 11.5px; font-weight: 700; color: var(--glovo-ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-bottom: 6px; margin-top: 12px; }
+.form-label:first-of-type{ margin-top: 0; }
+.modal-error{ font-size: 12.5px; color: var(--red); min-height: 16px; margin-top: 6px; }
+.modal-actions{ display:flex; justify-content:flex-end; gap: 8px; margin-top: 16px; }
+.modal-hint{ font-size: 12px; color: var(--glovo-ink-soft); background: var(--glovo-bg-subtle); border-radius: 8px; padding: 8px 10px; margin-top: 10px; line-height: 1.4; }
+
+/* ============ PLANNING ============ */
+.planning-header{ display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap: 14px; margin-bottom: 16px; }
+.week-nav{ display:flex; align-items:center; gap: 12px; }
+.icon-btn-lg{
+  width: 34px; height: 34px; border-radius: 9px; background: #FFFFFF; border: 1.5px solid var(--glovo-line);
+  display:flex; align-items:center; justify-content:center; color: var(--glovo-ink);
+}
+.icon-btn-lg svg{ width: 16px; height:16px; }
+.icon-btn-lg:hover{ background: var(--glovo-bg-subtle); }
+.week-label{ text-align:center; min-width: 190px; }
+.week-label b{ display:block; font-size: 14.5px; font-weight: 800; color: var(--glovo-ink); }
+.week-label span{ font-size: 11.5px; color: var(--glovo-ink-soft); font-family: var(--font-mono); }
+.planning-actions{ display:flex; gap: 8px; flex-wrap: wrap; }
+.planning-tabs{ display:flex; gap: 6px; margin-bottom: 14px; }
+.ptab{ padding: 8px 18px; border-radius: 20px; background: transparent; color: var(--glovo-ink-soft); font-size: 13px; font-weight: 700; }
+.ptab.active{ background: var(--glovo-green); color: #fff; }
+.ptab:not(.active):hover{ background: var(--glovo-bg-subtle); }
+
+.planning-card{ overflow-x: auto; }
+.planning-table{ width: 100%; border-collapse: collapse; min-width: 780px; table-layout: fixed; }
+.planning-table th, .planning-table td{ padding: 6px 4px; font-size: 12px; border-bottom: 1px solid var(--glovo-line); text-align:center; white-space: nowrap; }
+.planning-table th:not(.sticky-col), .planning-table td:not(.sticky-col):not(.zone-cell){ width: 78px; }
+.planning-table th.sticky-col, .planning-table td.sticky-col{ width: 140px; }
+.planning-table td.zone-cell{ width: 92px; white-space: normal; text-align:left; font-size:11px; }
+.planning-table thead th{
+  text-transform:uppercase; font-size: 10px; letter-spacing:.05em; color: var(--glovo-ink-soft); font-weight: 800;
+  background: var(--glovo-bg); border-bottom: 2px solid var(--glovo-line); padding-top: 12px; padding-bottom: 12px;
+}
+.planning-table tbody tr:hover{ background: var(--glovo-bg-subtle); }
+.planning-table td.agent-name-cell{ text-align:left; font-weight: 700; color: var(--glovo-ink); }
+.agent-name-edit{
+  border: none; background: transparent; font-weight: 700; font-size: 12.5px; color: var(--glovo-ink);
+  width: 100%; padding: 3px 4px; border-radius: 6px; font-family: var(--font-display);
+}
+.agent-name-edit:focus{ outline: none; background: #FFFFFF; box-shadow: 0 0 0 1.5px var(--glovo-green); }
+.sticky-col{ position: sticky; left: 0; background: #FFFFFF; text-align:left !important; white-space: normal !important; z-index: 2; }
+.planning-table td.total-cell{ font-family: var(--font-mono); font-weight: 800; color: var(--glovo-green-deep); font-size: 13px; }
+
+.shift-pill{
+  display:inline-flex; align-items:center; justify-content:center; gap:2px;
+  width: 100%; min-width: 78px; padding: 7px 4px; border-radius: 8px;
+  font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+}
+.shift-pill.s-jour{ background: var(--glovo-green); color: #fff; }
+.shift-pill.s-nuit{ background: #374151; color: #fff; }
+.shift-pill.s-quiet{ background: var(--glovo-bg-subtle); color: var(--glovo-ink-soft); }
+.cell-select{
+  width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--glovo-green); font-size: 11px;
+  background: #FFFFFF; color: var(--glovo-ink); font-weight: 700;
+}
+.alerts-banner{
+  background: var(--glovo-yellow-light); border: 1px solid rgba(255,194,68,0.4); border-radius: 12px;
+  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #B9800E;
+}
 </style>
+</head>
+<body>
+
+<!-- ============ LOGIN ============ -->
+<div id="loginScreen">
+  <div class="login-split">
+    <aside class="login-hero-panel">
+      <div class="hero-brand">
+        <div class="login-mark">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#101D30" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2 4 4 8-8 2 2"/><path d="M3 18l2-2 4 4 8-8 2 2"/></svg>
+        </div>
+        <span>FieldOps</span>
+      </div>
+
+      <div class="route-map">
+        <svg class="route-svg" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
+          <path id="routePath" d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"
+                fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-dasharray="1 9" stroke-linecap="round"/>
+
+          <g transform="translate(50,50)">
+            <circle r="15" fill="#3E8F6F"/>
+            <rect x="-6" y="-6" width="12" height="12" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/>
+            <path d="M-6,-2 h-3 M-6,2 h-3 M6,-2 h3 M6,2 h3 M-2,-6 v-3 M2,-6 v-3 M-2,6 v3 M2,6 v3" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+            <text x="20" y="4" class="pin-label">Technopolis</text>
+          </g>
+
+          <g transform="translate(280,130)">
+            <circle r="15" fill="#D9643A"/>
+            <path d="M-6,4 a6,6 0 1,1 12,0 z" fill="#fff"/>
+            <circle cx="0" cy="-4" r="2.2" fill="#fff"/>
+            <path d="M-8,4 h16" stroke="#fff" stroke-width="1.4" stroke-linecap="round"/>
+            <text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text>
+          </g>
+
+          <g transform="translate(90,230)">
+            <circle r="15" fill="#FFC244"/>
+            <circle r="6.5" fill="none" stroke="#1C2321" stroke-width="1.4"/>
+            <path d="M0,-6.5 L0,6.5 M-6.5,0 L6.5,0 M-4.6,-4.6 L4.6,4.6 M-4.6,4.6 L4.6,-4.6" stroke="#1C2321" stroke-width="1.1"/>
+            <text x="20" y="4" class="pin-label">Agdal - Carrousel</text>
+          </g>
+
+          <g transform="translate(260,330)">
+            <circle r="15" fill="#7A5C8A"/>
+            <path d="M-7,2 L0,-6 L7,2 V7 H-7 Z" fill="#fff"/>
+            <rect x="-2" y="1" width="4" height="6" fill="#7A5C8A"/>
+            <text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text>
+          </g>
+
+          <g transform="translate(80,430)">
+            <circle r="15" fill="#3D6B8A"/>
+            <path d="M0,7 V-2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
+            <path d="M0,-2 Q-7,-6 -8,-1 M0,-2 Q7,-6 8,-1 M0,-2 Q-5,-8 -1,-9 M0,-2 Q5,-8 1,-9" stroke="#fff" stroke-width="1.4" fill="none" stroke-linecap="round"/>
+            <text x="20" y="4" class="pin-label">Temara - Oulad Mtaa</text>
+          </g>
+
+          <g id="routeMotion" class="scooter-icon">
+            <circle r="9" fill="#1C2321"/>
+            <path d="M-5,2 h10 l-2,-6 h-6 z M-3,2 a3,3 0 1,0 0.1,0 M3,2 a3,3 0 1,0 0.1,0" stroke="#FFC244" stroke-width="1.4" fill="none"/>
+            <animateMotion dur="16s" repeatCount="indefinite" rotate="auto"
+              path="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="hero-foot">
+        <span id="heroClock">--:--</span>
+        <div id="heroDate" style="font-size:13px; font-weight:700; color:rgba(255,255,255,0.8); text-transform:capitalize; margin-bottom:8px;"></div>
+        <p>Gestion opérationnelle terrain — Rabat &amp; environs</p>
+        <div id="heroMotivation" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.2); font-style:italic; font-size:12.5px; color:rgba(255,255,255,0.85); max-width:280px; line-height:1.5;"></div>
+      </div>
+    </aside>
+
+    <main class="login-form-panel">
+      <div class="login-card">
+        <div class="login-brand">
+          <h1>FieldOps</h1>
+          <p>Système Central de Gestion RH</p>
+        </div>
+
+        <div class="profile-grid" id="profileGrid"></div>
+
+        <input type="password" id="passwordInput" class="login-input" placeholder="Mot de passe ou code PIN..." disabled>
+        <button id="loginBtn" class="login-submit" disabled>DÉVERROUILLER</button>
+        <div class="login-error" id="loginError"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- AGENT PORTAL -->
+<div id="agentPortal" class="hidden">
+  <div class="nv-badges-row">
+    <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
+      <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
+      <div class="dd-label">Zone</div>
+    </div>
+    <div class="portal-bg-doodle dd-bl" style="background:#FFC244;">
+      <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#FFC244" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+      <div class="dd-label" style="color:#1C2321;">Livraison</div>
+    </div>
+    <div class="portal-bg-doodle dd-tr" style="background:#EA580C;">
+      <div class="dd-badge"><svg viewBox="0 0 24 24" fill="#EA580C" stroke="none"><path d="M12 2l2.9 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.5 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg></div>
+      <div class="dd-label">Bravo</div>
+    </div>
+    <div class="portal-bg-doodle dd-br" style="background:#0284C7;">
+      <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg></div>
+      <div class="dd-label">Équipe</div>
+    </div>
+  </div>
+
+  <div class="portal-card">
+    <div class="portal-header">
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--glovo-ink-soft); margin-bottom:2px;">Bienvenue 👋</div>
+        <b id="portalAgentName">—</b>
+        <span id="portalClock">--:--</span>
+      </div>
+      <button class="btn-ghost" id="portalLogoutBtn">Déconnexion</button>
+    </div>
+    <div id="portalMotivation"></div>
+    <div class="portal-status" id="portalStatus">Chargement...</div>
+    <button class="portal-btn" id="portalCheckBtn">Check-in</button>
+    <div class="portal-history">
+      <div class="section-title" style="margin-top:22px;">Historique récent</div>
+      <div id="portalHistoryList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PLANNING NV — PORTAIL AGENT -->
+<div id="nvAgentPortal" class="hidden">
+  <div id="nvPortalTopWeekWrap" class="nv-portal-top-week hidden"></div>
+  <div class="portal-card">
+    <div class="portal-header">
+      <div>
+        <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--glovo-ink-soft); margin-bottom:2px;">Bienvenue 👋</div>
+        <b id="nvPortalAgentName">—</b>
+        <span id="nvPortalClock">--:--</span>
+      </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <button class="agent-access-btn" id="nvPortalRapportBtn" title="Rapport &amp; remarques" style="font-size:14px; padding:9px 16px; font-weight:800; position:relative;">📝 Rapport<span id="nvRapportReplyBadge" class="hidden" style="position:absolute; top:-6px; right:-6px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:16px; height:16px; border-radius:8px; display:flex; align-items:center; justify-content:center; padding:0 3px;">●</span></button>
+        <button class="btn-ghost" id="nvPortalLogoutBtn">Déconnexion</button>
+      </div>
+    </div>
+    <div id="nvPortalContent"></div>
+  </div>
+</div>
+
+<!-- ============ APP ============ -->
+<div id="app" style="display:none;">
+  <div class="shell">
+    <aside class="sidebar">
+      <div class="sidebar-brand">
+        <div class="mark">O</div>
+        <h2>FieldOps</h2>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Opérations</div>
+        <button class="nav-item" data-view="dashboard"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg><span>Dashboard</span></button>
+        <button class="nav-item" data-view="planningnv"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg><span>Planning</span></button>
+        <button class="nav-item" data-view="pointage"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg><span>Pointage</span></button>
+        <button class="nav-item" data-view="absences"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19h16M4 19V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v10"/></svg><span>Absences</span></button>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-label">Ressources</div>
+        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
+        <button class="nav-item" data-view="paie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/><path d="M6 6V5a2 2 0 012-2h8a2 2 0 012 2v1"/></svg><span>Paie</span></button>
+        <button class="nav-item" data-view="rapports" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg><span>Rapports</span><span id="rapportsNavBadge" class="hidden" style="position:absolute; top:4px; right:8px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center; padding:0 4px;"></span></button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="user-chip">
+          <div class="dot"></div>
+          <div class="user-chip-text">
+            <b id="sidebarUserName">—</b>
+            <span id="sidebarUserRole">—</span>
+          </div>
+        </div>
+        <button class="logout-btn" id="changePassBtn" style="margin-top:6px;"><span>Changer le mot de passe</span></button>
+        <button class="logout-btn" id="logoutBtn"><span>Déconnexion</span></button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <div class="topbar">
+        <h1 id="viewTitle">Dashboard</h1>
+        <div class="topbar-meta">
+          <div class="sync-pill"><span class="dot"></span>Cloud Sync Active</div>
+          <span id="clock">--:--</span>
+        </div>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section class="view" id="view-dashboard">
+        <div id="dashboardNewRapportsBanner" class="hidden"></div>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="label">Agents actifs</div>
+            <div class="value" id="statActive">—</div>
+            <div class="sub">enregistrés</div>
+          </div>
+          <div class="stat-card accent-green">
+            <div class="label">En shift JOUR</div>
+            <div class="value" id="statJour">—</div>
+            <div class="sub">équipe matin</div>
+          </div>
+          <div class="stat-card accent-blue">
+            <div class="label">En shift NUIT</div>
+            <div class="value" id="statNuit">—</div>
+            <div class="sub">équipe soir</div>
+          </div>
+          <div class="stat-card accent-amber">
+            <div class="label">Zones couvertes</div>
+            <div class="value" id="statZones">—</div>
+            <div class="sub">sur 5 zones</div>
+          </div>
+          <div class="stat-card accent-purple">
+            <div class="label">OFF aujourd'hui</div>
+            <div class="value" id="statOffToday">—</div>
+            <div class="sub">agents au repos</div>
+          </div>
+          <div class="stat-card accent-orange">
+            <div class="label">Absences (semaine)</div>
+            <div class="value" id="statAbsences">—</div>
+            <div class="sub">congé / maladie</div>
+          </div>
+          <div class="stat-card accent-red">
+            <div class="label">Alertes actives</div>
+            <div class="value" id="statAlerts">—</div>
+            <div class="sub">à vérifier</div>
+          </div>
+        </div>
+
+        <div class="section-title">Zones</div>
+        <div class="zone-grid" id="zoneGrid"></div>
+
+        <div class="section-title">🟢 En service maintenant</div>
+        <div class="card" id="liveCard">
+          <table>
+            <thead><tr><th>Agent</th><th>Zone</th><th>Shift</th><th>Fin</th></tr></thead>
+            <tbody id="liveTableBody"></tbody>
+          </table>
+          <div class="placeholder-view hidden" id="liveEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+            <h3>Personne en service actuellement</h3>
+            <p>Génère le planning de la semaine pour voir qui est en service en temps réel.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- AGENTS -->
+      <section class="view hidden" id="view-agents">
+        <div class="view-header">
+          <p class="view-subtitle">Gérez la liste des agents de terrain et leur configuration de rotation.</p>
+          <div style="display:flex; gap:8px;">
+            <button class="btn-ghost" id="syncNvAgentsBtn" style="border:1px solid var(--glovo-line);">🔄 Synchroniser avec Planning NV</button>
+            <button class="btn-ghost" id="genAllPinsBtn" style="border:1px solid var(--glovo-line);">🎲 Générer les PIN manquants</button>
+            <button class="btn-ghost" id="genAllNicknamesBtn" style="border:1px solid var(--glovo-line);">✏️ Surnoms manquants</button>
+            <button class="btn-ghost" id="fixDefaultsBtn" style="border:1px solid var(--glovo-line);">🎯 Jour/Nuit/OFF par défaut</button>
+            <button class="btn-ghost" id="renameZonesBtn" style="border:1px solid var(--glovo-line);">🏷️ Renommer les zones</button>
+            <button class="btn-primary" id="openAddAgentBtn">+ Ajouter un agent</button>
+          </div>
+        </div>
+        <div class="card" id="agentsCard">
+          <table>
+            <thead><tr><th>Agent</th><th>PIN</th><th>Email</th><th>Zone</th><th>Type</th><th>Shift fixe</th><th></th></tr></thead>
+            <tbody id="agentsTableBody"></tbody>
+          </table>
+          <div class="placeholder-view hidden" id="agentsEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg>
+            <h3>Aucun agent pour l'instant</h3>
+            <p>Cliquez sur "Ajouter un agent" pour commencer à construire votre équipe.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PLANNING -->
+      <section class="view hidden" id="view-planning">
+        <div class="planning-header">
+          <div class="week-nav">
+            <button class="icon-btn-lg" id="prevWeekBtn" title="Semaine précédente">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="week-label">
+              <b id="weekLabel">Semaine —</b>
+              <span id="weekRange">—</span>
+            </div>
+            <button class="icon-btn-lg" id="nextWeekBtn" title="Semaine suivante">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="planning-actions">
+            <button class="btn-ghost" id="printPlanningBtn">🖨️ Imprimer / PDF</button>
+            <button class="btn-ghost" id="exportExcelBtn">⬇️ Excel</button>
+            <button class="btn-ghost" id="loadRealWeekBtn" style="border:1px solid var(--glovo-line);">📥 Charger planning réel (cette semaine)</button>
+            <button class="btn-primary" id="generatePlanningBtn">⚡ Générer Planning</button>
+          </div>
+        </div>
+
+        <div id="alertsBanner" class="alerts-banner hidden"></div>
+
+        <div class="planning-tabs">
+          <button class="ptab active" data-ptab="grid">Vue Agents</button>
+          <button class="ptab" data-ptab="zones">Vue Zones</button>
+        </div>
+
+        <div class="card planning-card" id="planningGridWrap">
+          <datalist id="agentNamesList"></datalist>
+          <table class="planning-table" id="planningTable">
+            <thead>
+              <tr>
+                <th class="sticky-col">Agent</th>
+                <th>Zone</th>
+                <th id="thLun">Lun</th><th id="thMar">Mar</th><th id="thMer">Mer</th><th id="thJeu">Jeu</th><th id="thVen">Ven</th><th id="thSam">Sam</th><th id="thDim">Dim</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="planningTableBody"></tbody>
+          </table>
+          <div class="placeholder-view hidden" id="planningEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+            <h3>Aucun planning pour cette semaine</h3>
+            <p>Cliquez sur "Générer Planning" pour créer automatiquement la semaine.</p>
+          </div>
+        </div>
+
+        <div class="card planning-card hidden" id="zonesGridWrap">
+          <table class="planning-table">
+            <thead>
+              <tr><th class="sticky-col">Zone</th><th id="thZLun">Lun</th><th id="thZMar">Mar</th><th id="thZMer">Mer</th><th id="thZJeu">Jeu</th><th id="thZVen">Ven</th><th id="thZSam">Sam</th><th id="thZDim">Dim</th></tr>
+            </thead>
+            <tbody id="zonesTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- POINTAGE -->
+      <section class="view hidden" id="view-pointage">
+        <div class="planning-header">
+          <div class="week-nav">
+            <button class="icon-btn-lg" id="prevDayBtn" title="Jour précédent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="week-label">
+              <b id="pointageDayLabel">—</b>
+              <span id="pointageDateSub">—</span>
+            </div>
+            <button class="icon-btn-lg" id="nextDayBtn" title="Jour suivant">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <button class="btn-ghost" id="pointageTodayBtn" style="border:1px solid var(--glovo-line);">Aujourd'hui</button>
+        </div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Agent</th><th>Check-in</th><th>Check-out</th><th>Statut</th></tr></thead>
+            <tbody id="pointageTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ABSENCES -->
+      <section class="view hidden" id="view-absences">
+        <div class="planning-header">
+          <div class="week-nav">
+            <button class="icon-btn-lg" id="prevCycleBtn" title="Cycle précédent">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="week-label">
+              <b id="cycleLabel">—</b>
+              <span id="cycleSub">—</span>
+            </div>
+            <button class="icon-btn-lg" id="nextCycleBtn" title="Cycle suivant">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <div class="planning-actions">
+            <button class="btn-ghost" id="cycleTodayBtn" style="border:1px solid var(--glovo-line);">Cycle actuel</button>
+            <button class="btn-ghost" id="exportAbsencesBtn" style="border:1px solid var(--glovo-line);">⬇️ Excel (cycle)</button>
+            <button class="btn-ghost" id="exportRangeBtn" style="border:1px solid var(--glovo-line);">📅 Excel (plage)</button>
+            <button class="btn-primary" id="addAbsenceBtn">+ Déclarer</button>
+          </div>
+        </div>
+
+        <div class="section-title">Résumé du cycle (base 26 jours)</div>
+        <div class="card" style="margin-bottom:24px; overflow-x:auto;">
+          <table>
+            <thead><tr><th>Agent</th><th>Maladie</th><th>Injustifiée</th><th>Congé</th><th>Total absences</th><th>Jours présence</th><th>Férié</th><th>Doublé</th><th>OFF travaillé</th><th>Total ajusté</th></tr></thead>
+            <tbody id="absencesSummaryBody"></tbody>
+          </table>
+        </div>
+
+        <div class="section-title">Détail du cycle</div>
+        <div class="card">
+          <table>
+            <thead><tr><th>Agent</th><th>Date</th><th>Type</th><th>Note</th><th></th></tr></thead>
+            <tbody id="absencesDetailBody"></tbody>
+          </table>
+          <div class="placeholder-view hidden" id="absencesEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 19h16M4 19V7a2 2 0 012-2h4l2 2h6a2 2 0 012 2v10"/></svg>
+            <h3>Aucune absence déclarée ce cycle</h3>
+            <p>Clique sur "+ Déclarer" pour ajouter une absence, un jour férié travaillé ou un jour doublé.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- RAPPORTS -->
+      <section class="view hidden" id="view-rapports">
+        <div class="view-header">
+          <div>
+            <div class="view-subtitle">Rapports et remarques envoyés par les agents Planning NV</div>
+          </div>
+          <div style="display:flex; gap:8px; align-items:center;">
+            <select id="rapportsFilterAgent" class="login-input" style="width:auto; margin:0; padding:8px 12px;">
+              <option value="">Tous les agents</option>
+            </select>
+            <select id="rapportsFilterType" class="login-input" style="width:auto; margin:0; padding:8px 12px;">
+              <option value="">Tous les types</option>
+              <option value="rapport">Rapport</option>
+              <option value="urgent">🚨 Urgent</option>
+              <option value="remarque">Remarque</option>
+            </select>
+            <button class="btn-ghost" id="rapportsExportBtn" style="border:1px solid var(--glovo-line);">↓ Export CSV</button>
+          </div>
+        </div>
+
+        <div class="stat-grid" id="rapportsStatGrid" style="margin-bottom:20px;"></div>
+        <div class="card" id="rapportsMissingCard" style="padding:16px 20px; margin-bottom:20px;"></div>
+
+        <div class="card">
+          <div id="rapportsList" style="padding:8px 0;"></div>
+          <div class="placeholder-view hidden" id="rapportsEmptyState">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+            <h3>Aucun rapport pour l'instant</h3>
+            <p>Les rapports envoyés par les agents apparaîtront ici.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- PAIE -->
+      <section class="view hidden" id="view-paie"></section>
+
+      <!-- PLANNING NV -->
+      <section class="view hidden" id="view-planningnv">
+        <div class="planning-header">
+          <div class="week-nav">
+            <button class="icon-btn-lg" id="prevWeekNvBtn" title="Semaine précédente">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+            </button>
+            <div class="week-label">
+              <b id="weekLabelNv">Semaine —</b>
+              <span id="weekRangeNv">—</span>
+            </div>
+            <button class="icon-btn-lg" id="nextWeekNvBtn" title="Semaine suivante">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+          </div>
+          <button class="btn-ghost" id="showNvFlashBtn" style="border:1px solid var(--glovo-line);">📢 Info équipe</button>
+        </div>
+        <div class="card hidden" id="nvFlashPanel" style="padding:16px 20px; margin-bottom:16px;"></div>
+        <div class="planning-tabs">
+          <button class="ptab active" data-nv-view="week">📊 Vue Semaine</button>
+          <button class="ptab" data-nv-view="zones">🗺️ Vue Zones</button>
+        </div>
+        <div class="card planning-card hidden" id="nvWeekGrid"></div>
+        <div class="hidden" id="nvZoneRestoreWrap" style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-ghost" id="nvExportHotspotsBtn" style="border:1px solid var(--glovo-green); color:var(--glovo-green-deep); font-size:12px;">💾 Sauvegarder les hotspots</button>
+          <button class="btn-ghost" id="nvRestoreHotspotsBtn" style="border:1px solid var(--red); color:var(--red); font-size:12px;">🔄 Restaurer hotspots par défaut</button>
+        </div>
+        <div class="nv-zone-grid" id="nvZoneGrid"></div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay hidden" id="rangeExportOverlay">
+  <div class="modal-card">
+    <h3>Exporter une plage personnalisée</h3>
+    <label class="form-label">Du</label>
+    <input type="date" id="rangeFromInput" class="login-input">
+    <label class="form-label">Au</label>
+    <input type="date" id="rangeToInput" class="login-input">
+    <div class="modal-error" id="rangeExportError"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelRangeExportBtn">Annuler</button>
+      <button class="login-submit" id="confirmRangeExportBtn" style="width:auto; padding:12px 22px;">Exporter</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="renameZonesOverlay">
+  <div class="modal-card">
+    <h3>Renommer les zones</h3>
+    <p class="modal-hint" style="margin-top:0; margin-bottom:14px;">Ça change juste le nom affiché.</p>
+    <div id="zoneRenameInputs"></div>
+    <div class="modal-error" id="renameZonesError"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelRenameZonesBtn">Annuler</button>
+      <button class="login-submit" id="saveRenameZonesBtn" style="width:auto; padding:12px 22px;">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="absenceModalOverlay">
+  <div class="modal-card">
+    <h3 id="absenceModalTitle">Déclarer une absence / un jour</h3>
+    <label class="form-label">Agent</label>
+    <select id="absenceAgentInput" class="login-input"></select>
+    <label class="form-label">Type</label>
+    <select id="absenceTypeInput" class="login-input">
+      <option value="maladie">Absence maladie (−1 jour)</option>
+      <option value="injustifiee">Absence injustifiée (−1 jour)</option>
+      <option value="conge">Congé payé (−1 jour)</option>
+      <option value="ferie">Jour férié travaillé (+1 jour)</option>
+      <option value="double">Jour doublé (+1 jour)</option>
+      <option value="off_travaille">Jour OFF travaillé (+1 jour)</option>
+    </select>
+    <label class="form-label">Date (début)</label>
+    <input type="date" id="absenceDateInput" class="login-input">
+    <label class="form-label">Date de fin (optionnel)</label>
+    <input type="date" id="absenceDateEndInput" class="login-input">
+    <label class="form-label">Note (optionnel)</label>
+    <input type="text" id="absenceNoteInput" class="login-input" placeholder="Ex: certificat médical...">
+    <div class="modal-error" id="absenceModalError"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelAbsenceBtn">Annuler</button>
+      <button class="login-submit" id="saveAbsenceBtn" style="width:auto; padding:12px 22px;">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="changePassOverlay">
+  <div class="modal-card">
+    <h3>Changer le mot de passe</h3>
+    <label class="form-label">Mot de passe actuel</label>
+    <input type="password" id="oldPassInput" class="login-input" placeholder="Mot de passe actuel">
+    <label class="form-label">Nouveau mot de passe</label>
+    <input type="password" id="newPassInput" class="login-input" placeholder="Nouveau mot de passe">
+    <label class="form-label">Confirmer le nouveau mot de passe</label>
+    <input type="password" id="confirmPassInput" class="login-input" placeholder="Confirmer">
+    <div class="modal-error" id="changePassError"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelChangePassBtn">Annuler</button>
+      <button class="login-submit" id="saveChangePassBtn" style="width:auto; padding:12px 22px;">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay hidden" id="agentModalOverlay">
+  <div class="modal-card">
+    <h3 id="agentModalTitle">Ajouter un agent</h3>
+    <label class="form-label">Nom complet</label>
+    <input type="text" id="agentNameInput" class="login-input" placeholder="Ex: Achraf Akhlij">
+    <label class="form-label">Surnom</label>
+    <input type="text" id="agentNicknameInput" class="login-input" placeholder="Ex: Achraf">
+    <label class="form-label">Code PIN</label>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <input type="text" id="agentPinModalInput" class="login-input" placeholder="Ex: 1234" inputmode="numeric" maxlength="8" style="margin-bottom:0;">
+      <button type="button" class="btn-ghost" id="genPinBtn" style="border:1px solid var(--glovo-line); padding:13px 14px;">🎲</button>
+    </div>
+    <label class="form-label">Email</label>
+    <input type="email" id="agentEmailModalInput" class="login-input" placeholder="Ex: prenom.nom@gmail.com">
+    <label class="form-label">Groupe de planification</label>
+    <select id="agentGroupInput" class="login-input">
+      <option value="">Aucun (assignation manuelle)</option>
+      <option value="zakariae">Fixe solo — zone dédiée</option>
+      <option value="sale">Fixe équipe — zone dédiée</option>
+      <option value="trio1">Rotation — Groupe 1</option>
+      <option value="trio2">Rotation — Groupe 2</option>
+      <option value="trio3">Rotation — Groupe 3</option>
+    </select>
+    <div id="manualZoneGroup">
+      <label class="form-label">Zone</label>
+      <select id="agentZoneInput" class="login-input"></select>
+    </div>
+    <div id="fixedSoloZoneGroup" class="hidden">
+      <label class="form-label">Zone dédiée (fixe)</label>
+      <select id="agentFixedZoneInput" class="login-input"></select>
+    </div>
+    <p class="modal-hint hidden" id="rotationHint">La zone de ce groupe change chaque semaine selon la rotation automatique.</p>
+    <p class="modal-hint hidden" id="saleHint">Zone fixe : Salé - Medina.</p>
+    <label class="form-label">Période habituelle</label>
+    <select id="agentDefaultPeriodInput" class="login-input">
+      <option value="JOUR">☀️ Jour</option>
+      <option value="NUIT">🌙 Nuit</option>
+    </select>
+    <label class="form-label">Jour OFF habituel</label>
+    <select id="agentDefaultOffDayInput" class="login-input">
+      <option value="0">Lundi</option>
+      <option value="1">Mardi</option>
+      <option value="2">Mercredi</option>
+      <option value="3">Jeudi</option>
+    </select>
+    <div class="modal-error" id="agentModalError"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" id="cancelAgentBtn">Annuler</button>
+      <button class="login-submit" id="saveAgentBtn" style="width:auto; padding:12px 22px;">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= FIREBASE INIT ================= */
+const firebaseConfig = {
+  apiKey: "AIzaSyAg7ayUgGUc1ZUn0_Zg9BqNDMmDnjSIBLw",
+  authDomain: "ops-hq-v2-848f6.firebaseapp.com",
+  projectId: "ops-hq-v2-848f6",
+  storageBucket: "ops-hq-v2-848f6.firebasestorage.app",
+  messagingSenderId: "939361423052",
+  appId: "1:939361423052:web:88435f237b1542ae0f3c69"
+};
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+const db = firebase.firestore();
+
+let AGENTS = [];
+let agentsUnsub = null;
+const ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Salé - Medina", "Technopolis", "Temara - Oulad Mtaa"];
+const ZONE_COLORS = {
+  "Technopolis": "#00A082",
+  "Salé - Medina": "#D9643A",
+  "Agdal - Carrousel": "#FFC244",
+  "Hay Riad - Soussi": "#7A5C8A",
+  "Temara - Oulad Mtaa": "#3D6B8A",
+};
+let ZONE_LABELS = {};
+let zoneLabelsUnsub = null;
+function getZoneLabel(zoneKey){ return (ZONE_LABELS && ZONE_LABELS[zoneKey]) ? ZONE_LABELS[zoneKey] : zoneKey; }
+function listenZoneLabels(){
+  if(zoneLabelsUnsub) zoneLabelsUnsub();
+  zoneLabelsUnsub = db.collection('settings').doc('zoneLabels').onSnapshot(doc => {
+    ZONE_LABELS = doc.exists ? (doc.data() || {}) : {};
+    initDashboard();
+    renderAgentsTable();
+    populateZoneSelect();
+    if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanningWeek();
+  }, err => console.error(err));
+}
+
+const ROTATING_ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Temara - Oulad Mtaa"];
+const GROUPS = {
+  zakariae: { label: "Fixe solo", mode: "fixed_solo", zone: null },
+  sale:     { label: "Fixe équipe (Salé)", mode: "fixed_team", zone: "Salé - Medina" },
+  trio1:    { label: "Rotation — Groupe 1", mode: "rotating_team", offset: 0 },
+  trio2:    { label: "Rotation — Groupe 2", mode: "rotating_team", offset: 1 },
+  trio3:    { label: "Rotation — Groupe 3", mode: "rotating_team", offset: 2 },
+};
+const DAY_KEYS = ["lun","mar","mer","jeu","ven","sam","dim"];
+const DAY_LABELS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+const SHIFT_CATALOG = {
+  OFF:    { label: "OFF",         hours: 0, cls: "s-quiet"  },
+  M7:     { label: "10:00-17:00", hours: 7, cls: "s-jour"   },
+  M8:     { label: "10:00-18:00", hours: 8, cls: "s-jour"   },
+  N7:     { label: "18:00-01:00", hours: 7, cls: "s-nuit"   },
+  N8:     { label: "18:00-02:00", hours: 8, cls: "s-nuit"   },
+  N7B:    { label: "17:00-00:00", hours: 7, cls: "s-nuit"   },
+  N8B:    { label: "17:00-01:00", hours: 8, cls: "s-nuit"   },
+  N7C:    { label: "19:00-02:00", hours: 7, cls: "s-nuit"   },
+  N8C:    { label: "19:00-03:00", hours: 8, cls: "s-nuit"   },
+  ABS:    { label: "Absent",      hours: 0, cls: "s-quiet"  },
+  MALADE: { label: "Malade",      hours: 0, cls: "s-quiet"  },
+  CONGE:  { label: "Congé",       hours: 0, cls: "s-quiet"  },
+};
+
+const PROFILES = [
+  { id: "najib", name: "Najib", role: "Harati", initials: "NH", color: "#00A082", authType: "firebase" },
+  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", color: "#1C2321", authType: "firebase" },
+];
+
+let selectedProfile = null;
+
+function renderProfiles(){
+  const grid = document.getElementById('profileGrid');
+  const passInput = document.getElementById('passwordInput');
+  grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--glovo-ink-soft); padding:10px;">Chargement de l\'équipe...</div>';
+  const AVATAR_COLORS = ['#00A082', '#FFC244', '#0284C7', '#EA580C', '#7A5C8A', '#3D6B8A', '#007A63'];
+  const PERSON_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
+
+  auth.signInAnonymously()
+    .then(() => {
+      const nvProfiles = NV_ALL_AGENTS
+        .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: fullName.split(' ').slice(1).join(' '), authType: 'nv-pin' }))
+        .sort((a, b) => a.name.localeCompare(b.name));
+
+      const allProfiles = [...PROFILES, ...nvProfiles]
+        .map((p, i) => ({ ...p, color: p.color || AVATAR_COLORS[i % AVATAR_COLORS.length] }));
+
+      grid.innerHTML = '';
+      allProfiles.forEach(p => {
+        const btn = document.createElement('button');
+        btn.className = 'profile-btn';
+        btn.innerHTML = `<div class="profile-avatar" style="background:${p.color}">${PERSON_ICON}</div><span>${p.name}</span><small>${p.role}</small>`;
+        btn.addEventListener('click', () => selectProfile(p, btn));
+        grid.appendChild(btn);
+      });
+      passInput.disabled = false;
+    })
+    .catch(err => {
+      console.error(err);
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--red); padding:10px;">Erreur de chargement.</div>';
+    });
+}
+
+function selectProfile(profile, btnEl){
+  selectedProfile = profile;
+  document.querySelectorAll('.profile-btn').forEach(b => b.classList.remove('selected'));
+  btnEl.classList.add('selected');
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('passwordInput').placeholder = (profile.authType === 'pin' || profile.authType === 'nv-pin') ? 'Code PIN...' : "Mot de passe d'accès...";
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('loginError').textContent = '';
+  document.getElementById('passwordInput').focus();
+}
+
+document.getElementById('loginBtn').addEventListener('click', attemptLogin);
+document.getElementById('passwordInput').addEventListener('keydown', e => { if(e.key === 'Enter') attemptLogin(); });
+
+function attemptLogin(){
+  const pass = document.getElementById('passwordInput').value.trim();
+  const errEl = document.getElementById('loginError');
+  if(!selectedProfile){ errEl.textContent = 'Sélectionnez un profil.'; return; }
+  if(!pass){ errEl.textContent = 'Entrez le code d\'accès.'; return; }
+
+  if(selectedProfile.authType === 'nv-pin'){
+    errEl.textContent = 'Vérification...';
+    const fullName = selectedProfile.fullName;
+    db.collection('agents').where('name', '==', fullName).limit(1).get().then(snap => {
+      if(!snap.empty) return snap;
+      return db.collection('agents').get().then(allSnap => {
+        let bestDoc = null, bestDist = 3;
+        allSnap.docs.forEach(d => {
+          const n = (d.data().name || '').trim();
+          if(!n) return;
+          const dist = levenshtein(n.toLowerCase(), fullName.toLowerCase());
+          if(dist < bestDist){ bestDist = dist; bestDoc = d; }
+        });
+        return bestDoc ? { empty: false, docs: [bestDoc] } : { empty: true, docs: [] };
+      });
+    }).then(snap => {
+      if(snap.empty){ errEl.textContent = "Agent introuvable dans la base."; return; }
+      const agentDoc = snap.docs[0];
+      const agentPin = agentDoc.data().pin;
+      if(!agentPin || agentPin !== pass){ errEl.textContent = 'Code PIN incorrect.'; return; }
+      errEl.textContent = '';
+      currentNvAgent = fullName;
+      auth.signOut()
+        .catch(() => {})
+        .then(() => auth.signInAnonymously())
+        .finally(() => {
+          document.getElementById('app').style.display = 'none';
+          document.getElementById('loginScreen').classList.add('hidden');
+          document.getElementById('agentPortal').classList.add('hidden');
+          document.getElementById('nvAgentPortal').classList.remove('hidden');
+          listenHotspotsNv();
+          renderNvPortal();
+          listenNvReplyNotifications();
+        });
+    }).catch(err => { console.error(err); errEl.textContent = 'Erreur de connexion.'; });
+    return;
+  }
+
+  errEl.textContent = 'Connexion...';
+  const email = `${selectedProfile.id}@opshq.ma`;
+  auth.signInWithEmailAndPassword(email, pass)
+    .then(() => {
+      errEl.textContent = '';
+      enterApp(selectedProfile);
+    })
+    .catch(err => {
+      errEl.textContent = "Mot de passe incorrect.";
+      console.error(err);
+    });
+}
+
+function enterApp(profile){
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  document.getElementById('sidebarUserName').textContent = profile.name;
+  document.getElementById('sidebarUserRole').textContent = profile.role;
+  populateZoneSelect();
+  listenAgents();
+  listenZoneLabels();
+  listenNewRapportsNotifications();
+}
+
+let newRapportsUnsub = null;
+function getRapportsLastSeenAt(){ return parseInt(localStorage.getItem('opsHqRapportsLastSeen') || '0', 10); }
+function markRapportsSeenNow(){
+  localStorage.setItem('opsHqRapportsLastSeen', String(Date.now()));
+  const badge = document.getElementById('rapportsNavBadge');
+  if(badge) badge.classList.add('hidden');
+  const banner = document.getElementById('dashboardNewRapportsBanner');
+  if(banner) banner.classList.add('hidden');
+}
+
+function listenNewRapportsNotifications(){
+  if(newRapportsUnsub) newRapportsUnsub();
+  newRapportsUnsub = db.collection('rapports').orderBy('createdAt', 'desc').limit(50).onSnapshot(snap => {
+    const lastSeen = getRapportsLastSeenAt();
+    const fresh = snap.docs.map(d => d.data()).filter(r => r.createdAt && r.createdAt.toMillis && r.createdAt.toMillis() > lastSeen);
+    const badge = document.getElementById('rapportsNavBadge');
+    const onRapportsPage = !document.getElementById('view-rapports').classList.contains('hidden');
+    if(fresh.length === 0 || onRapportsPage){
+      if(badge) badge.classList.add('hidden');
+    } else if(badge){
+      badge.textContent = fresh.length > 9 ? '9+' : String(fresh.length);
+      badge.classList.remove('hidden');
+    }
+  }, err => console.error(err));
+}
+
+document.getElementById('logoutBtn').addEventListener('click', () => {
+  auth.signOut().finally(() => location.reload());
+});
+
+function tickHeroClock(){
+  const el = document.getElementById('heroClock');
+  if(el) el.textContent = new Date().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+setInterval(tickHeroClock, 1000);
+tickHeroClock();
+
+function tickClock(){
+  const now = new Date();
+  document.getElementById('clock').textContent = now.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+}
+setInterval(tickClock, 1000);
+tickClock();
+
+function getWeekStart(date){
+  const d = new Date(date);
+  const day = d.getDay();
+  const diff = (day === 0 ? -6 : 1 - day);
+  d.setDate(d.getDate() + diff);
+  d.setHours(0,0,0,0);
+  return d;
+}
+function getISOWeekIndex(date){
+  const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  return Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+}
+function weekKeyFor(weekStart){
+  const d = new Date(Date.UTC(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate()));
+  const dayNum = d.getUTCDay() || 7;
+  d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+  const yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+  const weekNo = Math.ceil((((d - yearStart) / 86400000) + 1) / 7);
+  return `${d.getUTCFullYear()}-W${String(weekNo).padStart(2,'0')}`;
+}
+function formatWeekRange(weekStart){
+  const end = new Date(weekStart); end.setDate(end.getDate() + 6);
+  const startStr = weekStart.toLocaleDateString('fr-FR', { day:'numeric', month:'long' });
+  const endStr = end.toLocaleDateString('fr-FR', { day:'numeric', month:'long', year:'numeric' });
+  return `${startStr} → ${endStr}`;
+}
+
+function resolveAgentZone(agent, weekIdx){
+  if(!agent.group) return agent.zone || '—';
+  const g = GROUPS[agent.group];
+  if(!g) return agent.zone || '—';
+  if(g.mode === 'fixed_solo') return agent.fixedZone || '—';
+  if(g.mode === 'fixed_team') return g.zone;
+  if(g.mode === 'rotating_team'){
+    const idx = (((g.offset + weekIdx) % 3) + 3) % 3;
+    return ROTATING_ZONES[idx];
+  }
+  return '—';
+}
+function resolveAgentPeriod(agent, weekIdx){
+  if(agent.defaultPeriod === 'JOUR' || agent.defaultPeriod === 'NUIT') return agent.defaultPeriod;
+  return 'JOUR';
+}
+function offDayIndex(agent, weekIdx){
+  if(typeof agent.defaultOffDay === 'number' && agent.defaultOffDay >= 0 && agent.defaultOffDay <= 3){
+    return agent.defaultOffDay;
+  }
+  return 0;
+}
+
+function listenAgents(){
+  if(agentsUnsub) agentsUnsub();
+  agentsUnsub = db.collection('agents').orderBy('name').onSnapshot(snap => {
+    AGENTS = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    initDashboard();
+    renderAgentsTable();
+    if(!document.getElementById('view-planning').classList.contains('hidden')) renderPlanningWeek();
+  }, err => console.error(err));
+}
+
+function initDashboard(){
+  const weekIdx = getISOWeekIndex(new Date());
+  let jourCount = 0, nuitCount = 0;
+  AGENTS.forEach(a => {
+    const period = resolveAgentPeriod(a, weekIdx);
+    if(period === 'JOUR') jourCount++; else nuitCount++;
+  });
+  document.getElementById('statActive').textContent = AGENTS.length;
+  document.getElementById('statJour').textContent = jourCount;
+  document.getElementById('statNuit').textContent = nuitCount;
+  const zonesCovered = new Set(AGENTS.map(a => resolveAgentZone(a, weekIdx))).size;
+  document.getElementById('statZones').textContent = `${zonesCovered}`;
+
+  const zoneGrid = document.getElementById('zoneGrid');
+  zoneGrid.innerHTML = '';
+  ZONES.forEach(zone => {
+    const count = AGENTS.filter(a => resolveAgentZone(a, weekIdx) === zone).length;
+    const color = ZONE_COLORS[zone] || 'var(--glovo-yellow)';
+    const card = document.createElement('div');
+    card.className = 'zone-card';
+    card.style.borderLeftColor = color;
+    card.innerHTML = `<h3>${getZoneLabel(zone)}</h3><div class="count">${count}</div><div class="count-label">agent${count>1?'s':''}</div>`;
+    zoneGrid.appendChild(card);
+  });
+}
+
+function levenshtein(a, b){
+  const m = a.length, n = b.length;
+  const dp = Array.from({ length: m + 1 }, (_, i) => [i, ...Array(n).fill(0)]);
+  for(let j = 0; j <= n; j++) dp[0][j] = j;
+  for(let i = 1; i <= m; i++){
+    for(let j = 1; j <= n; j++){
+      dp[i][j] = a[i - 1] === b[j - 1] ? dp[i - 1][j - 1] : 1 + Math.min(dp[i - 1][j], dp[i][j - 1], dp[i - 1][j - 1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function renderAgentsTable(){
+  const weekIdx = getISOWeekIndex(new Date());
+  const tbody = document.getElementById('agentsTableBody');
+  const emptyState = document.getElementById('agentsEmptyState');
+  const table = document.querySelector('#agentsCard table');
+  tbody.innerHTML = '';
+
+  if(AGENTS.length === 0){
+    table.classList.add('hidden');
+    emptyState.classList.remove('hidden');
+    return;
+  }
+  table.classList.remove('hidden');
+  emptyState.classList.add('hidden');
+
+  AGENTS.forEach(a => {
+    const period = resolveAgentPeriod(a, weekIdx);
+    const zone = resolveAgentZone(a, weekIdx);
+    const groupLabel = a.group ? GROUPS[a.group].label : 'Manuel';
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><b>${a.name}</b></td>
+      <td>${a.pin ? `<span class="agent-pin-chip">${a.pin}</span>` : '—'}</td>
+      <td>${a.email || '—'}</td>
+      <td><span class="zone-dot" style="background:${ZONE_COLORS[zone] || 'var(--glovo-ink-soft)'}"></span>${getZoneLabel(zone)}</td>
+      <td><span class="badge ${a.group ? 'fix' : 'var'}">${groupLabel}</span></td>
+      <td><span class="badge ${period === 'JOUR' ? 'jour' : 'nuit'}">${period}</span></td>
+      <td>
+        <div class="row-actions">
+          <button class="icon-btn" data-delete="${a.id}" title="Supprimer">✕</button>
+        </div>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function populateZoneSelect(){
+  document.getElementById('agentZoneInput').innerHTML = ZONES.map(z => `<option value="${z}">${getZoneLabel(z)}</option>`).join('');
+  document.getElementById('agentFixedZoneInput').innerHTML = ZONES.map(z => `<option value="${z}">${getZoneLabel(z)}</option>`).join('');
+}
+
+document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const view = btn.dataset.view;
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    const target = document.getElementById('view-' + view);
+    target.classList.remove('hidden');
+    document.getElementById('viewTitle').textContent = btn.querySelector('span').textContent;
+    if(view === 'planningnv') listenHotspotsNv();
+    if(view === 'rapports') renderRapportsView();
+  });
+});
+
+const DEFAULT_HOTSPOTS_NV = {
+  "Salé-Rabat": [
+    { venues: ["KFC Rabat Ville", "McDonald's Rabat Ville", "KFC Bab El Had", "Océan"] },
+    { venues: ["Carrefour Hepar Salé", "Primo Salé", "Burger King Salé", "Centre Salé"] },
+    { venues: ["McDonald's Bouregreg", "Burger King Bouregreg", "Marjane Hepar Bouregreg", "Pizza Hut Bouregreg"] },
+  ],
+  "Agdal": [
+    { venues: ["Av. Fal Ould Oumeir", "Pizza Hut Agdal"] },
+    { venues: ["Mall Rabat Center", "Mall Carrousel Rabat", "McDonald's Gare Rabat Agdal"] },
+    { venues: ["Carrefour Gourmet", "Le Marché Dar Essalam", "Hay Nahda Rabat", "Polyvalente", "Centre commercial Jasmin", "Maymana Souissi", "Carrefour Market Souissi", "snack monalisa", "Mega Mall Rabat"] },
+  ],
+  "Hay Riad": [
+    { venues: ["Marjane Hyper Hay Riad", "McDonald's Hay Riad", "Pizza Hut Marjane Hay Riad", "KFC Marjane Hay Riad"] },
+    { venues: ["Carrefour Mehdi Ben Barka", "Av. Annakhil", "Blue Berry Rabat", "Carrefour Market Riad", "Kool Smoothie Almelia", "Marjane Market A.V BENBARKA", "Mahaj Ryad Center"] },
+    { venues: ["Prestigia", "Agha Acham Prestigia", "Grillade Al Andalous prestigia", "Marjane Market Prestigia Hay Riad", "L'Atelier Burger Hay riad", "Yoka Sushi Hay Riad", "La Grillardière Hay riad", "Oh My Bun : Buntastic Burgers"] },
+  ],
+  "Temara": [
+    { venues: ["Oulad Mtaa", "Primo Massira 1", "Polyvalente"] },
+    { venues: ["Harhoura", "Quick", "Agha Cham", "Paul Harhoura", "Wifak"] },
+    { venues: ["McDonald's Temara", "Chawarma Ibn Acham", "Primo", "Michwat Al Akhawayn", "Qrouch"] },
+  ],
+  "Technopolis": [
+    { venues: ["Mcdonald's Arjat", "Carrefour Technopolis", "Marjane Technopolis", "Shawarma Ostorat Sham", "S Tacos", "Primos Chicken", "Yours Brunch", "Boca Mia", "Sushi ARIJ", "Gusto Chicken", "Bocadillos Tanjaoui", "Mahaj Alfawakih", "Vida Souss", "Crepti", "Bari bana", "Shamiyat", "Grill vibe", "175 kg"] },
+  ],
+};
+let HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
+let hotspotsNvUnsub = null;
+let currentWeekStartNv = getWeekStart(new Date());
+let NV_OVERRIDES = {};
+
+const ROTATING_TEAMS_NV = [
+  ["Charaf Loummihi", "Mourad Cherradi", "Islam Elmardi"],
+  ["Youssef Derkaoui", "Ayoub Ben Malek", "Aymane Chlifane"],
+  ["Yahya Rhallah", "Oussama El Atrach", "Hassan Azgoune"],
+  ["Ayoub Abssi", "Achraf Akhlij", "Mehdi Ait Jebour"],
+];
+const ROTATING_ZONES_NV = ["Temara", "Agdal", "Salé-Rabat", "Hay Riad"];
+const NV_FIXED_ZONE_AGENTS = { "Technopolis": ["Zakariae Benali"] };
+const NV_ALL_AGENTS = [
+  ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1], ...ROTATING_TEAMS_NV[2], ...ROTATING_TEAMS_NV[3],
+  ...Object.values(NV_FIXED_ZONE_AGENTS).flat(),
+];
+
+const NV_ZONE_COLORS = {
+  "Salé-Rabat": "#FB7185",
+  "Agdal": "#FFC244",
+  "Hay Riad": "#A78BFA",
+  "Temara": "#38BDF8",
+  "Technopolis": "#00A082",
+};
+const NV_ZONE_GRADIENTS = {
+  "Salé-Rabat": "linear-gradient(135deg,#FB7185,#E11D48)",
+  "Agdal": "linear-gradient(135deg,#FFC244,#D97706)",
+  "Hay Riad": "linear-gradient(135deg,#A78BFA,#7C3AED)",
+  "Temara": "linear-gradient(135deg,#38BDF8,#0284C7)",
+  "Technopolis": "linear-gradient(135deg,#00A082,#007A63)",
+};
+
+function listenHotspotsNv(){
+  if(hotspotsNvUnsub) hotspotsNvUnsub();
+  hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
+    if(doc.exists) HOTSPOTS_NV = doc.data();
+    renderPlanningNV();
+  }, err => console.error(err));
+}
+
+function buildZoneAssignmentsNv(weekIdx){
+  const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [], "Technopolis": [] };
+  ROTATING_TEAMS_NV.forEach((team, teamIdx) => {
+    const zoneIdx = ((teamIdx + weekIdx) % 4 + 4) % 4;
+    const zone = ROTATING_ZONES_NV[zoneIdx];
+    zones[zone].push(...team);
+  });
+  Object.entries(NV_FIXED_ZONE_AGENTS).forEach(([zone, names]) => {
+    if(zones[zone]) zones[zone].push(...names);
+  });
+  return zones;
+}
+
+function renderPlanningNV(){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  document.getElementById('weekLabelNv').textContent = `Semaine ${weekIdx}`;
+  document.getElementById('weekRangeNv').textContent = formatWeekRange(currentWeekStartNv);
+  const zones = buildZoneAssignmentsNv(weekIdx);
+  const grid = document.getElementById('nvZoneGrid');
+  grid.innerHTML = '';
+
+  Object.keys(HOTSPOTS_NV).forEach(zone => {
+    const members = zones[zone] || [];
+    const color = NV_ZONE_COLORS[zone] || '#00A082';
+    const card = document.createElement('div');
+    card.className = 'nv-zone-card';
+    card.style.borderLeft = `4px solid ${color}`;
+    card.innerHTML = `
+      <div class="nv-zone-head" style="background:${NV_ZONE_GRADIENTS[zone] || color};">
+        <h3>${zone}</h3>
+        <span>${members.length} agents</span>
+      </div>
+      <div style="padding:16px;">
+        ${members.map(m => `<div style="padding:6px 0; font-weight:700;">${m}</div>`).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+let currentNvAgent = null;
+function renderNvPortal(){
+  document.getElementById('nvPortalAgentName').textContent = currentNvAgent;
+  const content = document.getElementById('nvPortalContent');
+  content.innerHTML = `
+    <div style="background:var(--glovo-green); border-radius:16px; padding:20px; text-align:center; color:#fff;">
+      <h3>Bonjour, ${currentNvAgent.split(' ')[0]} 👋</h3>
+      <p style="margin-top:6px; font-size:13px; opacity:.9;">Bienvenue sur ton portail terrain.</p>
+    </div>
+  `;
+}
+
+function listenNvReplyNotifications(){}
+function renderRapportsView(){}
+
+renderProfiles();
+</script>
+</body>
+</html>
