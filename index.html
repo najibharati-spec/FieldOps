@@ -16,57 +16,44 @@
 
 <style>
 :root{
-  /* Glovo Official Colors */
-  --glovo-yellow: #FFC244;
-  --glovo-yellow-hover: #F0B433;
-  --glovo-yellow-light: #FFF9EB;
-  --glovo-green: #00A082;
-  --glovo-green-deep: #007A63;
-  --glovo-green-light: #E6F6F2;
-  --glovo-bg: #F8F9FA;
-  --glovo-bg-subtle: #F1F3F5;
-  --glovo-card: #FFFFFF;
-  --glovo-ink: #1C2321;
-  --glovo-ink-soft: #636E72;
-  --glovo-line: #E9ECEF;
-
-  --sand: var(--glovo-bg);
-  --sand-deep: var(--glovo-bg-subtle);
-  --sky: var(--glovo-green);
-  --sky-deep: var(--glovo-green-deep);
-  --sky-ink: #004D3F;
-  --mustard: var(--glovo-yellow);
-  --mustard-deep: var(--glovo-yellow-hover);
-  --ink: var(--glovo-ink);
-  --ink-soft: var(--glovo-ink-soft);
-  --paper: var(--glovo-card);
-  --line: var(--glovo-line);
-  --green: #00A082;
-  --red: #EB5757;
-  --radius: 16px;
-  --radius-sm: 10px;
+  --sand: #FFF6DE;
+  --sand-deep: #FDE29E;
+  --sky: #00A082;
+  --sky-deep: #007A63;
+  --sky-ink: #00614E;
+  --mustard: #E8A317;
+  --mustard-deep: #B9800E;
+  --ink: #1F1B0E;
+  --ink-soft: #6B5D3D;
+  --paper: #FFFFFF;
+  --line: rgba(80,64,20,0.26);
+  --green: #047857;
+  --red: #DC2626;
+  --radius: 14px;
   --font-display: 'Inter', sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
 }
 *{box-sizing:border-box; margin:0; padding:0;}
 html{ background: var(--sand); }
 body{
   font-family: var(--font-display);
-  background: var(--glovo-bg);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(0,160,130,0.07), transparent 42%),
+    radial-gradient(circle at 88% 18%, rgba(232,163,23,0.06), transparent 40%),
+    var(--sand);
+  background-attachment: fixed;
   color: var(--ink);
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
 }
-button{font-family: inherit; cursor:pointer; border:none; transition: all .15s ease;}
+button{font-family: inherit; cursor:pointer; border:none;}
 input, select{font-family: inherit;}
-::selection{background: var(--mustard); color: #1C2321;}
+::selection{background: var(--mustard); color: #fff;}
 
 /* ============ LOGIN SCREEN ============ */
 :root{
-  --login-navy: #00B594;
-  --login-navy-2: var(--glovo-green-deep);
+  --login-navy: #FFF6DE;
+  --login-navy-2: #FDE29E;
   --login-amber: #FFC244;
   --login-cream: #FFFFFF;
 }
@@ -77,9 +64,9 @@ input, select{font-family: inherit;}
 .login-hero-panel{
   flex: 1 1 46%; min-width: 340px;
   background:
-    radial-gradient(circle at 20% 10%, rgba(255,194,68,0.2), transparent 40%),
+    radial-gradient(circle at 20% 10%, rgba(0,160,130,0.16), transparent 40%),
     linear-gradient(160deg, var(--login-navy), var(--login-navy-2));
-  color: #FFFFFF;
+  color: #2B2440;
   display:flex; flex-direction:column; justify-content:space-between;
   padding: 40px 44px;
   position: relative; overflow:hidden;
@@ -90,19 +77,19 @@ input, select{font-family: inherit;}
   width: 36px; height: 36px; border-radius: 10px;
   display:flex; align-items:center; justify-content:center;
 }
-.login-mark svg{ width:20px; height:20px; stroke: #1C2321; }
-.hero-brand span{ font-size:16px; font-weight:800; letter-spacing:-0.01em; color:#FFFFFF; }
+.login-mark svg{ width:20px; height:20px; }
+.hero-brand span{ font-size:16px; font-weight:800; letter-spacing:-0.01em; color:#2B2440; }
 .route-map{ flex:1; display:flex; align-items:center; justify-content:center; padding: 10px 0; }
 .route-svg{ width: 100%; max-width: 340px; height: auto; }
 .pin-dot-outer{ fill: var(--login-amber); }
 .pin-dot-inner{ fill: #fff; }
-.pin-label{ fill: #FFFFFF; font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
-.pin-label-sub{ fill: rgba(255,255,255,0.7); font-family: var(--font-mono); font-size: 9.5px; }
+.pin-label{ fill: rgba(43,36,64,0.82); font-family: var(--font-display); font-size: 12.5px; font-weight: 700; }
+.pin-label-sub{ fill: rgba(43,36,64,0.45); font-family: var(--font-mono); font-size: 9.5px; }
 .scooter-icon path, .scooter-icon circle{ fill: var(--login-amber); }
 @media (prefers-reduced-motion: reduce){ #routeMotion{ display:none; } }
 .hero-foot{ font-family: var(--font-mono); }
-.hero-foot span{ font-size: 24px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
-.hero-foot p{ font-size: 12px; color: rgba(255,255,255,0.8); max-width: 280px; }
+.hero-foot span{ font-size: 22px; font-weight: 700; color: var(--login-amber); display:block; margin-bottom:6px; }
+.hero-foot p{ font-size: 12px; color: rgba(43,36,64,0.6); max-width: 280px; }
 
 .login-form-panel{
   flex: 1 1 54%;
@@ -119,7 +106,7 @@ input, select{font-family: inherit;}
   display:flex; flex-direction:column; align-items:flex-start; text-align:left;
   margin-bottom: 26px;
 }
-.login-brand h1{ font-size: 26px; font-weight: 800; letter-spacing: -0.02em; color: var(--glovo-ink); }
+.login-brand h1{ font-size: 24px; font-weight: 800; letter-spacing: -0.02em; color: var(--sky-ink); }
 .login-brand p{ font-size: 13px; color: var(--ink-soft); margin-top: 4px; font-family: var(--font-mono); }
 
 @media (max-width: 860px){
@@ -141,8 +128,8 @@ input, select{font-family: inherit;}
   display:flex; flex-direction:column; align-items:center; gap: 8px;
   transition: all .15s ease;
 }
-.profile-btn:hover{ border-color: var(--sky); background: var(--paper); transform: translateY(-1px); box-shadow: var(--shadow-sm); }
-.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,160,130,0.18); }
+.profile-btn:hover{ border-color: var(--sky); background: var(--paper); transform: translateY(-1px); box-shadow: 0 4px 14px -8px rgba(30,20,60,0.2); }
+.profile-btn.selected{ border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,160,130,0.16); }
 .profile-avatar{
   width: 40px; height: 40px; border-radius: 50%;
   display:flex; align-items:center; justify-content:center;
@@ -153,36 +140,104 @@ input, select{font-family: inherit;}
 .profile-btn small{font-size: 10px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em;}
 
 .login-input{
-  width:100%; padding: 13px 14px; border-radius: var(--radius-sm);
+  width:100%; padding: 13px 14px; border-radius: var(--radius);
   border: 1.5px solid var(--line); background: var(--sand-deep);
   font-size: 14px; margin-bottom: 12px; color: var(--ink);
   transition: border-color .15s, box-shadow .15s;
 }
 .login-input:focus{ outline:none; border-color: var(--sky); background: var(--paper); box-shadow: 0 0 0 3px rgba(0,160,130,0.14); }
 .login-submit{
-  width:100%; padding: 14px; border-radius: 28px;
-  background: var(--mustard); color: #1C2321; font-weight: 800; font-size: 14px;
-  letter-spacing: .02em; transition: background .15s, transform .15s; box-shadow: 0 4px 14px rgba(255,194,68,0.3);
+  width:100%; padding: 14px; border-radius: var(--radius);
+  background: var(--mustard); color: #fff; font-weight: 700; font-size: 14px;
+  letter-spacing: .02em; transition: background .15s;
 }
-.login-submit:hover{ background: var(--mustard-deep); transform: translateY(-1px); }
-.login-submit:disabled{ background: var(--line); color: var(--ink-soft); cursor:not-allowed; box-shadow:none; }
+.login-submit:hover{ background: var(--mustard-deep); }
+.login-submit:disabled{ background: var(--line); color: var(--ink-soft); cursor:not-allowed; }
 .login-error{
   font-size: 12.5px; color: var(--red); text-align:center; margin-top: 10px; min-height: 16px;
 }
+
+/* ============ LOGIN TABS ============ */
+.login-tabs{ display:flex; gap:6px; background: var(--sand-deep); border-radius: 10px; padding: 4px; margin-bottom: 20px; }
+.ltab{ flex:1; padding: 9px; border-radius: 7px; font-size: 12.5px; font-weight:700; color: var(--ink-soft); background: transparent; }
+.ltab.active{ background: var(--sky-deep); color: #fff; box-shadow: 0 4px 14px -6px rgba(0,122,99,0.35); }
 
 /* ============ AGENT PORTAL ============ */
 #agentPortal, #nvAgentPortal{
   min-height: 100vh; display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
   gap: 16px; padding: 20px 16px; position: relative; overflow-x:hidden;
-  background: var(--sand);
+  background:
+    radial-gradient(circle at 15% 15%, rgba(0,160,130,0.10), transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(232,163,23,0.08), transparent 45%),
+    radial-gradient(circle at 1px 1px, rgba(30,20,60,0.05) 1px, transparent 0) 0 0/28px 28px,
+    var(--sand);
 }
 .nv-portal-top-week{
   display:block; position:static; width:100%; max-width:460px; background:#fff; border-radius:16px;
-  padding:14px 16px; box-shadow: var(--shadow-sm); border: 1px solid var(--line);
+  padding:14px 16px; box-shadow: 0 10px 24px -14px rgba(30,20,60,0.22);
+}
+.nv-badges-row{ display:flex; flex-wrap:wrap; justify-content:center; gap:10px; width:100%; max-width:460px; }
+.portal-bg-doodle{
+  display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+  position:static; width:80px; height:80px; border-radius:14px; pointer-events:none;
+  box-shadow:none; padding:8px 4px;
+}
+.portal-bg-doodle .dd-badge{
+  width:36px; height:36px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+  flex-shrink:0;
+}
+.portal-bg-doodle .dd-badge svg{ width:20px; height:20px; }
+.portal-bg-doodle .dd-label{
+  font-family: 'Baloo 2', var(--font-display); font-size:10px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+  color: #fff; text-align:center; line-height:1.05;
+}
+@media (min-width: 1280px){
+  #agentPortal, #nvAgentPortal{ flex-direction:row; align-items:center; justify-content:center; padding-top: 150px; overflow:hidden; gap:0; }
+  .nv-badges-row{ display:contents; max-width:none; }
+  .portal-bg-doodle{
+    flex-direction:column; align-items:center; justify-content:center; gap:14px;
+    position:absolute; width:130px; height:130px; border-radius:0; pointer-events:none;
+    box-shadow:none; padding:14px 8px;
+  }
+  .portal-bg-doodle .dd-badge{
+    width:62px; height:62px; border-radius:50%; background:#fff; display:flex; align-items:center; justify-content:center;
+    box-shadow:none; flex-shrink:0;
+  }
+  .portal-bg-doodle .dd-badge svg{ width:34px; height:34px; }
+  .portal-bg-doodle .dd-label{
+    font-family: 'Baloo 2', var(--font-display); font-size:17px; font-weight:800; text-transform:uppercase; letter-spacing:0;
+    color: #fff; text-align:center; line-height:1.05;
+  }
+  .portal-bg-doodle.dd-tl{ top:7%; left:5%; }
+  .portal-bg-doodle.dd-bl{ bottom:9%; left:8%; }
+  .portal-bg-doodle.dd-tr{ top:9%; right:6%; }
+  .portal-bg-doodle.dd-br{ bottom:8%; right:5%; }
+  .portal-bg-doodle.dd-ml{ top:44%; left:2%; }
+  .portal-bg-doodle.dd-mr{ top:46%; right:3%; }
+  .nv-portal-top-week{
+    display:block; position:absolute; top:24px; left:50%; transform:translateX(-50%);
+    width:min(94%, 1100px); background:#fff; border-radius:16px; padding:16px 20px;
+    box-shadow: 0 14px 30px -14px rgba(30,20,60,0.25); pointer-events:none; z-index:1;
+  }
 }
 .portal-card{
   width:100%; max-width: 420px; background: var(--paper); border-radius: 20px; padding: 28px;
-  box-shadow: var(--shadow-md); border:1.5px solid var(--line);
+  box-shadow: 0 30px 80px -24px rgba(30,20,60,0.18); border:1px solid var(--line);
+}
+.portal-side-art{ display:none; }
+@media (min-width: 900px){
+  #agentPortal, #nvAgentPortal{ gap: 48px; }
+  .portal-side-art{
+    display:flex; flex-direction:column; align-items:center; width: 320px; flex-shrink:0;
+  }
+  .portal-side-art svg{ width:100%; max-width:320px; height:auto; }
+  .portal-side-art-quote{
+    font-family: var(--font-display); font-style:italic; font-weight:600; font-size:15px;
+    color: var(--ink-soft); text-align:center; margin-top:8px; line-height:1.5; max-width:260px;
+  }
+}
+@media (min-width: 720px){
+  .portal-card{ max-width: 460px; padding: 34px; }
 }
 .portal-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 20px; }
 .portal-header b{ font-size: 16px; display:block; color: var(--ink); }
@@ -192,20 +247,22 @@ input, select{font-family: inherit;}
   font-size: 13px; font-weight:700; color: var(--ink-soft); margin-bottom: 18px;
 }
 .portal-btn{
-  width:100%; padding: 18px; border-radius: 28px; background: var(--green); color:#fff;
-  font-size: 16px; font-weight: 800; letter-spacing: .02em; margin-bottom: 6px; box-shadow: 0 4px 14px rgba(0,160,130,0.3);
+  width:100%; padding: 22px; border-radius: 14px; background: var(--green); color:#fff;
+  font-size: 16px; font-weight: 800; letter-spacing: .02em; margin-bottom: 6px;
 }
-.portal-btn.is-checkedin{ background: var(--red); box-shadow: 0 4px 14px rgba(235,87,87,0.3); }
+.portal-btn.is-checkedin{ background: var(--red); }
 .portal-history{ margin-top: 4px; }
 .portal-history-item{
   display:flex; justify-content:space-between; padding: 9px 0; border-bottom: 1px solid var(--line);
   font-size: 12.5px;
 }
+.portal-history-item:last-child{ border-bottom:none; }
 
 .shell{ display:flex; min-height: 100vh; }
+
 .sidebar{
-  width: 230px; flex-shrink:0;
-  background: #FFFFFF;
+  width: 220px; flex-shrink:0;
+  background: linear-gradient(180deg, #FAF8FE, #F0EAFC);
   border-right: 1.5px solid var(--line);
   color: var(--ink);
   display:flex; flex-direction:column;
@@ -214,52 +271,52 @@ input, select{font-family: inherit;}
 .sidebar-brand{
   display:flex; align-items:center; gap: 10px;
   padding: 0 8px 22px; margin-bottom: 18px;
-  border-bottom: 1.5px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 .sidebar-brand .mark{
-  width:34px; height:34px; border-radius:9px;
-  background: var(--mustard);
+  width:32px; height:32px; border-radius:9px;
+  background: linear-gradient(135deg, var(--sky), var(--sky-deep));
   display:flex; align-items:center; justify-content:center;
-  font-weight:800; color:#1C2321; font-size:15px;
+  font-weight:800; color:#fff; font-size:14px;
+  box-shadow: 0 8px 18px -8px rgba(0,160,130,0.55);
 }
-.sidebar-brand h2{ font-size: 16px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); }
+.sidebar-brand h2{ font-size: 15.5px; font-weight: 800; letter-spacing: -0.01em; color: var(--ink); }
 .nav-group{ margin-bottom: 18px; }
 .nav-label{
-  font-size: 10.5px; text-transform: uppercase; letter-spacing: .08em;
-  color: var(--ink-soft); padding: 0 10px; margin-bottom: 6px; font-weight:700;
+  font-size: 10px; text-transform: uppercase; letter-spacing: .08em;
+  color: var(--ink-soft); padding: 0 10px; margin-bottom: 6px; font-weight:600;
 }
 .nav-item{
   display:flex; align-items:center; gap: 10px;
-  width:100%; text-align:left; padding: 10px 10px; border-radius: 9px;
+  width:100%; text-align:left; padding: 9px 10px; border-radius: 9px;
   color: var(--ink-soft); background: transparent; font-size: 13.5px; font-weight: 600;
   transition: all .12s; margin-bottom: 2px;
 }
 .nav-item:hover{ background: var(--sand-deep); color: var(--ink); }
 .nav-item.active{
-  background: var(--glovo-green-light);
-  color: var(--glovo-green-deep);
-  font-weight: 700;
+  background: linear-gradient(135deg, var(--sky), var(--sky-deep));
+  color: #fff;
+  box-shadow: 0 6px 18px -8px rgba(0,160,130,0.5);
 }
-.nav-item.active svg{ stroke: var(--glovo-green-deep); }
 .nav-item svg{ width:16px; height:16px; flex-shrink:0; }
-.sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1.5px solid var(--line); }
+.sidebar-footer{ margin-top:auto; padding-top: 14px; border-top: 1px solid var(--line); }
 .user-chip{ display:flex; align-items:center; gap:9px; padding: 8px 10px; }
-.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; }
+.user-chip .dot{ width:8px; height:8px; border-radius:50%; background: var(--green); flex-shrink:0; box-shadow: 0 0 8px rgba(5,150,105,0.5); }
 .user-chip-text{ display:flex; flex-direction:column; }
 .user-chip-text b{ font-size: 12.5px; color: var(--ink); }
 .user-chip-text span{ font-size: 10.5px; color: var(--ink-soft); }
 .logout-btn{
-  width:100%; margin-top:8px; padding: 8px; border-radius: 8px;
+  width:100%; margin-top:10px; padding: 8px; border-radius: 8px;
   background: var(--sand-deep); color: var(--ink-soft);
   font-size: 12.5px; font-weight:600;
 }
-.logout-btn:hover{ background: #E2E6EA; color: var(--ink); }
+.logout-btn:hover{ background: var(--line); color: var(--ink); }
 
-.main{ flex:1; overflow-x:auto; max-width:100vw; background: var(--sand); }
+.main{ flex:1; overflow-x:auto; max-width:100vw; }
 .topbar{
   display:flex; align-items:center; justify-content:space-between;
-  padding: 18px 32px; border-bottom: 1.5px solid var(--line);
-  background: rgba(255,255,255,0.9);
+  padding: 18px 32px; border-bottom: 1px solid var(--line);
+  background: rgba(255,255,255,0.85);
   backdrop-filter: blur(14px);
   position: sticky; top: 0; z-index: 5;
 }
@@ -267,7 +324,7 @@ input, select{font-family: inherit;}
 .topbar-meta{ display:flex; align-items:center; gap: 14px; font-size: 12.5px; color: var(--ink-soft); font-family: var(--font-mono); }
 .sync-pill{
   display:flex; align-items:center; gap:6px; padding: 5px 10px;
-  background: var(--glovo-green-light); color: var(--glovo-green-deep); border-radius: 20px; font-weight:700; font-size: 11.5px;
+  background: rgba(5,150,105,0.10); color: var(--green); border-radius: 20px; font-weight:600; font-size: 11.5px;
 }
 .sync-pill .dot{ width:6px; height:6px; border-radius:50%; background: var(--green); }
 
@@ -277,78 +334,75 @@ input, select{font-family: inherit;}
 /* Dashboard cards */
 .stat-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 24px; }
 .stat-card{
-  background: var(--paper); border: 1.5px solid var(--line); border-left: 4px solid var(--sky-ink);
-  border-radius: var(--radius); padding: 18px;
-  box-shadow: var(--shadow-sm);
+  background: var(--paper); border: 1px solid var(--line); border-left: 4px solid var(--sky-ink);
+  border-radius: 18px; padding: 18px;
+  box-shadow: 0 4px 16px -8px rgba(30,20,60,0.12);
   transition: transform .18s ease, box-shadow .18s ease;
 }
-.stat-card:hover{ transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.stat-card:hover{ transform: translateY(-2px); box-shadow: 0 16px 32px -20px rgba(0,160,130,0.25); }
 .stat-card.accent-green{ border-left-color: #059669; }
 .stat-card.accent-blue{ border-left-color: #0284C7; }
-.stat-card.accent-amber{ border-left-color: var(--mustard); }
-.stat-card.accent-purple{ border-left-color: var(--green); }
-.stat-card.accent-red{ border-left-color: var(--red); }
+.stat-card.accent-amber{ border-left-color: #B45309; }
+.stat-card.accent-purple{ border-left-color: #00A082; }
+.stat-card.accent-red{ border-left-color: #DC2626; }
 .stat-card.accent-orange{ border-left-color: #EA580C; }
-.stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:700; margin-bottom: 8px;}
-.stat-card .value{ font-size: 28px; font-weight: 800; color: var(--ink); font-family: var(--font-mono); }
+.stat-card .label{ font-size: 11.5px; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; font-weight:600; margin-bottom: 8px;}
+.stat-card .value{ font-size: 28px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
 .stat-card .sub{ font-size: 12px; color: var(--ink-soft); margin-top: 4px; }
 
 .zone-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(210px,1fr)); gap: 14px; }
-.zone-card{
-  background: var(--paper); border: 1.5px solid var(--line); border-radius: var(--radius); padding: 16px;
-  border-left: 4px solid var(--mustard);
-}
-.zone-card h3{ font-size: 14px; font-weight:700; margin-bottom: 10px; color: var(--ink); }
-.zone-card .count{ font-size: 24px; font-weight: 800; color: var(--ink); font-family: var(--font-mono); }
-.zone-card .count-label{ font-size: 11.5px; color: var(--ink-soft); }
-.zone-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
 
-/* ============ PLANNING NV ============ */
+/* ============ PLANNING NV — zone cards ============ */
 .nv-zone-grid{ display:grid; grid-template-columns: repeat(auto-fit, minmax(320px,1fr)); gap: 18px; }
 .nv-zone-card{
-  border-radius: var(--radius); overflow:hidden; background: var(--paper);
-  border: 1.5px solid var(--line); box-shadow: var(--shadow-sm);
+  border-radius: 20px; overflow:hidden; background: var(--paper);
+  border: 1px solid var(--line); box-shadow: 0 12px 32px -20px rgba(30,20,60,0.18);
 }
 .nv-zone-head{
   padding: 16px 20px; color:#fff; display:flex; align-items:center; justify-content:space-between;
 }
-.nv-zone-head h3{ font-size: 18px; font-weight: 800; letter-spacing:-0.01em; }
-.nv-zone-head span{ font-size: 12px; font-weight: 700; background: rgba(255,255,255,0.28); padding: 4px 10px; border-radius: 20px; }
+.nv-zone-head h3{ font-size: 19px; font-weight: 800; letter-spacing:-0.01em; }
+.nv-zone-head span{ font-size: 12.5px; font-weight: 700; background: rgba(255,255,255,0.28); padding: 5px 12px; border-radius: 20px; }
+.nv-hotspot-line{ padding: 10px 20px; font-size: 13px; color: var(--ink-soft); border-bottom: 1px solid var(--line); background: var(--sand-deep); line-height:1.6; }
 .nv-member-row{
   display:flex; align-items:center; justify-content:space-between; gap: 10px;
   padding: 14px 20px; border-bottom: 1px solid var(--line);
 }
 .nv-member-row:last-child{ border-bottom:none; }
-.nv-member-name{ font-weight: 800; font-size: 15px; flex: 1; color: var(--ink); }
-.nv-chip{ font-size: 12px; font-weight: 700; padding: 6px 12px; border-radius: 20px; white-space:nowrap; }
-.nv-chip.shift-jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.nv-chip.shift-nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
-.nv-chip.off{ background: var(--sand-deep); color: var(--ink-soft); }
+.nv-member-name{ font-weight: 800; font-size: 16px; flex: 1; color: var(--ink); }
+.nv-member-hotspot{ font-size: 12.5px; color: var(--ink-soft); margin-top: 4px; line-height: 1.5; }
+.nv-chip{ font-size: 12.5px; font-weight: 700; padding: 6px 13px; border-radius: 20px; white-space:nowrap; }
+.nv-chip.shift-jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-chip.shift-nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
+.nv-chip.off{ background: rgba(107,114,128,0.12); color: #6B7280; }
 .nv-day-strip{ display:flex; flex-direction:column; gap: 10px; }
 .nv-day-block{ border-bottom: 1px solid var(--line); padding-bottom: 8px; }
 .nv-day-today{ background: rgba(0,160,130,0.06); border-radius: 8px; padding: 8px; margin: -8px -8px 0; }
-.nv-today-tag{ background: var(--sky-deep); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; }
+.nv-today-tag{ background: var(--sky-deep); color:#fff; font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:20px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-portal-hero{
-  border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: var(--shadow-md);
+  border-radius: 18px; padding: 20px 22px; color:#fff; box-shadow: 0 16px 34px -20px rgba(30,20,60,0.35);
 }
 .nv-portal-hero-label{ font-size: 12px; font-weight:600; opacity:.85; margin-bottom:4px; }
 .nv-portal-hero-zone{ font-size: 24px; font-weight: 800; letter-spacing:-0.01em; margin-bottom: 10px; }
+.nv-portal-hero-shift{ font-size: 14px; font-weight: 700; background: rgba(255,255,255,0.22); display:inline-block; padding: 6px 12px; border-radius: 20px; }
 .nv-portal-day{ border-bottom: 1px solid var(--line); padding-bottom: 10px; margin-bottom: 10px; }
 .nv-portal-day:last-child{ border-bottom:none; margin-bottom:0; padding-bottom:0; }
 .nv-time-chip{ font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 20px; margin-left: 6px; display:inline-block; }
-.nv-time-chip.nv-time-jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.nv-time-chip.nv-time-nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
-.nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; }
+.nv-time-chip.nv-time-jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-time-chip.nv-time-nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
+.nv-day-block:last-child{ border-bottom: none; padding-bottom: 0; }
+.nv-day-label{ font-size: 12px; font-weight: 800; color: var(--ink); margin-bottom: 5px; text-transform:uppercase; letter-spacing:.03em; }
 .nv-day-venues{ display:flex; flex-wrap:wrap; gap: 6px; }
 .nv-day-chip{
-  font-size: 13.5px; color: var(--ink); background: var(--sand-deep); border-radius: 8px;
+  font-size: 14px; color: var(--ink); background: var(--sand-deep); border-radius: 8px;
   padding: 8px 12px; line-height: 1.3; display:inline-block; text-decoration:none; font-weight:600;
 }
 .nv-day-chip-link{ cursor:pointer; }
-.nv-day-chip-link:hover{ background: #E2E6EA; text-decoration: underline; }
-.nv-day-chip.off{ background: var(--sand-deep); color: var(--ink-soft); font-weight: 700; }
+.nv-day-chip-link:hover{ background: #FDE29E; text-decoration: underline; }
+.nv-day-chip.off{ background: rgba(107,114,128,0.10); color: #6B7280; font-weight: 700; }
 .nv-today-hero{
   border-radius: 12px; padding: 12px 14px; color:#fff; display:flex; flex-direction:column; gap: 4px;
+  box-shadow: 0 10px 24px -14px rgba(30,20,60,0.4);
 }
 .nv-today-hero-label{ font-size: 11px; font-weight: 800; text-transform:uppercase; letter-spacing:.04em; opacity:.9; }
 .nv-today-hero-venues{ font-size: 15px; font-weight: 800; }
@@ -356,7 +410,7 @@ input, select{font-family: inherit;}
 .nv-today-hero-venues a:hover{ text-decoration:underline; }
 .nv-today-hero.nv-today-hero-off{
   background: var(--sand-deep); color: var(--ink-soft); font-size: 13px; font-weight: 700;
-  border-radius: 12px; padding: 12px 14px; text-align:center;
+  border-radius: 12px; padding: 12px 14px; text-align:center; box-shadow:none;
 }
 .nv-fulllist{ padding: 12px 20px 16px; background: var(--sand-deep); border-top: 1px solid var(--line); }
 .nv-fulllist-title{ font-size: 10.5px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color: var(--ink-soft); margin-bottom: 8px; }
@@ -366,37 +420,65 @@ input, select{font-family: inherit;}
   display:inline-flex; align-items:center; gap:5px; background: var(--paper); border:1px solid var(--line);
   border-radius: 6px; padding: 3px 7px; margin: 2px 3px 2px 0; font-size: 11.5px;
 }
-.nv-venue-tag button{ border:none; background:none; color: var(--red); cursor:pointer; font-size:11px; }
+.nv-venue-tag button{ border:none; background:none; color: var(--red); cursor:pointer; font-size:11px; padding:0; line-height:1; }
 .nv-venue-tag a{ color: var(--ink); text-decoration:none; }
-.nv-mini-link{ border:none; background:none; color: var(--sky-ink); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0; }
+.nv-venue-tag a:hover{ text-decoration:underline; }
+.nv-venue-links{ display:flex; flex-direction:column; gap:8px; }
+.nv-venue-maplink{
+  display:block; background: var(--paper); border:1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; font-size: 14px; font-weight: 700; color: var(--ink); text-decoration:none;
+}
+.nv-venue-maplink:hover{ border-color: var(--sky); }
+.nv-mini-link{
+  border:none; background:none; color: var(--sky-ink); font-size: 11px; font-weight:700; cursor:pointer; padding:2px 6px 2px 0;
+}
 .nv-mini-link.nv-mini-danger{ color: var(--red); }
 .agent-pin-chip{
   display:inline-block; font-family: var(--font-mono); font-weight:800; font-size:13px;
-  background: var(--sand-deep); color: var(--ink); padding: 4px 10px; border-radius: 8px;
+  background: var(--sand-deep); color: var(--ink); padding: 4px 10px; border-radius: 8px; letter-spacing: 0.02em;
 }
 .agent-access-btn{
   border:1px solid var(--line); background: var(--paper); color: var(--sky-ink); font-size: 11.5px; font-weight:700;
   cursor:pointer; padding: 5px 10px; border-radius: 8px; display:inline-flex; align-items:center; gap:4px;
+  transition: background 0.15s, border-color 0.15s;
 }
+.agent-access-btn:hover{ background: rgba(0,160,130,0.08); border-color: var(--sky); }
+.nv-fulllist-row b{ color: var(--ink-soft); margin-right: 6px; }
+.nv-loc-badge{
+  display:block; text-align:center; font-size: 11px; font-weight: 700; padding: 6px 10px;
+  border-radius: 8px; margin-top: 8px; text-decoration:none;
+}
+.nv-loc-badge.nv-loc-none{ background: var(--sand-deep); color: var(--ink-soft); font-weight: 500; }
+.nv-loc-badge.nv-loc-fresh{ background: rgba(5,150,105,0.18); color: #047857; }
+.nv-loc-badge.nv-loc-stale{ background: rgba(180,83,9,0.12); color: #B45309; }
+.zone-card{
+  background: var(--paper); border: 1px solid var(--line); border-radius: 18px; padding: 16px;
+  border-left: 4px solid var(--mustard);
+}
+.zone-card h3{ font-size: 14px; font-weight:700; margin-bottom: 10px; color: var(--ink); }
+.zone-card .count{ font-size: 24px; font-weight: 800; color: var(--sky-ink); font-family: var(--font-mono); }
+.zone-card .count-label{ font-size: 11.5px; color: var(--ink-soft); }
+.zone-dot{ display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; vertical-align:middle; }
 
 .section-title{ font-size: 15px; font-weight: 800; margin: 26px 0 14px; color: var(--ink); }
-.card{ background: var(--paper); border:1.5px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow-sm); }
+
+.card{ background: var(--paper); border:1.5px solid var(--line); border-radius: 18px; box-shadow: 0 4px 16px -8px rgba(30,20,60,0.12); }
 
 table{ width:100%; border-collapse: collapse; }
-th{ text-align:left; font-size: 11px; text-transform:uppercase; letter-spacing:.04em; color: var(--ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1.5px solid var(--line); }
+th{ text-align:left; font-size: 11px; text-transform:uppercase; letter-spacing:.04em; color: var(--ink-soft); font-weight:700; padding: 12px 16px; border-bottom: 1px solid var(--line); }
 td{ padding: 12px 16px; font-size: 13.5px; border-bottom: 1px solid var(--line); color: var(--ink); }
 tr:last-child td{ border-bottom:none; }
-.badge{ display:inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-.badge.fix{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.badge.var{ background: var(--glovo-yellow-light); color: #B9800E; }
-.badge.jour{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.badge.nuit{ background: var(--glovo-yellow-light); color: #B9800E; }
-.badge.abs-maladie{ background: rgba(235,87,87,0.14); color: var(--red); }
-.badge.abs-injustifiee{ background: var(--sand-deep); color: var(--ink-soft); }
-.badge.abs-conge{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.badge.abs-ferie{ background: var(--glovo-green-light); color: var(--glovo-green-deep); }
-.badge.abs-double{ background: var(--glovo-yellow-light); color: #B9800E; }
-.badge.abs-off{ background: rgba(2,132,199,0.15); color: #0284C7; }
+.badge{ display:inline-block; padding: 3px 9px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+.badge.fix{ background: rgba(0,160,130,0.16); color: #00614E; }
+.badge.var{ background: rgba(180,83,9,0.20); color: #92400E; }
+.badge.jour{ background: rgba(5,150,105,0.18); color: #047857; }
+.badge.nuit{ background: rgba(232,163,23,0.18); color: #8A6208; }
+.badge.abs-maladie{ background: rgba(220,38,38,0.16); color: #B91C1C; }
+.badge.abs-injustifiee{ background: rgba(107,114,128,0.18); color: #374151; }
+.badge.abs-conge{ background: rgba(0,160,130,0.16); color: #00614E; }
+.badge.abs-ferie{ background: rgba(5,150,105,0.18); color: #047857; }
+.badge.abs-double{ background: rgba(180,83,9,0.20); color: #92400E; }
+.badge.abs-off{ background: rgba(2,132,199,0.18); color: #0369A1; }
 
 .placeholder-view{
   display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -413,42 +495,47 @@ tr:last-child td{ border-bottom:none; }
   .nav-item{ justify-content:center; }
 }
 
-/* ============ BUTTONS & HEADERS ============ */
-.view-header{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 18px; gap: 16px; }
+/* ============ VIEW HEADER / BUTTONS ============ */
+.view-header{
+  display:flex; align-items:center; justify-content:space-between;
+  margin-bottom: 18px; gap: 16px;
+}
 .view-subtitle{ font-size: 13px; color: var(--ink-soft); }
 .btn-primary{
-  background: var(--mustard);
-  color: #1C2321; font-weight: 700; font-size: 13px;
-  padding: 10px 18px; border-radius: 24px; white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(255,194,68,0.3);
+  background: linear-gradient(135deg, var(--mustard), var(--mustard-deep));
+  color: #fff; font-weight: 700; font-size: 13px;
+  padding: 10px 18px; border-radius: var(--radius); white-space: nowrap;
+  transition: transform .15s, box-shadow .15s;
+  box-shadow: 0 10px 22px -10px rgba(232,163,23,0.45);
 }
-.btn-primary:hover{ background: var(--mustard-deep); transform: translateY(-1px); }
+.btn-primary:hover{ transform: translateY(-1px); box-shadow: 0 14px 26px -10px rgba(232,163,23,0.55); }
 .btn-ghost{
   background: transparent; color: var(--ink-soft); font-weight: 600; font-size: 13px;
-  padding: 9px 16px; border-radius: 20px;
+  padding: 10px 16px; border-radius: var(--radius);
 }
 .btn-ghost:hover{ background: var(--sand-deep); color: var(--ink); }
 .icon-btn{
   width: 28px; height: 28px; border-radius: 7px; background: transparent;
   display:inline-flex; align-items:center; justify-content:center; color: var(--ink-soft);
+  transition: all .12s;
 }
 .icon-btn:hover{ background: var(--sand-deep); color: var(--ink); }
 .icon-btn svg{ width: 15px; height: 15px; }
-.icon-btn.danger:hover{ background: rgba(235,87,87,0.12); color: var(--red); }
+.icon-btn.danger:hover{ background: rgba(220,38,38,0.10); color: var(--red); }
 .row-actions{ display:flex; gap: 4px; justify-content:flex-end; }
 
 /* ============ MODAL ============ */
 .modal-overlay{
-  position: fixed; inset: 0; background: rgba(28,35,33,0.4);
+  position: fixed; inset: 0; background: rgba(30,20,60,0.35);
   backdrop-filter: blur(4px);
   display:flex; align-items:center; justify-content:center; z-index: 100;
   padding: 20px;
 }
 .modal-card{
   width: 100%; max-width: 420px; background: var(--paper);
-  border: 1.5px solid var(--line);
-  border-radius: var(--radius); padding: 28px 26px 22px;
-  box-shadow: var(--shadow-md);
+  border: 1px solid var(--line);
+  border-radius: 16px; padding: 28px 26px 22px;
+  box-shadow: 0 30px 70px -24px rgba(30,20,60,0.35);
 }
 .modal-card h3{ font-size: 17px; font-weight: 800; margin-bottom: 18px; color: var(--ink); }
 .form-label{ display:block; font-size: 11.5px; font-weight: 700; color: var(--ink-soft); text-transform:uppercase; letter-spacing:.03em; margin-bottom: 6px; margin-top: 12px; }
@@ -464,8 +551,9 @@ tr:last-child td{ border-bottom:none; }
 }
 .week-nav{ display:flex; align-items:center; gap: 12px; }
 .icon-btn-lg{
-  width: 34px; height: 34px; border-radius: 9px; background: var(--paper); border: 1.5px solid var(--line);
+  width: 34px; height: 34px; border-radius: 9px; background: var(--paper); border: 1px solid var(--line);
   display:flex; align-items:center; justify-content:center; color: var(--sky-ink);
+  transition: all .12s;
 }
 .icon-btn-lg svg{ width: 16px; height:16px; }
 .icon-btn-lg:hover{ background: var(--sand-deep); }
@@ -473,12 +561,13 @@ tr:last-child td{ border-bottom:none; }
 .week-label b{ display:block; font-size: 14.5px; font-weight: 800; color: var(--ink); }
 .week-label span{ font-size: 11.5px; color: var(--ink-soft); font-family: var(--font-mono); }
 .planning-actions{ display:flex; gap: 8px; flex-wrap: wrap; }
-.planning-tabs{ display:flex; gap: 6px; margin-bottom: 14px; }
+
+.planning-tabs{ display:flex; gap: 4px; margin-bottom: 14px; }
 .ptab{
-  padding: 8px 18px; border-radius: 20px; background: transparent; color: var(--ink-soft);
+  padding: 8px 16px; border-radius: 8px; background: transparent; color: var(--ink-soft);
   font-size: 13px; font-weight: 700;
 }
-.ptab.active{ background: var(--glovo-green); color: #fff; }
+.ptab.active{ background: linear-gradient(135deg, var(--sky), var(--sky-deep)); color: #fff; }
 .ptab:not(.active):hover{ background: var(--sand-deep); }
 
 .planning-card{ overflow-x: auto; }
@@ -491,14 +580,18 @@ tr:last-child td{ border-bottom:none; }
   text-transform:uppercase; font-size: 10px; letter-spacing:.05em; color: var(--ink-soft); font-weight: 800;
   background: var(--sand-deep); border-bottom: 2px solid var(--line); padding-top: 12px; padding-bottom: 12px;
 }
-.planning-table tbody tr:hover{ background: var(--sand-deep); }
+.planning-table tbody tr:nth-child(even){ background: rgba(30,20,60,0.015); }
+.planning-table tbody tr:hover{ background: rgba(0,160,130,0.04); }
 .planning-table td.agent-name-cell{ text-align:left; font-weight: 700; color: var(--ink); }
+.planning-table td.zone-cell{ text-align:left; font-size: 11.5px; color: var(--ink-soft); }
 .agent-name-edit{
   border: none; background: transparent; font-weight: 700; font-size: 12.5px; color: var(--ink);
   width: 100%; padding: 3px 4px; border-radius: 6px; font-family: var(--font-display);
 }
+.agent-name-edit:hover{ background: var(--sand-deep); }
 .agent-name-edit:focus{ outline: none; background: var(--paper); box-shadow: 0 0 0 1.5px var(--sky); }
 .sticky-col{ position: sticky; left: 0; background: var(--paper); text-align:left !important; white-space: normal !important; z-index: 2; }
+.planning-table tbody tr:nth-child(even) .sticky-col{ background: #F3F1FA; }
 .planning-table td.total-cell{
   font-family: var(--font-mono); font-weight: 800; color: var(--sky-ink); font-size: 13px;
 }
@@ -507,20 +600,32 @@ tr:last-child td{ border-bottom:none; }
   display:inline-flex; align-items:center; justify-content:center; gap:2px;
   width: 100%; min-width: 78px; padding: 7px 4px; border-radius: 8px;
   font-size: 11px; font-weight: 700; cursor: pointer; border: 1px solid transparent;
+  transition: filter .12s, transform .12s;
+  letter-spacing: .01em;
 }
-.shift-pill.s-jour{ background: var(--glovo-green); color: #fff; }
-.shift-pill.s-nuit{ background: #374151; color: #fff; }
-.shift-pill.s-quiet{ background: var(--sand-deep); color: var(--ink-soft); }
+.shift-pill:hover{ filter: brightness(1.08); transform: translateY(-1px); }
+.shift-pill.s-jour{ background: #059669; color: #fff; }
+.shift-pill.s-nuit{ background: #B9800E; color: #fff; }
+.shift-pill.s-quiet{ background: var(--sand-deep); color: var(--ink-soft); box-shadow: inset 0 0 0 1px var(--line); }
 .cell-select{
   width: 100%; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--sky); font-size: 11px;
   background: var(--paper); color: var(--ink); font-weight: 700;
 }
+
 .alerts-banner{
-  background: var(--glovo-yellow-light); border: 1px solid rgba(255,194,68,0.4); border-radius: 12px;
-  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #B9800E;
+  background: rgba(180,83,9,0.08); border: 1px solid rgba(180,83,9,0.25); border-radius: 12px;
+  padding: 12px 16px; margin-bottom: 16px; font-size: 12.5px; color: #92400E;
 }
 .alerts-banner b{ display:block; margin-bottom: 4px; font-size: 12.5px; }
 .alerts-banner ul{ margin: 4px 0 0 18px; }
+
+@media print{
+  .sidebar, .topbar, .planning-header, .planning-tabs, .alerts-banner{ display:none !important; }
+  body{ background: #fff; color:#111; }
+  .view{ padding: 0; }
+  .planning-card{ border:none; }
+  .shift-pill{ border: 1px solid #ccc; }
+}
 </style>
 </head>
 <body>
@@ -539,8 +644,9 @@ tr:last-child td{ border-bottom:none; }
       <div class="route-map">
         <svg class="route-svg" viewBox="0 0 340 480" xmlns="http://www.w3.org/2000/svg">
           <path id="routePath" d="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"
-                fill="none" stroke="rgba(255,255,255,0.25)" stroke-width="2.5" stroke-dasharray="1 9" stroke-linecap="round"/>
+                fill="none" stroke="rgba(234,241,249,0.22)" stroke-width="2.5" stroke-dasharray="1 9" stroke-linecap="round"/>
 
+          <!-- Technopolis : puce / circuit -->
           <g transform="translate(50,50)">
             <circle r="15" fill="#3E8F6F"/>
             <rect x="-6" y="-6" width="12" height="12" rx="2" fill="none" stroke="#fff" stroke-width="1.4"/>
@@ -548,6 +654,7 @@ tr:last-child td{ border-bottom:none; }
             <text x="20" y="4" class="pin-label">Technopolis</text>
           </g>
 
+          <!-- Salé - Medina : dôme / croissant -->
           <g transform="translate(280,130)">
             <circle r="15" fill="#D9643A"/>
             <path d="M-6,4 a6,6 0 1,1 12,0 z" fill="#fff"/>
@@ -556,13 +663,15 @@ tr:last-child td{ border-bottom:none; }
             <text x="-20" y="-19" text-anchor="end" class="pin-label">Salé - Medina</text>
           </g>
 
+          <!-- Agdal - Carrousel : grande roue -->
           <g transform="translate(90,230)">
-            <circle r="15" fill="#FFC244"/>
-            <circle r="6.5" fill="none" stroke="#1C2321" stroke-width="1.4"/>
-            <path d="M0,-6.5 L0,6.5 M-6.5,0 L6.5,0 M-4.6,-4.6 L4.6,4.6 M-4.6,4.6 L4.6,-4.6" stroke="#1C2321" stroke-width="1.1"/>
+            <circle r="15" fill="#D4A24C"/>
+            <circle r="6.5" fill="none" stroke="#fff" stroke-width="1.4"/>
+            <path d="M0,-6.5 L0,6.5 M-6.5,0 L6.5,0 M-4.6,-4.6 L4.6,4.6 M-4.6,4.6 L4.6,-4.6" stroke="#fff" stroke-width="1.1"/>
             <text x="20" y="4" class="pin-label">Agdal - Carrousel</text>
           </g>
 
+          <!-- Hay Riad - Soussi : villa -->
           <g transform="translate(260,330)">
             <circle r="15" fill="#7A5C8A"/>
             <path d="M-7,2 L0,-6 L7,2 V7 H-7 Z" fill="#fff"/>
@@ -570,6 +679,7 @@ tr:last-child td{ border-bottom:none; }
             <text x="-20" y="-19" text-anchor="end" class="pin-label">Hay Riad - Soussi</text>
           </g>
 
+          <!-- Temara - Oulad Mtaa : palmier -->
           <g transform="translate(80,430)">
             <circle r="15" fill="#3D6B8A"/>
             <path d="M0,7 V-2" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/>
@@ -578,8 +688,8 @@ tr:last-child td{ border-bottom:none; }
           </g>
 
           <g id="routeMotion" class="scooter-icon">
-            <circle r="9" fill="#1C2321"/>
-            <path d="M-5,2 h10 l-2,-6 h-6 z M-3,2 a3,3 0 1,0 0.1,0 M3,2 a3,3 0 1,0 0.1,0" stroke="#FFC244" stroke-width="1.4" fill="none"/>
+            <circle r="9" fill="#101D30"/>
+            <path d="M-5,2 h10 l-2,-6 h-6 z M-3,2 a3,3 0 1,0 0.1,0 M3,2 a3,3 0 1,0 0.1,0" stroke="#F5A623" stroke-width="1.4" fill="none"/>
             <animateMotion dur="16s" repeatCount="indefinite" rotate="auto"
               path="M50,50 C 170,20 260,80 280,130 S 120,180 90,230 S 280,270 260,330 S 60,370 80,430"/>
           </g>
@@ -588,9 +698,9 @@ tr:last-child td{ border-bottom:none; }
 
       <div class="hero-foot">
         <span id="heroClock">--:--</span>
-        <div id="heroDate" style="font-size:12px; font-weight:700; color:rgba(255,255,255,0.8); text-transform:capitalize; margin-bottom:8px;"></div>
+        <div id="heroDate" style="font-size:12px; font-weight:700; color:rgba(43,36,64,0.7); text-transform:capitalize; margin-bottom:8px;"></div>
         <p>Gestion opérationnelle terrain — Rabat &amp; environs</p>
-        <div id="heroMotivation" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(255,255,255,0.2); font-style:italic; font-size:12.5px; color:rgba(255,255,255,0.85); max-width:280px; line-height:1.5;"></div>
+        <div id="heroMotivation" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(43,36,64,0.14); font-style:italic; font-size:12.5px; color:rgba(43,36,64,0.65); max-width:280px; line-height:1.5;"></div>
       </div>
     </aside>
 
@@ -613,6 +723,74 @@ tr:last-child td{ border-bottom:none; }
 
 <!-- AGENT PORTAL (écran simplifié pour un agent connecté) -->
 <div id="agentPortal" class="hidden">
+  <div class="nv-badges-row">
+  <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
+    <div class="dd-label">Zone</div>
+  </div>
+  <div class="portal-bg-doodle dd-bl" style="background:#E8A317;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#E8A317" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+    <div class="dd-label">Livraison</div>
+  </div>
+  <div class="portal-bg-doodle dd-tr" style="background:#DC7A0E;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="#DC7A0E" stroke="none"><path d="M12 2l2.9 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.5 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg></div>
+    <div class="dd-label">Bravo</div>
+  </div>
+  <div class="portal-bg-doodle dd-br" style="background:#0284C7;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg></div>
+    <div class="dd-label">Équipe</div>
+  </div>
+  <div class="portal-bg-doodle dd-ml" style="background:#DC2626;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+    <div class="dd-label">Ponctuel</div>
+  </div>
+  <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="dd-label">Check-in</div>
+  </div>
+  </div>
+  <div class="portal-side-art">
+    <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="artGlow" cx="50%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#00A082" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#00A082" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="artScooter" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4FBFA8"/>
+          <stop offset="100%" stop-color="#007A63"/>
+        </linearGradient>
+      </defs>
+      <circle cx="160" cy="120" r="140" fill="url(#artGlow)"/>
+      <g opacity="0.5" fill="#4A3B1F">
+        <rect x="10" y="230" width="26" height="60" rx="2"/>
+        <rect x="42" y="200" width="30" height="90" rx="2"/>
+        <rect x="80" y="220" width="24" height="70" rx="2"/>
+        <rect x="220" y="210" width="28" height="80" rx="2"/>
+        <rect x="254" y="235" width="24" height="55" rx="2"/>
+        <rect x="284" y="195" width="30" height="95" rx="2"/>
+      </g>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#5C4A28" stroke-width="2"/>
+      <g transform="translate(90,150)">
+        <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
+        <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter)" stroke-width="6"/>
+        <circle cx="118" cy="132" r="20" fill="none" stroke="url(#artScooter)" stroke-width="6"/>
+        <path d="M18 132 L55 132 L78 80 L100 80" fill="none" stroke="url(#artScooter)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M100 80 L118 132" fill="none" stroke="url(#artScooter)" stroke-width="7" stroke-linecap="round"/>
+        <rect x="40" y="95" width="34" height="26" rx="6" fill="url(#artScooter)"/>
+        <circle cx="95" cy="55" r="14" fill="#E7E9F3"/>
+        <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter)"/>
+        <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
+      </g>
+      <g fill="#4FBFA8" opacity="0.8">
+        <circle cx="45" cy="60" r="3"/>
+        <circle cx="270" cy="45" r="4"/>
+        <circle cx="290" cy="140" r="3"/>
+      </g>
+      <path d="M250 60 L253 68 L261 68 L254 73 L257 81 L250 76 L243 81 L246 73 L239 68 L247 68 Z" fill="#FBBF24"/>
+    </svg>
+    <div class="portal-side-art-quote">"Chaque livraison compte.<br>On avance, ensemble."</div>
+  </div>
   <div class="portal-card">
     <div class="portal-header">
       <div>
@@ -632,9 +810,77 @@ tr:last-child td{ border-bottom:none; }
   </div>
 </div>
 
-<!-- PLANNING NV — PORTAIL AGENT -->
+<!-- PLANNING NV — PORTAIL AGENT (écran simplifié, indépendant, avec localisation) -->
 <div id="nvAgentPortal" class="hidden">
   <div id="nvPortalTopWeekWrap" class="nv-portal-top-week hidden"></div>
+  <div class="nv-badges-row">
+  <div class="portal-bg-doodle dd-tl" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-7.2 7-12a7 7 0 10-14 0c0 4.8 7 12 7 12z"/><circle cx="12" cy="9" r="2.5" fill="#00A082" stroke="none"/></svg></div>
+    <div class="dd-label">Zone</div>
+  </div>
+  <div class="portal-bg-doodle dd-bl" style="background:#E8A317;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#E8A317" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+    <div class="dd-label">Livraison</div>
+  </div>
+  <div class="portal-bg-doodle dd-tr" style="background:#DC7A0E;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="#DC7A0E" stroke="none"><path d="M12 2l2.9 6.9 7.6.6-5.8 5 1.8 7.4L12 18l-6.5 3.9 1.8-7.4-5.8-5 7.6-.6z"/></svg></div>
+    <div class="dd-label">Bravo</div>
+  </div>
+  <div class="portal-bg-doodle dd-br" style="background:#0284C7;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#0284C7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"/><path d="M2 21c0-4 3-6.5 7-6.5S16 17 16 21"/><circle cx="18" cy="9" r="2.5"/><path d="M22 21c0-3-1.8-5-4.5-5.3"/></svg></div>
+    <div class="dd-label">Équipe</div>
+  </div>
+  <div class="portal-bg-doodle dd-ml" style="background:#DC2626;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+    <div class="dd-label">Ponctuel</div>
+  </div>
+  <div class="portal-bg-doodle dd-mr" style="background:#00A082;">
+    <div class="dd-badge"><svg viewBox="0 0 24 24" fill="none" stroke="#00A082" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+    <div class="dd-label">Check-in</div>
+  </div>
+  </div>
+  <div class="portal-side-art">
+    <svg viewBox="0 0 320 320" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="artGlow2" cx="50%" cy="35%" r="60%">
+          <stop offset="0%" stop-color="#00A082" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#00A082" stop-opacity="0"/>
+        </radialGradient>
+        <linearGradient id="artScooter2" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#4FBFA8"/>
+          <stop offset="100%" stop-color="#007A63"/>
+        </linearGradient>
+      </defs>
+      <circle cx="160" cy="120" r="140" fill="url(#artGlow2)"/>
+      <g opacity="0.5" fill="#4A3B1F">
+        <rect x="10" y="230" width="26" height="60" rx="2"/>
+        <rect x="42" y="200" width="30" height="90" rx="2"/>
+        <rect x="80" y="220" width="24" height="70" rx="2"/>
+        <rect x="220" y="210" width="28" height="80" rx="2"/>
+        <rect x="254" y="235" width="24" height="55" rx="2"/>
+        <rect x="284" y="195" width="30" height="95" rx="2"/>
+      </g>
+      <line x1="0" y1="290" x2="320" y2="290" stroke="#5C4A28" stroke-width="2"/>
+      <g transform="translate(90,150)">
+        <ellipse cx="70" cy="140" rx="72" ry="8" fill="#000" opacity="0.25"/>
+        <circle cx="18" cy="132" r="20" fill="none" stroke="url(#artScooter2)" stroke-width="6"/>
+        <circle cx="118" cy="132" r="20" fill="none" stroke="url(#artScooter2)" stroke-width="6"/>
+        <path d="M18 132 L55 132 L78 80 L100 80" fill="none" stroke="url(#artScooter2)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M100 80 L118 132" fill="none" stroke="url(#artScooter2)" stroke-width="7" stroke-linecap="round"/>
+        <rect x="40" y="95" width="34" height="26" rx="6" fill="url(#artScooter2)"/>
+        <circle cx="95" cy="55" r="14" fill="#E7E9F3"/>
+        <path d="M85 62 Q95 42 112 50 L120 78 Q98 90 82 78 Z" fill="url(#artScooter2)"/>
+        <rect x="60" y="35" width="26" height="18" rx="4" fill="#34D399"/>
+      </g>
+      <g fill="#4FBFA8" opacity="0.8">
+        <circle cx="45" cy="60" r="3"/>
+        <circle cx="270" cy="45" r="4"/>
+        <circle cx="290" cy="140" r="3"/>
+      </g>
+      <path d="M250 60 L253 68 L261 68 L254 73 L257 81 L250 76 L243 81 L246 73 L239 68 L247 68 Z" fill="#FBBF24"/>
+    </svg>
+    <div class="portal-side-art-quote">"Ton travail fait la<br>différence, chaque jour."</div>
+  </div>
   <div class="portal-card">
     <div class="portal-header">
       <div>
@@ -670,7 +916,7 @@ tr:last-child td{ border-bottom:none; }
 
       <div class="nav-group">
         <div class="nav-label">Ressources</div>
-        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
+        <button class="nav-item" data-view="agents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09c0 .68.39 1.29 1 1.51.35.14.74.18 1.11.09"/></svg><span>Paramètres</span></button>
         <button class="nav-item" data-view="paie"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/><path d="M6 6V5a2 2 0 012-2h8a2 2 0 012 2v1"/></svg><span>Paie</span></button>
         <button class="nav-item" data-view="rapports" style="position:relative;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h6M9 9h1"/></svg><span>Rapports</span><span id="rapportsNavBadge" class="hidden" style="position:absolute; top:4px; right:8px; background:var(--red); color:#fff; font-size:10px; font-weight:800; min-width:18px; height:18px; border-radius:9px; display:flex; align-items:center; justify-content:center; padding:0 4px;"></span></button>
       </div>
@@ -828,7 +1074,7 @@ tr:last-child td{ border-bottom:none; }
           <div class="placeholder-view hidden" id="planningEmptyState">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
             <h3>Aucun planning pour cette semaine</h3>
-            <p>Cliquez sur "Générer Planning" pour créer automatiquement la semaine.</p>
+            <p>Cliquez sur "Générer Planning" pour créer automatiquement la semaine (agents avec un groupe de planification assigné).</p>
           </div>
         </div>
 
@@ -842,7 +1088,7 @@ tr:last-child td{ border-bottom:none; }
         </div>
       </section>
 
-      <!-- POINTAGE -->
+      <!-- PLACEHOLDERS -->
       <section class="view hidden" id="view-pointage">
         <div class="planning-header">
           <div class="week-nav">
@@ -866,8 +1112,6 @@ tr:last-child td{ border-bottom:none; }
           </table>
         </div>
       </section>
-
-      <!-- ABSENCES -->
       <section class="view hidden" id="view-absences">
         <div class="planning-header">
           <div class="week-nav">
@@ -911,8 +1155,6 @@ tr:last-child td{ border-bottom:none; }
           </div>
         </div>
       </section>
-
-      <!-- RAPPORTS -->
       <section class="view hidden" id="view-rapports">
         <div class="view-header">
           <div>
@@ -933,6 +1175,7 @@ tr:last-child td{ border-bottom:none; }
         </div>
 
         <div class="stat-grid" id="rapportsStatGrid" style="margin-bottom:20px;"></div>
+
         <div class="card" id="rapportsMissingCard" style="padding:16px 20px; margin-bottom:20px;"></div>
 
         <div class="card">
@@ -944,11 +1187,7 @@ tr:last-child td{ border-bottom:none; }
           </div>
         </div>
       </section>
-
-      <!-- PAIE -->
       <section class="view hidden" id="view-paie"></section>
-
-      <!-- PLANNING NV -->
       <section class="view hidden" id="view-planningnv">
         <div class="planning-header">
           <div class="week-nav">
@@ -974,7 +1213,7 @@ tr:last-child td{ border-bottom:none; }
         <div class="card planning-card hidden" id="nvWeekGrid"></div>
         <div class="hidden" id="nvZoneRestoreWrap" style="margin-bottom:12px; display:flex; gap:8px; flex-wrap:wrap;">
           <button class="btn-ghost" id="nvExportHotspotsBtn" style="border:1px solid var(--sky); color:var(--sky-ink); font-size:12px;">💾 Sauvegarder les hotspots (copier le texte)</button>
-          <button class="btn-ghost" id="nvRestoreHotspotsBtn" style="border:1px solid var(--red); color:var(--red); font-size:12px;">🔄 Restaurer les hotspots par défaut</button>
+          <button class="btn-ghost" id="nvRestoreHotspotsBtn" style="border:1px solid var(--red); color:var(--red); font-size:12px;">🔄 Restaurer les hotspots par défaut (Agdal + Hay Riad reconstruits)</button>
         </div>
         <div class="nv-zone-grid" id="nvZoneGrid"></div>
       </section>
@@ -1032,7 +1271,7 @@ tr:last-child td{ border-bottom:none; }
     <label class="form-label">Date (début)</label>
     <input type="date" id="absenceDateInput" class="login-input">
 
-    <label class="form-label">Date de fin (optionnel)</label>
+    <label class="form-label">Date de fin (optionnel — pour déclarer plusieurs jours d'un coup)</label>
     <input type="date" id="absenceDateEndInput" class="login-input">
 
     <label class="form-label">Note (optionnel)</label>
@@ -1120,7 +1359,7 @@ tr:last-child td{ border-bottom:none; }
       <option value="2">Mercredi</option>
       <option value="3">Jeudi</option>
     </select>
-    <p class="modal-hint">Ces deux réglages restent les mêmes à chaque "Générer Planning", jusqu'à ce que tu les changes ici.</p>
+    <p class="modal-hint">Ces deux réglages restent les mêmes à chaque "Générer Planning", jusqu'à ce que tu les changes ici. Seule la zone (pour les groupes en rotation) change automatiquement chaque semaine.</p>
 
     <div class="modal-error" id="agentModalError"></div>
 
@@ -1146,16 +1385,20 @@ const auth = firebase.auth();
 const db = firebase.firestore();
 
 /* ================= AGENTS DATA ================= */
+// L'app démarre vide — les agents sont ajoutés par l'utilisateur et stockés dans Firestore (collection "agents").
 let AGENTS = [];
 let agentsUnsub = null;
 const ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Salé - Medina", "Technopolis", "Temara - Oulad Mtaa"];
+// Identité couleur par zone (même code couleur que la carte de la page de login)
 const ZONE_COLORS = {
-  "Technopolis": "#00A082",
+  "Technopolis": "#3E8F6F",
   "Salé - Medina": "#D9643A",
-  "Agdal - Carrousel": "#FFC244",
+  "Agdal - Carrousel": "#D4A24C",
   "Hay Riad - Soussi": "#7A5C8A",
   "Temara - Oulad Mtaa": "#3D6B8A",
 };
+// Noms affichés personnalisés (clé = nom interne fixe ci-dessus, valeur = nom choisi par l'utilisateur).
+// La rotation/couleurs utilisent toujours le nom interne — seul l'affichage change.
 let ZONE_LABELS = {};
 let zoneLabelsUnsub = null;
 function getZoneLabel(zoneKey){
@@ -1173,9 +1416,10 @@ function listenZoneLabels(){
 }
 
 /* ================= PLANNING GROUPS ================= */
+// Les 3 zones qui tournent chaque semaine entre les groupes "rotating"
 const ROTATING_ZONES = ["Agdal - Carrousel", "Hay Riad - Soussi", "Temara - Oulad Mtaa"];
 const GROUPS = {
-  zakariae: { label: "Fixe solo", mode: "fixed_solo", zone: null },
+  zakariae: { label: "Fixe solo", mode: "fixed_solo", zone: null },   // zone choisie par l'utilisateur (agentFixedZoneInput)
   sale:     { label: "Fixe équipe (Salé)", mode: "fixed_team", zone: "Salé - Medina" },
   trio1:    { label: "Rotation — Groupe 1", mode: "rotating_team", offset: 0 },
   trio2:    { label: "Rotation — Groupe 2", mode: "rotating_team", offset: 1 },
@@ -1183,6 +1427,7 @@ const GROUPS = {
 };
 const DAY_KEYS = ["lun","mar","mer","jeu","ven","sam","dim"];
 const DAY_LABELS = ["Lundi","Mardi","Mercredi","Jeudi","Vendredi","Samedi","Dimanche"];
+// Catalogue des créneaux horaires possibles
 const SHIFT_CATALOG = {
   OFF:    { label: "OFF",         hours: 0, cls: "s-quiet"  },
   M7:     { label: "10:00-17:00", hours: 7, cls: "s-jour"   },
@@ -1198,9 +1443,10 @@ const SHIFT_CATALOG = {
   CONGE:  { label: "Congé",       hours: 0, cls: "s-quiet"  },
 };
 
+// Login profiles shown on the lock screen (admin + leads)
 const PROFILES = [
-  { id: "najib", name: "Najib", role: "Harati", initials: "NH", color: "#00A082", authType: "firebase" },
-  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", color: "#1C2321", authType: "firebase" },
+  { id: "najib", name: "Najib", role: "Harati", initials: "NH", color: "#3A6EA5", authType: "firebase" },
+  { id: "oussama_h", name: "Oussama", role: "El Hamali", initials: "OE", color: "#26241D", authType: "firebase" },
 ];
 
 /* ================= LOGIN ================= */
@@ -1209,13 +1455,17 @@ let selectedProfile = null;
 function renderProfiles(){
   const grid = document.getElementById('profileGrid');
   const passInput = document.getElementById('passwordInput');
+  const loginBtn = document.getElementById('loginBtn');
   grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--ink-soft); padding:10px;">Chargement de l\'équipe...</div>';
 
-  const AVATAR_COLORS = ['#00A082', '#FFC244', '#0284C7', '#EA580C', '#7A5C8A', '#3D6B8A', '#007A63'];
+  const AVATAR_COLORS = ['#1B5C5A', '#D9643A', '#5C8A6B', '#B23B3B', '#7A5C8A', '#3D6B8A', '#D4A24C', '#4A7A6E', '#A0526D', '#6B7A3A', '#8A6A3A', '#5A6B7A', '#9A5A3A'];
   const PERSON_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/></svg>`;
 
+  // Il faut une session (même anonyme) pour lire Firestore selon nos règles de sécurité.
   auth.signInAnonymously()
     .then(() => {
+      // L'ancien système (collection "agents", 13 agents historiques) est retiré de la grille de
+      // connexion : Planning NV est désormais le seul système actif pour les agents de terrain.
       const nvProfiles = NV_ALL_AGENTS
         .map(fullName => ({ id: 'nv::' + fullName, name: fullName.split(' ')[0], fullName, role: fullName.split(' ').slice(1).join(' '), authType: 'nv-pin' }))
         .sort((a, b) => a.name.localeCompare(b.name));
@@ -1235,7 +1485,7 @@ function renderProfiles(){
     })
     .catch(err => {
       console.error(err);
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--red); padding:10px;">Erreur de chargement.</div>';
+      grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; font-size:12px; color:var(--red); padding:10px;">Erreur de chargement. Vérifie que "Anonyme" est activé dans Firebase Authentication.</div>';
     });
 }
 
@@ -1264,8 +1514,10 @@ function attemptLogin(){
     const fullName = selectedProfile.fullName;
     db.collection('agents').where('name', '==', fullName).limit(1).get().then(snap => {
       if(!snap.empty) return snap;
+      // Nom exact introuvable : on retente en tolérant un petit écart (typo/espace) sur les fiches Agents,
+      // pour ne pas bloquer le login à cause d'une orthographe légèrement différente.
       return db.collection('agents').get().then(allSnap => {
-        let bestDoc = null, bestDist = 3;
+        let bestDoc = null, bestDist = 3; // tolère jusqu'à 2 caractères d'écart
         allSnap.docs.forEach(d => {
           const n = (d.data().name || '').trim();
           if(!n) return;
@@ -1287,6 +1539,8 @@ function attemptLogin(){
       }
       errEl.textContent = '';
       currentNvAgent = fullName;
+      // On repart d'une session propre (anonyme) : si une session admin traînait dans ce navigateur,
+      // elle ne doit jamais rester active en même temps que le portail agent.
       auth.signOut()
         .catch(() => {})
         .then(() => auth.signInAnonymously())
@@ -1320,6 +1574,7 @@ function attemptLogin(){
   }
 
   errEl.textContent = 'Connexion...';
+  // Admin/manager profiles use Firebase Auth (email/password).
   const email = `${selectedProfile.id}@opshq.ma`;
   auth.signInWithEmailAndPassword(email, pass)
     .then(() => {
@@ -1341,7 +1596,6 @@ function enterApp(profile){
   listenAgents();
   listenZoneLabels();
   listenNewRapportsNotifications();
-  listenHotspotsNv();
 }
 
 /* ================= NOTIFICATIONS: NOUVEAUX RAPPORTS/REMARQUES ================= */
@@ -1361,6 +1615,8 @@ function markRapportsSeenNow(){
 
 function listenNewRapportsNotifications(){
   if(newRapportsUnsub) newRapportsUnsub();
+  // Écoute en continu (pas juste au chargement) — la pastille et la bannière se mettent à jour
+  // dès qu'un nouveau rapport/remarque arrive, même si l'admin est déjà en train d'utiliser l'app.
   newRapportsUnsub = db.collection('rapports').orderBy('createdAt', 'desc').limit(50).onSnapshot(snap => {
     const lastSeen = getRapportsLastSeenAt();
     const fresh = snap.docs
@@ -1384,7 +1640,7 @@ function listenNewRapportsNotifications(){
     }
     const nUrgent = fresh.filter(r => r.urgent).length;
     banner.innerHTML = `
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:${nUrgent ? 'rgba(220,38,38,0.1)' : 'var(--glovo-green-light)'}; border:1px solid ${nUrgent ? 'rgba(220,38,38,0.3)' : 'rgba(0,160,130,0.3)'}; border-radius:14px; padding:14px 18px; margin-bottom:16px;">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; background:${nUrgent ? 'rgba(220,38,38,0.1)' : 'rgba(0,160,130,0.1)'}; border:1px solid ${nUrgent ? 'rgba(220,38,38,0.3)' : 'rgba(0,160,130,0.3)'}; border-radius:14px; padding:14px 18px; margin-bottom:16px;">
         <div style="font-size:13.5px; font-weight:700;">
           ${nUrgent ? '🚨' : '🔔'} ${fresh.length} nouveau(x) rapport(s)/remarque(s)${nUrgent ? ` — dont ${nUrgent} urgent(s) !` : ''}
         </div>
@@ -1402,7 +1658,7 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
   auth.signOut().finally(() => location.reload());
 });
 
-/* ================= CHANGE PASSWORD ================= */
+/* ================= CHANGE PASSWORD (self-service) ================= */
 document.getElementById('changePassBtn').addEventListener('click', () => {
   document.getElementById('oldPassInput').value = '';
   document.getElementById('newPassInput').value = '';
@@ -1537,6 +1793,7 @@ document.getElementById('portalCheckBtn').addEventListener('click', () => {
 
 function renderPortalHistory(){
   if(!currentAgentSession) return;
+  // Un seul filtre d'égalité (agentId) — pas besoin d'index composite ; tri fait côté client.
   db.collection('pointage').where('agentId', '==', currentAgentSession.id).get()
     .then(snap => {
       const docs = snap.docs.map(d => d.data()).sort((a, b) => b.date.localeCompare(a.date)).slice(0, 7);
@@ -1575,11 +1832,21 @@ document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
       renderPlaceholder(target, btn.querySelector('span').textContent);
       target.dataset.built = '1';
     }
-    if(view === 'planning') renderPlanningWeek();
-    if(view === 'pointage') renderPointageDay();
-    if(view === 'absences') renderAbsencesView();
-    if(view === 'planningnv') listenHotspotsNv();
-    if(view === 'rapports') renderRapportsView();
+    if(view === 'planning'){
+      renderPlanningWeek();
+    }
+    if(view === 'pointage'){
+      renderPointageDay();
+    }
+    if(view === 'absences'){
+      renderAbsencesView();
+    }
+    if(view === 'planningnv'){
+      listenHotspotsNv();
+    }
+    if(view === 'rapports'){
+      renderRapportsView();
+    }
   });
 });
 document.querySelector('.nav-item[data-view="dashboard"]').classList.add('active');
@@ -1632,7 +1899,7 @@ tickClock();
 /* ================= DATE / WEEK UTILITIES ================= */
 function getWeekStart(date){
   const d = new Date(date);
-  const day = d.getDay();
+  const day = d.getDay(); // 0=Sun..6=Sat
   const diff = (day === 0 ? -6 : 1 - day);
   d.setDate(d.getDate() + diff);
   d.setHours(0,0,0,0);
@@ -1677,25 +1944,30 @@ function resolveAgentZone(agent, weekIdx){
   return '—';
 }
 function resolveAgentPeriod(agent, weekIdx){
+  // Jour/Nuit est FIXE par agent (réglé dans la page Agents), pas de rotation automatique.
   if(agent.defaultPeriod === 'JOUR' || agent.defaultPeriod === 'NUIT') return agent.defaultPeriod;
   if(!agent.group){
     if(agent.shiftType === 'FIX') return agent.fixedPeriod || 'JOUR';
     return 'JOUR';
   }
+  // Agent pas encore configuré : valeur de départ raisonnable selon sa position dans le groupe.
   const members = groupMembers(agent.group);
   const idx = members.findIndex(m => m.id === agent.id);
   return idx === 0 ? 'JOUR' : 'NUIT';
 }
+// Chaque groupe de 3 personnes doit "sauter" un jour différent des autres,
+// pour que la répartition des OFF reste équilibrée (4/3/3/3 sur 13 agents).
 const GROUP_SKIP_OFFSET = { trio1: 0, trio2: 1, trio3: 2, sale: 3 };
 
 function offDayIndex(agent, weekIdx){
+  // OFF est FIXE par agent (réglé dans la page Agents), pas de rotation automatique.
   if(typeof agent.defaultOffDay === 'number' && agent.defaultOffDay >= 0 && agent.defaultOffDay <= 3){
     return agent.defaultOffDay;
   }
   const members = agent.group ? groupMembers(agent.group) : AGENTS.filter(a => !a.group).sort((x,y) => x.id.localeCompare(y.id));
   let idx = members.findIndex(m => m.id === agent.id);
   if(idx < 0) idx = 0;
-  const allDays = [0, 1, 2, 3];
+  const allDays = [0, 1, 2, 3]; // lun..jeu
   if(members.length === 1) return 0;
   const groupOffset = GROUP_SKIP_OFFSET[agent.group] || 0;
   const skipped = groupOffset % 4;
@@ -1719,7 +1991,7 @@ function listenAgents(){
 
 let emailSeedDone = false;
 function seedMissingAgentEmails(){
-  if(emailSeedDone) return;
+  if(emailSeedDone) return; // une seule passe par session, pour ne pas boucler sur les onSnapshot suivants
   emailSeedDone = true;
   AGENTS.forEach(a => {
     if(!a.email && DEFAULT_NV_EMAILS[a.name]){
@@ -1775,7 +2047,7 @@ function loadDashboardPlanningStats(){
       return;
     }
 
-    const todayIdx = (new Date().getDay() + 6) % 7;
+    const todayIdx = (new Date().getDay() + 6) % 7; // lundi=0 .. dimanche=6
     const todayKey = DAY_KEYS[todayIdx];
 
     let offToday = 0, absences = 0;
@@ -1872,7 +2144,7 @@ function levenshtein(a, b){
 
 function findNvNameTypo(name){
   if(NV_ALL_AGENTS.includes(name)) return null;
-  let best = null, bestDist = 4;
+  let best = null, bestDist = 4; // tolère jusqu'à 3 caractères d'écart
   NV_ALL_AGENTS.forEach(nvName => {
     const d = levenshtein(name.toLowerCase(), nvName.toLowerCase());
     if(d < bestDist){ bestDist = d; best = nvName; }
@@ -1903,7 +2175,7 @@ function renderAgentsTable(){
     const typoMatch = !isNvAgent ? findNvNameTypo(a.name) : null;
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><b>${a.name}</b>${typoMatch ? `<div style="font-size:10.5px; color:var(--red); font-weight:600; margin-top:2px;">⚠️ Nom différent de "${typoMatch}" (Planning NV)</div>` : ''}</td>
+      <td><b>${a.name}</b>${typoMatch ? `<div style="font-size:10.5px; color:var(--red); font-weight:600; margin-top:2px;">⚠️ Nom différent de "${typoMatch}" (Planning NV) — PIN et email ne marcheront pas tant que ce n'est pas corrigé</div>` : ''}</td>
       <td>${a.pin ? `<span class="agent-pin-chip">${a.pin}</span>` : '<span style="color:var(--ink-soft); font-weight:400;">—</span>'}</td>
       <td style="font-size:12px; min-width:170px;">
         ${a.email ? `<div style="color:var(--ink); font-weight:600; margin-bottom:6px;">✉️ ${a.email}</div>` : '<div style="color:var(--ink-soft); margin-bottom:6px;">Pas d\'email</div>'}
@@ -2000,16 +2272,16 @@ function toggleGroupFieldsVisibility(){
 document.getElementById('openAddAgentBtn').addEventListener('click', () => openAgentModal(null));
 
 document.getElementById('syncNvAgentsBtn').addEventListener('click', () => {
-  const roster = NV_ALL_AGENTS;
+  const roster = NV_ALL_AGENTS; // les 12 agents actuels de Planning NV — source de référence
   const existing = AGENTS.map(a => ({ id: a.id, name: (a.name || '').trim() }));
   const existingExactNames = new Set(existing.map(a => a.name.toLowerCase()));
 
-  const missing = [];
-  const nearMatches = [];
+  const missing = [];       // à créer directement (aucune fiche proche trouvée)
+  const nearMatches = [];   // fiche proche existante (probable typo) — à corriger à la main, pas de création auto
 
   roster.forEach(rosterName => {
-    if(existingExactNames.has(rosterName.toLowerCase())) return;
-    let closest = null, closestDist = 4;
+    if(existingExactNames.has(rosterName.toLowerCase())) return; // déjà OK
+    let closest = null, closestDist = 4; // tolère jusqu'à 3 caractères d'écart pour repérer un typo probable
     existing.forEach(a => {
       const dist = levenshtein(a.name.toLowerCase(), rosterName.toLowerCase());
       if(dist < closestDist){ closestDist = dist; closest = a; }
@@ -2025,12 +2297,12 @@ document.getElementById('syncNvAgentsBtn').addEventListener('click', () => {
 
   let msg = '';
   if(missing.length) msg += `${missing.length} agent(s) manquant(s) vont être créés dans Agents avec un PIN généré :\n${missing.join('\n')}\n\n`;
-  if(nearMatches.length) msg += `⚠️ ${nearMatches.length} fiche(s) existante(s) ressemble(nt) à un agent de Planning NV mais le nom ne correspond pas exactement :\n${nearMatches.map(m => `"${m.existingName}" → devrait être "${m.rosterName}"`).join('\n')}\n\n`;
+  if(nearMatches.length) msg += `⚠️ ${nearMatches.length} fiche(s) existante(s) ressemble(nt) à un agent de Planning NV mais le nom ne correspond pas exactement — à corriger toi-même dans Agents (pas de création automatique pour éviter un doublon) :\n${nearMatches.map(m => `"${m.existingName}" → devrait être "${m.rosterName}"`).join('\n')}\n\n`;
   msg += 'Continuer ?';
   if(!confirm(msg)) return;
 
   if(missing.length === 0){
-    alert('Rien créé automatiquement.');
+    alert('Rien créé automatiquement (voir les correspondances approximatives à corriger toi-même).');
     return;
   }
 
@@ -2055,7 +2327,7 @@ document.getElementById('syncNvAgentsBtn').addEventListener('click', () => {
   });
   batch.commit()
     .then(() => {
-      alert(`${missing.length} agent(s) créé(s) avec un PIN généré automatiquement :\n\n${pinReport.join('\n')}`);
+      alert(`${missing.length} agent(s) créé(s) avec un PIN généré automatiquement :\n\n${pinReport.join('\n')}\n\nNote ces codes pour les donner à chaque agent.`);
       btn.disabled = false;
     })
     .catch(err => { console.error(err); btn.disabled = false; alert('Erreur pendant la synchronisation.'); });
@@ -2063,7 +2335,7 @@ document.getElementById('syncNvAgentsBtn').addEventListener('click', () => {
 
 /* ================= PIN GENERATION ================= */
 function generateRandomPin(){
-  return String(Math.floor(1000 + Math.random() * 9000));
+  return String(Math.floor(1000 + Math.random() * 9000)); // 4 chiffres
 }
 
 document.getElementById('genPinBtn').addEventListener('click', () => {
@@ -2087,7 +2359,7 @@ document.getElementById('genAllPinsBtn').addEventListener('click', () => {
     .then(() => {
       btn.disabled = false;
       btn.textContent = '🎲 Générer les PIN manquants';
-      alert(`PIN générés pour ${missing.length} agent(s) :\n\n${pinReport.join('\n')}`);
+      alert(`PIN générés pour ${missing.length} agent(s) :\n\n${pinReport.join('\n')}\n\nNote ces codes pour les donner à chaque agent.`);
     })
     .catch(err => { console.error(err); btn.disabled = false; btn.textContent = '🎲 Générer les PIN manquants'; alert('Erreur pendant la génération.'); });
 });
@@ -2100,14 +2372,14 @@ document.getElementById('genAllNicknamesBtn').addEventListener('click', () => {
     batch.update(db.collection('agents').doc(a.id), { nickname: a.name.split(' ').slice(-1)[0] });
   });
   batch.commit()
-    .then(() => alert(`Surnom généré pour ${missing.length} agent(s).`))
+    .then(() => alert(`Surnom généré pour ${missing.length} agent(s) (premier prénom par défaut). Tu peux les modifier un par un si besoin.`))
     .catch(err => { console.error(err); alert('Erreur pendant la génération.'); });
 });
 
 document.getElementById('fixDefaultsBtn').addEventListener('click', () => {
   const missing = AGENTS.filter(a => a.group && (a.defaultPeriod === undefined || a.defaultOffDay === undefined));
   if(missing.length === 0){ alert('Tous les agents ont déjà une période et un OFF par défaut.'); return; }
-  const weekIdx0 = 0;
+  const weekIdx0 = 0; // valeurs de départ neutres, indépendantes de la semaine actuelle
   const batch = db.batch();
   missing.forEach(a => {
     batch.update(db.collection('agents').doc(a.id), {
@@ -2116,7 +2388,7 @@ document.getElementById('fixDefaultsBtn').addEventListener('click', () => {
     });
   });
   batch.commit()
-    .then(() => alert(`Période et OFF par défaut réglés pour ${missing.length} agent(s).`))
+    .then(() => alert(`Période et OFF par défaut réglés pour ${missing.length} agent(s). Tu peux les ajuster un par un dans "Modifier".`))
     .catch(err => { console.error(err); alert('Erreur pendant la génération.'); });
 });
 
@@ -2265,7 +2537,7 @@ document.getElementById('generatePlanningBtn').addEventListener('click', () => {
     .catch(err => console.error(err));
 });
 
-/* ================= LOAD REAL WEEK ================= */
+/* ================= LOAD REAL WEEK (planning exact fourni par Najib) ================= */
 function normalizeName(str){
   return (str || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z]/g, '');
 }
@@ -2307,6 +2579,16 @@ document.getElementById('loadRealWeekBtn').addEventListener('click', () => {
     .catch(err => console.error(err));
 });
 
+function hexToRgba(hex, alpha){
+  const h = hex.replace('#', '');
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// Retourne les infos d'affichage d'un code de shift, qu'il soit dans le catalogue
+// standard (M7, N8, OFF...) ou un horaire personnalisé encodé "C-HHMM-HHMM".
 function getShiftInfo(code){
   if(SHIFT_CATALOG[code]) return SHIFT_CATALOG[code];
   if(code && code.startsWith('C-')){
@@ -2362,6 +2644,7 @@ function renderPlanningTable(){
   table.classList.remove('hidden');
   emptyState.classList.add('hidden');
 
+  // Trie par Zone (agents de la même zone regroupés côte à côte), puis par nom
   groupedAgents = [...groupedAgents].sort((a, b) => {
     const oa = typeof a.order === 'number' ? a.order : null;
     const ob = typeof b.order === 'number' ? b.order : null;
@@ -2444,6 +2727,7 @@ function renderPlanningTable(){
   tbody.querySelectorAll('.shift-pill').forEach(btn => btn.addEventListener('click', () => openCellEditor(btn)));
 }
 
+// La semaine "en cours" = celle qui contient la date d'aujourd'hui.
 function isEditingCurrentWeek(){
   return weekKeyFor(currentWeekStart) === weekKeyFor(getWeekStart(new Date()));
 }
@@ -2456,7 +2740,7 @@ function togglePeriod(agentId){
   const newCells = {};
   DAY_KEYS.forEach(day => {
     const code = data.cells[day];
-    newCells[day] = swap[code] || code;
+    newCells[day] = swap[code] || code; // OFF/CONGE/ABS restent inchangés
   });
   const key = weekKeyFor(currentWeekStart);
   db.collection('planning').doc(key).set({
@@ -2508,6 +2792,10 @@ function openCellEditor(pillBtn){
     commitCode(select.value);
     renderPlanningTable();
   });
+  // Note : pas de handler "clic en dehors" — ça causait un bug où il fallait cliquer
+  // deux fois pour éditer une autre cellule (le handler recréait le tableau au mauvais
+  // moment et détachait le bouton qu'on venait de cliquer). Le tableau se remet à jour
+  // tout seul dès qu'une modification est enregistrée (écoute Firestore en temps réel).
 }
 
 function showCustomTimeInputs(td, agentId, day, currentCode){
@@ -2629,7 +2917,7 @@ document.getElementById('exportExcelBtn').addEventListener('click', () => {
   XLSX.writeFile(wb, `planning-${weekKeyFor(currentWeekStart)}.xlsx`);
 });
 
-/* ================= AUTH STATE ================= */
+/* ================= AUTH STATE (persist session on refresh) ================= */
 auth.onAuthStateChanged(user => {
   const nvPortalVisible = !document.getElementById('nvAgentPortal').classList.contains('hidden');
   if(user && user.email && !nvPortalVisible){
@@ -2637,6 +2925,7 @@ auth.onAuthStateChanged(user => {
     const profile = PROFILES.find(p => p.id === uid);
     if(profile) enterApp(profile);
   }
+  // Les sessions anonymes (agents) n'entrent jamais automatiquement — le PIN reste obligatoire à chaque fois.
 });
 
 /* ================= ADMIN: POINTAGE DU JOUR ================= */
@@ -2666,6 +2955,9 @@ function renderPointageDay(){
   document.getElementById('pointageDayLabel').textContent = pointageCurrentDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
   document.getElementById('pointageDateSub').textContent = dateKey;
 
+  // Deux sources : l'ancien système "pointage" (par agentId, check-in/check-out manuels) ET
+  // les check-ins réels des agents Planning NV (collection nvCheckins, par nom) — un agent
+  // Planning NV n'a jamais de doc dans "pointage" puisqu'il ne passe pas par cet ancien portail.
   Promise.all([
     db.collection('pointage').where('date', '==', dateKey).get(),
     db.collection('nvCheckins').where('date', '==', dateKey).get(),
@@ -2683,6 +2975,7 @@ function renderPointageDay(){
       const nvCheckin = nvByName[a.name];
       let inT, outT, statusHtml;
       if(nvCheckin){
+        // Agent Planning NV : check-in réel via le portail (pas de check-out — flux simplifié).
         inT = nvCheckin.checkInAt && nvCheckin.checkInAt.toDate ? nvCheckin.checkInAt.toDate().toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }) : '—';
         outT = '—';
         statusHtml = `<span class="badge jour">✅ Check-in fait</span>`;
@@ -2702,7 +2995,7 @@ function renderPointageDay(){
   }).catch(err => console.error(err));
 }
 
-/* ================= ABSENCES ================= */
+/* ================= ABSENCES (cycle 21 → 21, base 26 jours) ================= */
 const ABSENCE_TYPES = {
   maladie:     { label: 'Absence maladie',        delta: -1, cls: 'abs-maladie' },
   injustifiee: { label: 'Absence injustifiée',    delta: -1, cls: 'abs-injustifiee' },
@@ -2750,7 +3043,7 @@ document.getElementById('cycleTodayBtn').addEventListener('click', () => {
 
 let currentCycleRecords = [];
 
-/* ================= RAPPORTS ================= */
+/* ================= RAPPORTS (rapports & remarques envoyés par les agents Planning NV) ================= */
 let rapportsUnsub = null;
 let rapportsFilterBuilt = false;
 
@@ -2996,6 +3289,7 @@ function renderAbsencesDetail(){
     return (a.date || '').localeCompare(b.date || '');
   });
 
+  // Regroupe les jours consécutifs (même agent + même type + dates qui se suivent) en une seule ligne "plage".
   const groups = [];
   sorted.forEach(r => {
     const last = groups[groups.length - 1];
@@ -3032,6 +3326,7 @@ function renderAbsencesDetail(){
       return;
     }
 
+    // Ligne "plage" (repliée par défaut) + lignes individuelles cachées, dépliables.
     const groupTr = document.createElement('tr');
     groupTr.innerHTML = `
       <td><b>${g.agentName}</b></td>
@@ -3109,7 +3404,7 @@ function openAbsenceModal(absenceId = null){
     document.getElementById('absenceDateInput').value = rec.date;
     document.getElementById('absenceNoteInput').value = rec.note || '';
     endDateInput.value = '';
-    endDateInput.disabled = true;
+    endDateInput.disabled = true; // pas de plage en mode "modifier" (une seule entrée à la fois)
   } else {
     title.textContent = 'Déclarer une absence / un jour';
     document.getElementById('absenceAgentInput').value = '';
@@ -3142,6 +3437,7 @@ document.getElementById('saveAbsenceBtn').addEventListener('click', () => {
   const agentLabel = agent ? agent.name : '(agent inconnu)';
   const typeLabel = (ABSENCE_TYPES[type] && ABSENCE_TYPES[type].label) || type;
 
+  // Plage de dates (sans édition existante) : on crée une entrée par jour.
   if(!editingAbsenceId && dateEnd && dateEnd > date){
     const dayCount = Math.round((new Date(dateEnd) - new Date(date)) / 86400000) + 1;
     if(dayCount > 62){ errEl.textContent = 'La plage est trop longue (max ~2 mois).'; return; }
@@ -3151,6 +3447,7 @@ document.getElementById('saveAbsenceBtn').addEventListener('click', () => {
 
     db.collection('absences').where('agentId', '==', agentId).where('date', 'in', dayStrs.slice(0, 10)).get()
       .then(snap => {
+        // Vérifie aussi le reste de la plage si > 10 jours (limite Firestore "in")
         const checks = [];
         for(let i = 10; i < dayStrs.length; i += 10){
           checks.push(db.collection('absences').where('agentId', '==', agentId).where('date', 'in', dayStrs.slice(i, i + 10)).get());
@@ -3270,9 +3567,11 @@ document.getElementById('confirmRangeExportBtn').addEventListener('click', () =>
   if(from > to){ errEl.textContent = 'La date de début doit être avant la date de fin.'; return; }
 
   errEl.textContent = 'Génération...';
+  // Filtres d'inégalité sur un seul champ ("date") — pas d'index composite nécessaire.
   db.collection('absences').where('date', '>=', from).where('date', '<=', to).get()
     .then(snap => {
       const records = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+      // Nombre de jours calendaires dans la plage choisie, utilisé comme "jours de base".
       const dayCount = Math.round((new Date(to) - new Date(from)) / 86400000) + 1;
       const summaryRows = buildAbsenceExportRows(records, dayCount);
       const detailRows = buildAbsenceDetailRows(records);
@@ -3285,11 +3584,14 @@ document.getElementById('confirmRangeExportBtn').addEventListener('click', () =>
     .catch(err => { console.error(err); errEl.textContent = 'Erreur lors de la génération.'; });
 });
 
-/* ================= PLANNING NV ================= */
+/* ================= PLANNING NV (système indépendant : 12 agents, 4 zones, hotspots, 3 shifts) ================= */
 let currentWeekStartNv = getWeekStart(new Date());
 let NV_OVERRIDES = {};
 let nvOverridesUnsub = null;
 
+// Chaque zone a une liste de "slots" (dans le même ordre que les membres de l'équipe).
+// Chaque slot a sa propre liste de hotspots individuels — l'agent qui occupe ce slot
+// cette semaine change de hotspot chaque JOUR (rotation quotidienne dans sa liste).
 const DEFAULT_HOTSPOTS_NV = {
   "Salé-Rabat": [
     { venues: ["KFC Rabat Ville", "McDonald's Rabat Ville", "KFC Bab El Had", "Océan"] },
@@ -3315,6 +3617,9 @@ const DEFAULT_HOTSPOTS_NV = {
     { venues: ["Mcdonald's Arjat", "Carrefour Technopolis", "Marjane Technopolis", "Shawarma Ostorat Sham", "S Tacos", "Primos Chicken", "Yours Brunch", "Boca Mia", "Sushi ARIJ", "Gusto Chicken", "Bocadillos Tanjaoui", "Mahaj Alfawakih", "Vida Souss", "Crepti", "Bari bana", "Shamiyat", "Grill vibe", "175 kg"] },
   ],
 };
+// État en direct (Firestore) — permet d'ajouter des hotspots depuis l'interface, sans toucher au code.
+// NB: chaque slot est un OBJET {venues:[...]} et non un tableau brut, car Firestore interdit
+// les tableaux imbriqués directement (array of arrays).
 let HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
 let hotspotsNvUnsub = null;
 let nvLocationsUnsub = null;
@@ -3336,6 +3641,8 @@ function listenHotspotsNv(){
   hotspotsNvUnsub = db.collection('planningNV').doc('hotspots').onSnapshot(doc => {
     const data = doc.exists ? doc.data() : null;
     if(isValidHotspotShapeNv(data)){
+      // Fusionne toute zone présente dans le code (ex: nouvelle zone ajoutée) mais absente
+      // des données déjà enregistrées sur Firestore, sans écraser ce qui existe déjà.
       const merged = { ...data };
       let needsWrite = false;
       Object.keys(DEFAULT_HOTSPOTS_NV).forEach(zone => {
@@ -3347,15 +3654,22 @@ function listenHotspotsNv(){
       if(needsWrite){
         db.collection('planningNV').doc('hotspots').set(merged, { merge: true }).catch(err => console.error(err));
       }
+      // D'éventuelles clés internes commençant par "_" (anciens marqueurs de correction) ne sont
+      // jamais traitées comme des zones, sinon elles casseraient toutes les boucles sur
+      // `Object.keys(HOTSPOTS_NV)` ailleurs dans le code.
       const zonesOnly = {};
       Object.keys(merged).forEach(k => { if(!k.startsWith('_')) zonesOnly[k] = merged[k]; });
       HOTSPOTS_NV = zonesOnly;
     } else {
+      // Absent, vide, ou format invalide : on n'écrase JAMAIS automatiquement avec les valeurs
+      // par défaut du code (elles sont volontairement minimales et ne doivent pas remplacer les
+      // hotspots réels ajoutés au fil du temps par l'admin) — on initialise seulement si le
+      // document n'existe pas du tout.
       if(!doc.exists){
         db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV).catch(err => console.error(err));
         HOTSPOTS_NV = JSON.parse(JSON.stringify(DEFAULT_HOTSPOTS_NV));
       } else {
-        console.error('Document hotspots présent mais de forme invalide.', data);
+        console.error('Document hotspots présent mais de forme invalide — HOTSPOTS_NV conservé tel quel pour éviter toute perte de données.', data);
       }
     }
     refreshNvViews();
@@ -3377,7 +3691,7 @@ function addHotspotNv(zone, slotIdx){
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
-
+// Liens Google Maps personnalisés par lieu — si absent, on utilise une recherche Maps automatique.
 let NV_VENUE_LINKS = {};
 let nvVenueLinksUnsub = null;
 
@@ -3395,7 +3709,7 @@ function getVenueMapUrl(venueName){
 
 function setVenueLinkNv(venueName){
   const current = NV_VENUE_LINKS[venueName] || '';
-  const value = prompt(`Lien Google Maps pour "${venueName}" (laisse vide pour recherche auto) :`, current);
+  const value = prompt(`Lien Google Maps pour "${venueName}" (laisse vide pour revenir à la recherche automatique) :`, current);
   if(value === null) return;
   const updated = { ...NV_VENUE_LINKS };
   if(value.trim()) updated[venueName] = value.trim();
@@ -3423,6 +3737,7 @@ function editVenueNameNv(zone, slotIdx, venueIdx){
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 
+  // Si un lien Maps personnalisé existait pour l'ancien nom, on le transfère au nouveau nom.
   if(NV_VENUE_LINKS[oldName]){
     const updatedLinks = { ...NV_VENUE_LINKS };
     updatedLinks[newName] = updatedLinks[oldName];
@@ -3441,7 +3756,7 @@ function addHotspotSlotNv(zone){
 }
 
 function deleteHotspotSlotNv(zone, slotIdx){
-  if(!confirm(`Supprimer le hotspot #${slotIdx + 1} en entier ?`)) return;
+  if(!confirm(`Supprimer le hotspot #${slotIdx + 1} en entier (tous ses lieux) ?`)) return;
   const zoneSlots = (HOTSPOTS_NV[zone] || []).map(s => ({ ...s, venues: [...s.venues] }));
   zoneSlots.splice(slotIdx, 1);
   const updated = { ...HOTSPOTS_NV, [zone]: zoneSlots };
@@ -3477,6 +3792,7 @@ function renameHotspotSlotNv(zone, slotIdx){
   db.collection('planningNV').doc('hotspots').set(updated).catch(err => console.error(err));
 }
 
+// Noms d'affichage personnalisés pour les zones Planning NV (ne change pas la clé interne / la logique).
 let NV_ZONE_LABELS = {};
 let nvZoneLabelsUnsub = null;
 
@@ -3492,6 +3808,7 @@ function listenNvZoneLabels(){
   }, err => console.error(err));
 }
 
+// Ordre d'affichage personnalisé des agents dans Vue Semaine (persistant, indépendant de la semaine).
 let NV_ROW_ORDER = [];
 let nvRowOrderUnsub = null;
 
@@ -3505,6 +3822,7 @@ function listenNvRowOrder(){
 
 function moveNvAgentRow(name, direction, currentOrderNames){
   const order = NV_ROW_ORDER.length ? [...NV_ROW_ORDER] : [...currentOrderNames];
+  // S'assure que tous les agents actuellement affichés sont présents dans l'ordre stocké.
   currentOrderNames.forEach(n => { if(!order.includes(n)) order.push(n); });
   const idx = order.indexOf(name);
   const swapIdx = idx + direction;
@@ -3528,6 +3846,8 @@ const SHIFTS_NV = {
 const SHIFT_KEYS_NV = ['S1', 'S2', 'S3'];
 const NV_DAY_LABELS = ['Lun', 'Mar', 'Mer', 'Jeu'];
 
+// 4 groupes de 3 personnes — chacun tourne chaque semaine sur les 4 zones :
+// Temara → Agdal → Salé-Rabat → Hay Riad → (retour à Temara), et ainsi de suite.
 const ROTATING_TEAMS_NV = [
   ["Charaf Loummihi", "Mourad Cherradi", "Islam Elmardi"],
   ["Youssef Derkaoui", "Ayoub Ben Malek", "Aymane Chlifane"],
@@ -3535,26 +3855,6 @@ const ROTATING_TEAMS_NV = [
   ["Ayoub Abssi", "Achraf Akhlij", "Mehdi Ait Jebour"],
 ];
 const ROTATING_ZONES_NV = ["Temara", "Agdal", "Salé-Rabat", "Hay Riad"];
-const NV_FIXED_ZONE_AGENTS = { "Technopolis": ["Zakariae Benali"] };
-const NV_ALL_AGENTS = [
-  ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1], ...ROTATING_TEAMS_NV[2], ...ROTATING_TEAMS_NV[3],
-  ...Object.values(NV_FIXED_ZONE_AGENTS).flat(),
-];
-
-const NV_ZONE_COLORS = {
-  "Salé-Rabat": "#FB7185",
-  "Agdal": "#FFC244",
-  "Hay Riad": "#A78BFA",
-  "Temara": "#38BDF8",
-  "Technopolis": "#00A082",
-};
-const NV_ZONE_GRADIENTS = {
-  "Salé-Rabat": "linear-gradient(135deg,#FB7185,#E11D48)",
-  "Agdal": "linear-gradient(135deg,#FFC244,#D97706)",
-  "Hay Riad": "linear-gradient(135deg,#A78BFA,#7C3AED)",
-  "Temara": "linear-gradient(135deg,#38BDF8,#0284C7)",
-  "Technopolis": "linear-gradient(135deg,#00A082,#007A63)",
-};
 
 function updateWeekHeaderNv(){
   const weekIdx = getISOWeekIndex(currentWeekStartNv);
@@ -3586,6 +3886,8 @@ function formatHourNv(h){
   return `${String(((h % 24) + 24) % 24).padStart(2, '0')}:00`;
 }
 
+// Agents avec un horaire fixe non-standard par défaut (coupure, mi-temps...), différent des 3 shifts
+// classiques (Matin/Après-midi/Nuit). Reste modifiable via override normal (jour ou semaine) si besoin.
 const NV_FIXED_SHIFTS_NV = {
   "Zakariae Benali": {
     name: "Coupure",
@@ -3612,13 +3914,19 @@ function resolveNvShiftInfo(override, memberIdx, weekIdx, agentName){
   return { name: s.name, label7: s.label7, label8: s.label8, isJour: SHIFT_KEYS_NV.indexOf(shiftKey) === 0, shiftKey };
 }
 
+// Rotation du hotspot en cycle fixe de 3 jours (hotspot 1 → 2 → 3 → 1 → 2 → 3...),
+// même si la zone contient plus de 3 hotspots configurés (seuls les 3 premiers tournent).
 function resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx){
   const cycleLen = Math.min(3, slots.length);
   if(cycleLen === 0) return 0;
+  // Le jour OFF ne doit pas "consommer" une place dans le cycle 1→2→3, sinon la rotation saute
+  // un cran après le repos (ex: Lun=1, Mar=OFF, Mer=3 au lieu de 2). On compte uniquement les
+  // jours réellement travaillés depuis le début de la semaine pour faire avancer le cycle.
   const workingDayIdx = (typeof offDayIdx === 'number' && dayIdx > offDayIdx) ? dayIdx - 1 : dayIdx;
   return (memberIdx + workingDayIdx) % cycleLen;
 }
 
+// Comme resolveNvHotspotIndex, mais respecte un éventuel override manuel du hotspot pour CE jour précis.
 function resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx){
   const forced = override && override.hotspotOverrides && override.hotspotOverrides[dayIdx];
   if(typeof forced === 'number' && slots[forced]) return forced;
@@ -3837,6 +4145,10 @@ function editNvZone(agentName){
   });
 }
 
+const NV_FIXED_ZONE_AGENTS = {
+  "Technopolis": ["Zakariae Benali"],
+};
+
 function buildZoneAssignmentsNv(weekIdx){
   const zones = { "Salé-Rabat": [], "Agdal": [], "Hay Riad": [], "Temara": [], "Technopolis": [] };
   ROTATING_TEAMS_NV.forEach((team, teamIdx) => {
@@ -3844,9 +4156,12 @@ function buildZoneAssignmentsNv(weekIdx){
     const zone = ROTATING_ZONES_NV[zoneIdx];
     zones[zone].push(...team);
   });
+  // Agents à zone fixe (ex: Zakariae Benali à Technopolis) — ne tournent pas avec les 4 groupes.
   Object.entries(NV_FIXED_ZONE_AGENTS).forEach(([zone, names]) => {
     if(zones[zone]) zones[zone].push(...names);
   });
+  // Overrides manuels de zone pour la semaine en cours : on déplace l'agent de sa zone
+  // calculée automatiquement vers la zone choisie par l'admin.
   Object.entries(NV_OVERRIDES).forEach(([name, ov]) => {
     if(!ov || !ov.zoneOverride || !zones[ov.zoneOverride]) return;
     Object.keys(zones).forEach(z => {
@@ -3858,15 +4173,33 @@ function buildZoneAssignmentsNv(weekIdx){
   return zones;
 }
 
+const NV_ZONE_COLORS = {
+  "Salé-Rabat": "#FB7185",
+  "Agdal": "#FBBF24",
+  "Hay Riad": "#A78BFA",
+  "Temara": "#38BDF8",
+  "Technopolis": "#34D399",
+};
+const NV_ZONE_GRADIENTS = {
+  "Salé-Rabat": "linear-gradient(135deg,#FB7185,#E11D48)",
+  "Agdal": "linear-gradient(135deg,#FBBF24,#D97706)",
+  "Hay Riad": "linear-gradient(135deg,#A78BFA,#7C3AED)",
+  "Temara": "linear-gradient(135deg,#38BDF8,#0284C7)",
+  "Technopolis": "linear-gradient(135deg,#34D399,#059669)",
+};
+
 function renderPlanningNV(){
   try{
     renderPlanningNVInner();
   } catch(err){
     console.error('renderPlanningNV error:', err);
-    document.getElementById('nvZoneGrid').innerHTML = '<p style="color:var(--red); padding:20px;">Erreur d\'affichage.</p>';
+    document.getElementById('nvZoneGrid').innerHTML = '<p style="color:var(--red); padding:20px;">Erreur d\'affichage — réessaie de recharger la page.</p>';
   }
 }
 
+// À appeler après toute mise à jour de données (hotspots, overrides, liens...) : rafraîchit
+// automatiquement la vue admin ET le portail agent si l'un ou l'autre est actuellement affiché,
+// pour que les changements soient visibles immédiatement des deux côtés sans recharger la page.
 function refreshNvViews(){
   renderPlanningNV();
   const portalVisible = !document.getElementById('nvAgentPortal').classList.contains('hidden');
@@ -3908,17 +4241,17 @@ document.getElementById('nvExportHotspotsBtn').addEventListener('click', () => {
   });
   if(navigator.clipboard && navigator.clipboard.writeText){
     navigator.clipboard.writeText(text).then(() => {
-      alert('Copié !');
+      alert('Copié ! Colle ce texte dans une note, un WhatsApp à toi-même, ou un fichier — garde-le comme sauvegarde. Fais ça de temps en temps, surtout après avoir ajouté des lieux.');
     }).catch(() => {
-      prompt('Copie ce texte manuellement :', text);
+      prompt('Copie ce texte manuellement (Ctrl+A puis Ctrl+C) :', text);
     });
   } else {
-    prompt('Copie ce texte manuellement :', text);
+    prompt('Copie ce texte manuellement (Ctrl+A puis Ctrl+C) :', text);
   }
 });
 
 document.getElementById('nvRestoreHotspotsBtn').addEventListener('click', () => {
-  if(!confirm(`Ceci va remplacer les hotspots par défaut. Continuer ?`)) return;
+  if(!confirm(`Ceci va remplacer les hotspots de TOUTES les zones par les valeurs par défaut du code (Agdal et Hay Riad reconstruits à partir de tes captures d'écran ; Salé-Rabat, Temara et Technopolis restent tels quels dans le code).\n\n⚠️ Tout ajout fait depuis Vue Zones qui ne serait pas dans ces valeurs par défaut sera perdu.\n\nContinuer ?`)) return;
   db.collection('planningNV').doc('hotspots').set(DEFAULT_HOTSPOTS_NV)
     .then(() => alert('Hotspots restaurés.'))
     .catch(err => { console.error(err); alert('Erreur pendant la restauration.'); });
@@ -3944,10 +4277,11 @@ function renderNvWeekGridView(){
       const isJour = shiftInfo.isJour;
       const initials = name.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
 
+      // Total heures cette semaine : 8h Ven/Sam, 7h les autres jours travaillés, 0h le jour OFF.
       let totalHeures = 0;
       ALL_DAY_LABELS_NV.forEach((_, dayIdx) => {
         if(dayIdx === offDayIdx) return;
-        const isWeekendShort = dayIdx >= 4 && dayIdx < 6;
+        const isWeekendShort = dayIdx >= 4 && dayIdx < 6; // Ven, Sam
         totalHeures += isWeekendShort ? 8 : 7;
       });
       const hoursOk = totalHeures === 44;
@@ -3963,15 +4297,16 @@ function renderNvWeekGridView(){
           const slotIdx = (typeof hotspotOverride === 'number' && slots[hotspotOverride]) ? hotspotOverride : resolveNvHotspotIndex(slots, memberIdx, dayIdx, offDayIdx);
           const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
           const label = venues.length ? venues[0] + (venues.length > 1 ? ` +${venues.length - 1}` : '') : '—';
-          hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="Cliquer pour changer le hotspot" style="cursor:pointer; font-size:9px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:78px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:auto; margin-right:auto;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
+          hotspotLine = `<div data-cell-edit-hotspot="${name}" data-cell-edit-hotspot-day="${dayIdx}" data-cell-edit-hotspot-zone="${zone}" title="${typeof hotspotOverride === 'number' ? 'Hotspot modifié pour ce jour — cliquer pour changer' : 'Cliquer pour changer le hotspot de ce jour'}" style="cursor:pointer; font-size:9px; color:${typeof hotspotOverride === 'number' ? 'var(--sky-ink)' : 'var(--ink-soft)'}; font-weight:${typeof hotspotOverride === 'number' ? '700' : '400'}; margin-top:2px; max-width:78px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-left:auto; margin-right:auto;">${typeof hotspotOverride === 'number' ? '✏️ ' : '📍 '}${label}</div>`;
         }
+        // Un shift modifié pour CE jour précis prime sur le shift par défaut de la semaine.
         const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
         const dayShiftInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : shiftInfo;
         const dayIsJour = dayShiftInfo.isJour;
-        const isWeekendShortDay = dayIdx >= 4 && dayIdx < 6;
+        const isWeekendShortDay = dayIdx >= 4 && dayIdx < 6; // Ven, Sam
         const cellTimeLabel = isWeekendShortDay ? dayShiftInfo.label8 : dayShiftInfo.label7;
         return `<td style="${isToday ? 'background:rgba(0,160,130,0.06);' : ''}">
-          <span class="cell-pill ${dayIsJour ? 'jour' : 'nuit'}" data-cell-edit-shift="${name}" data-cell-edit-day="${dayIdx}" style="display:block; cursor:pointer; background:${dayIsJour ? 'var(--glovo-green-light)' : 'var(--glovo-yellow-light)'}; color:${dayIsJour ? 'var(--glovo-green-deep)' : '#B9800E'}; border:1.5px solid ${dayOverride ? 'var(--sky)' : (dayIsJour ? 'rgba(0,160,130,0.35)' : 'rgba(255,194,68,0.5)')}; font-size:12px; font-weight:800; font-family:var(--font-mono); padding:3px 3px; border-radius:6px;">${dayOverride ? '✏️ ' : (dayIsJour ? '☀️ ' : '🌙 ')}${cellTimeLabel}</span>
+          <span class="cell-pill ${dayIsJour ? 'jour' : 'nuit'}" data-cell-edit-shift="${name}" data-cell-edit-day="${dayIdx}" title="${dayOverride ? 'Heure modifiée pour ce jour — cliquer pour changer' : 'Cliquer pour changer l\'heure de ce jour'}" style="display:block; cursor:pointer; position:relative; background:${dayIsJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayIsJour ? '#047857' : '#8A6208'}; border:1.5px solid ${dayOverride ? 'var(--sky)' : (dayIsJour ? 'rgba(4,120,87,0.35)' : 'rgba(184,128,14,0.4)')}; font-size:12px; font-weight:800; font-family:var(--font-mono); letter-spacing:-0.02em; padding:3px 3px; border-radius:6px;">${dayOverride ? '✏️ ' : (dayIsJour ? '☀️ ' : '🌙 ')}${cellTimeLabel}</span>
           ${hotspotLine}
         </td>`;
       }).join('');
@@ -3991,7 +4326,7 @@ function renderNvWeekGridView(){
             </div>
           </td>
           <td class="zone-cell">
-            ${getNvZoneLabel(zone)}${override.zoneOverride ? ' <span>✏️</span>' : ''}
+            ${getNvZoneLabel(zone)}${override.zoneOverride ? ' <span title="Zone modifiée manuellement">✏️</span>' : ''}
             <div style="display:flex; gap:4px; margin-top:3px; flex-wrap:wrap;">
               <button class="nv-mini-link" data-grid-edit-zone="${name}" style="padding:0; font-size:9px;">Zone</button>
               <button class="nv-mini-link" data-grid-edit-shift="${name}" style="padding:0; font-size:9px;">Shift</button>
@@ -3999,7 +4334,7 @@ function renderNvWeekGridView(){
             </div>
           </td>
           ${dayCells}
-          <td style="font-weight:800; font-family:var(--font-mono); color:${hoursOk ? 'var(--green)' : 'var(--red)'};">
+          <td style="font-weight:800; font-family:var(--font-mono); color:${hoursOk ? 'var(--green)' : 'var(--red)'};" title="${hoursOk ? 'Conforme aux 44h/semaine' : 'Ne totalise pas 44h/semaine !'}">
             ${totalHeures}h${!hoursOk ? ' ⚠️' : ''}
           </td>
         </tr>
@@ -4008,6 +4343,7 @@ function renderNvWeekGridView(){
     });
   });
 
+  // Applique l'ordre d'affichage personnalisé (persistant), agents non classés à la fin dans l'ordre naturel.
   const allNames = rows.map(r => r.name);
   const orderedNames = [
     ...NV_ROW_ORDER.filter(n => allNames.includes(n)),
@@ -4058,7 +4394,7 @@ function renderNvZonesView(){
     const slots = HOTSPOTS_NV[zone] || [];
     const color = NV_ZONE_COLORS[zone];
     const gradient = NV_ZONE_GRADIENTS[zone] || color;
-    const todayIdx = (new Date().getDay() + 6) % 7;
+    const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
 
     const card = document.createElement('div');
     card.className = 'nv-zone-card';
@@ -4068,14 +4404,827 @@ function renderNvZonesView(){
     members.forEach((name, memberIdx) => {
       const override = NV_OVERRIDES[name] || {};
       const shiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, name);
-      const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
+      const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4; // 0..3 = Lun..Jeu
       const shiftLabel = `${shiftInfo.name} · ${shiftInfo.label7} / ${shiftInfo.label8} (Ven-Sam)`;
       const isJour = shiftInfo.isJour;
 
+      // Hotspot du jour (aujourd'hui) mis en avant — même calcul que le détail jour par jour ci-dessous.
       let heroHtml;
       if(todayIdx === offDayIdx){
         heroHtml = `<div class="nv-today-hero nv-today-hero-off">😴 OFF aujourd'hui</div>`;
       } else if(slots.length){
         const todaySlotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, todayIdx, offDayIdx);
         const todayVenues = (slots[todaySlotIdx] && slots[todaySlotIdx].venues) || [];
-        const todaySlotLabel = (slots[todaySlotIdx] && slots[todayلا أستطيع مساعدتك في ذلك لأنّني مجرّد نموذج لغوي وليس لديّ المعلومات والقدرات اللازمة.
+        const todaySlotLabel = (slots[todaySlotIdx] && slots[todaySlotIdx].label) || `Hotspot ${todaySlotIdx + 1}`;
+        const todayVenueHtml = todayVenues.length
+          ? todayVenues.map(v => `<a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('<span style="opacity:.5;">·</span>')
+          : '<span style="opacity:.7;">Aucun lieu défini</span>';
+        heroHtml = `<div class="nv-today-hero" style="background:${gradient};"><span class="nv-today-hero-label">Aujourd'hui · ${todaySlotLabel}</span><span class="nv-today-hero-venues">${todayVenueHtml}</span></div>`;
+      } else {
+        heroHtml = `<div class="nv-today-hero nv-today-hero-off">Aucun hotspot configuré</div>`;
+      }
+
+      let dayChips = '';
+      ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
+        if(dayIdx === offDayIdx){
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel}</div><span class="nv-day-chip off">OFF</span></div>`;
+        } else if(slots.length){
+          // Le hotspot ENTIER (zone/slot) tourne chaque jour entre les membres de l'équipe :
+          // aujourd'hui c'est Charaf qui y est, demain ce sera Islam, etc.
+          const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
+          const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+          const venueChips = venues.length
+            ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
+            : `<span class="nv-day-chip">—</span>`;
+          const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel} · ${slotLabel}</div><div class="nv-day-venues">${venueChips}</div></div>`;
+        } else {
+          dayChips += `<div class="nv-day-block"><div class="nv-day-label">${dayLabel}</div><span class="nv-day-chip">—</span></div>`;
+        }
+      });
+
+      membersHtml += `
+        <div class="nv-member-row" style="flex-direction:column; align-items:stretch;">
+          <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px;">
+            <div class="nv-member-name">${name}</div>
+            <div style="display:flex; align-items:center; gap:6px;">
+              <button class="nv-chip ${isJour ? 'shift-jour' : 'shift-nuit'}" data-edit-shift="${name}" style="border:none; cursor:pointer;" title="Modifier le shift">${shiftLabel} ✏️</button>
+            </div>
+          </div>
+          ${heroHtml}
+          <div style="text-align:right; margin:8px 0 6px;">
+            <button class="nv-mini-link" data-edit-off="${name}">✏️ Changer le jour OFF (actuellement ${NV_DAY_LABELS[offDayIdx]})</button>
+          </div>
+          <div class="nv-day-strip">${dayChips}</div>
+        </div>
+      `;
+    });
+
+    let fullListHtml = slots.map((slot, i) => {
+      const venuesHtml = (slot.venues || []).map((v, vi) => `
+        <span class="nv-venue-tag"><a href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a> <button data-edit-venue-name="${zone}::${i}::${vi}" title="Modifier le nom">✏️</button> <button data-edit-link="${v.replace(/"/g, '&quot;')}" title="Lien Maps personnalisé">🔗</button> <button data-del-venue="${zone}::${i}::${vi}" title="Supprimer">✕</button></span>
+      `).join('');
+      const slotLabel = slot.label || `#${i + 1}`;
+      return `
+        <div class="nv-fulllist-row">
+          <div><b>${slotLabel}</b> <button class="nv-mini-link" data-rename-slot="${zone}::${i}" style="padding:0; font-size:10px;">✏️</button> ${venuesHtml}</div>
+          <div style="margin-top:4px;">
+            <button class="nv-mini-link" data-add-venue="${zone}::${i}">+ lieu</button>
+            <button class="nv-mini-link" data-move-slot="${zone}::${i}">➡️ déplacer vers une autre zone</button>
+            <button class="nv-mini-link nv-mini-danger" data-del-slot="${zone}::${i}">✕ supprimer hotspot ${slotLabel}</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="nv-zone-head" style="background:${gradient};">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <h3>${getNvZoneLabel(zone)}</h3>
+          <button class="icon-btn" data-rename-zone="${zone}" title="Renommer" style="background:rgba(255,255,255,0.22); color:#fff; width:26px; height:26px;">✏️</button>
+        </div>
+        <span>${members.length} agent${members.length > 1 ? 's' : ''}</span>
+      </div>
+      ${membersHtml}
+      <div class="nv-fulllist">
+        <div class="nv-fulllist-title">Tous les hotspots de la zone</div>
+        ${fullListHtml}
+        <button class="btn-ghost" data-add-slot="${zone}" style="border:1px solid var(--line); margin-top:8px; width:100%; font-size:12px; padding:8px;">+ Nouveau hotspot</button>
+      </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+
+  grid.querySelectorAll('[data-rename-zone]').forEach(btn => {
+    btn.addEventListener('click', () => renameNvZone(btn.dataset.renameZone));
+  });
+  grid.querySelectorAll('[data-add-slot]').forEach(btn => {
+    btn.addEventListener('click', () => addHotspotSlotNv(btn.dataset.addSlot));
+  });
+  grid.querySelectorAll('[data-del-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.delSlot.split('::');
+      deleteHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-move-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.moveSlot.split('::');
+      moveHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-rename-slot]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.renameSlot.split('::');
+      renameHotspotSlotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-add-venue]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx] = btn.dataset.addVenue.split('::');
+      addHotspotNv(zone, parseInt(slotIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-del-venue]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx, venueIdx] = btn.dataset.delVenue.split('::');
+      deleteHotspotNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-edit-link]').forEach(btn => {
+    btn.addEventListener('click', () => setVenueLinkNv(btn.dataset.editLink));
+  });
+  grid.querySelectorAll('[data-edit-venue-name]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const [zone, slotIdx, venueIdx] = btn.dataset.editVenueName.split('::');
+      editVenueNameNv(zone, parseInt(slotIdx, 10), parseInt(venueIdx, 10));
+    });
+  });
+  grid.querySelectorAll('[data-edit-shift]').forEach(btn => {
+    btn.addEventListener('click', () => editNvShift(btn.dataset.editShift));
+  });
+  grid.querySelectorAll('[data-edit-off]').forEach(btn => {
+    btn.addEventListener('click', () => editNvOffDay(btn.dataset.editOff));
+  });
+  grid.querySelectorAll('[data-view-route]').forEach(btn => {
+    btn.addEventListener('click', () => viewNvAgentRoute(btn.dataset.viewRoute));
+  });
+}
+
+function viewNvAgentRoute(agentName){
+  const dateKey = dateKeyFor(new Date());
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:440px; max-height:80vh; display:flex; flex-direction:column;">
+      <h3>🧭 Trajet du jour — ${agentName}</h3>
+      <div style="font-size:12px; color:var(--ink-soft); margin-bottom:10px;">${dateKey}</div>
+      <div id="nvRouteList" style="overflow-y:auto; flex:1; min-height:60px;">Chargement…</div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvRouteCloseBtn">Fermer</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvRouteCloseBtn').addEventListener('click', close);
+
+  db.collection('nvRoutePings').where('agentName', '==', agentName).where('date', '==', dateKey).get()
+    .then(snap => {
+      const pings = snap.docs.map(d => d.data()).sort((a, b) => a.ts - b.ts);
+      const list = overlay.querySelector('#nvRouteList');
+      if(pings.length === 0){
+        list.innerHTML = `<div style="text-align:center; padding:20px; color:var(--ink-soft); font-size:12.5px;">Aucune position enregistrée aujourd'hui pour cet agent.</div>`;
+        return;
+      }
+      list.innerHTML = pings.slice().reverse().map(p => {
+        const t = new Date(p.ts).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+        const mapUrl = `https://www.google.com/maps?q=${p.lat},${p.lng}`;
+        return `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--line); font-size:12.5px;">
+          <span style="color:var(--ink-soft);">${t}</span>
+          <a href="${mapUrl}" target="_blank" rel="noopener" style="color:var(--sky-ink); font-weight:600;">📍 Voir sur la carte</a>
+        </div>`;
+      }).join('') + `<div style="text-align:center; padding-top:10px; font-size:11px; color:var(--ink-soft);">${pings.length} position${pings.length > 1 ? 's' : ''} enregistrée${pings.length > 1 ? 's' : ''}</div>`;
+    }).catch(err => {
+      console.error(err);
+      overlay.querySelector('#nvRouteList').innerHTML = `<div style="color:var(--red); text-align:center; padding:20px;">Erreur de chargement.</div>`;
+    });
+}
+
+/* ================= PLANNING NV — accès agent (PIN + localisation live) ================= */
+const NV_ALL_AGENTS = [
+  ...ROTATING_TEAMS_NV[0], ...ROTATING_TEAMS_NV[1], ...ROTATING_TEAMS_NV[2], ...ROTATING_TEAMS_NV[3],
+  ...Object.values(NV_FIXED_ZONE_AGENTS).flat(),
+];
+
+let NV_PINS = {};
+let currentNvAgent = null;
+let nvGeoIntervalId = null;
+let nvUiIntervalId = null;
+
+function stableNvPin(name){
+  // PIN dérivé du nom de l'agent, toujours identique (pas de hasard) — évite tout décalage
+  // entre ce que l'admin affiche et ce qui est réellement enregistré côté serveur.
+  let hash = 0;
+  for(let i = 0; i < name.length; i++){
+    hash = (hash * 31 + name.charCodeAt(i)) >>> 0;
+  }
+  return String(1000 + (hash % 9000));
+}
+
+/* ================= EMAIL (EmailJS — envoi manuel, pas d'automatisation serveur) ================= */
+let NV_EMAILS = {};
+const OPS_HQ_URL = 'https://najibharati-spec.github.io/FieldOps/';
+
+const DEFAULT_NV_EMAILS = {
+  "Charaf Loummihi": "loummihic@gmail.com",
+  "Mourad Cherradi": "raxmou96@gmail.com",
+  "Islam Elmardi": "islamelmardi.1993@gmail.com",
+  "Youssef Derkaoui": "altuslabcom@gmail.com",
+  "Ayoub Ben Malek": "jadalaeayoub@gmail.com",
+  "Aymane Chlifane": "aymanechlihfane639@gmail.com",
+  "Yahya Rhallah": "yahyarhallab00@gmail.com",
+  "Oussama El Atrach": "oussamaelat@gmail.com",
+  "Hassan Azgoune": "hassan.azgoune95@gmail.com",
+  "Ayoub Abssi": "ayoubabssi05@gmail.com",
+  "Achraf Akhlij": "achraf.akhlij2005@gmail.com",
+  "Mehdi Ait Jebour": "mehdiaitjebour@gmail.com",
+};
+
+function ensureNvEmails(){
+  return db.collection('planningNV').doc('emails').get().then(doc => {
+    const stored = (doc.exists && doc.data()) || {};
+    const emails = {};
+    let needsWrite = false;
+    NV_ALL_AGENTS.forEach(name => {
+      if(stored[name]){
+        emails[name] = stored[name];
+      } else if(DEFAULT_NV_EMAILS[name]){
+        emails[name] = DEFAULT_NV_EMAILS[name];
+        needsWrite = true;
+      } else {
+        emails[name] = stored[name] || '';
+      }
+    });
+    NV_EMAILS = emails;
+    if(needsWrite){
+      db.collection('planningNV').doc('emails').set(emails).catch(err => console.error(err));
+    }
+  });
+}
+
+function sendNvEmail(toEmail, toName, subject, message){
+  if(!toEmail){
+    alert('Aucun email enregistré pour cet agent.');
+    return Promise.reject(new Error('no email'));
+  }
+  const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(toEmail)}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(message)}`;
+  window.open(gmailUrl, '_blank');
+  return Promise.resolve();
+}
+
+function sendAgentAccessEmail(agent){
+  if(!agent.email){ alert(`${agent.name} n'a pas d'email enregistré.`); return; }
+  if(!agent.pin){ alert(`${agent.name} n'a pas encore de PIN.`); return; }
+  const subject = 'Bienvenue sur FieldOps — ton accès';
+  const message = `Bonjour ${agent.name.split(' ')[0]},
+
+Ton accès à l'espace Planning FieldOps est prêt.
+
+Lien de connexion : ${OPS_HQ_URL}
+Ton code PIN : ${agent.pin}
+
+Connecte-toi, sélectionne ton profil, fais ton check-in et active ta localisation pour voir ton planning de la semaine.
+
+Bonne journée sur le terrain !
+L'équipe FieldOps`;
+  sendNvEmail(agent.email, agent.name, subject, message).catch(() => {});
+}
+
+function sendNvWelcomeEmail(name){
+  const agent = AGENTS.find(a => a.name === name);
+  if(!agent){ alert(`${name} n'a pas encore de fiche dans la page Agents.`); return; }
+  sendAgentAccessEmail(agent);
+}
+
+function ensureNvPins(){
+  return db.collection('planningNV').doc('pins').get().then(doc => {
+    const stored = (doc.exists && doc.data()) || {};
+    const pins = {};
+    let needsWrite = false;
+    NV_ALL_AGENTS.forEach(name => {
+      if(stored[name]){
+        pins[name] = stored[name];
+      } else {
+        pins[name] = stableNvPin(name);
+        needsWrite = true;
+      }
+    });
+    NV_PINS = pins;
+    if(needsWrite){
+      db.collection('planningNV').doc('pins').set(pins).catch(err => console.error(err));
+    }
+  });
+}
+
+document.getElementById('showNvFlashBtn').addEventListener('click', () => {
+  const panel = document.getElementById('nvFlashPanel');
+  if(!panel.classList.contains('hidden')){ panel.classList.add('hidden'); return; }
+  panel.innerHTML = '<p style="color:var(--ink-soft); font-size:13px;">Chargement...</p>';
+  panel.classList.remove('hidden');
+  db.collection('planningNV').doc('flashInfo').get().then(doc => {
+    const current = (doc.exists && doc.data().message) || '';
+    panel.innerHTML = `
+      <div style="font-size:11px; text-transform:uppercase; letter-spacing:.04em; font-weight:700; color:var(--ink-soft); margin-bottom:8px;">📢 Info équipe — visible par tous les agents dans leur portail</div>
+      <textarea id="nvFlashInput" class="login-input" rows="3" style="resize:vertical;" placeholder="Ex: Forte demande prévue à Agdal ce soir entre 20h et 22h, restez proches de Carrefour Gourmet.">${current}</textarea>
+      <div style="display:flex; gap:8px;">
+        <button class="btn-primary" id="nvFlashSaveBtn" style="flex:1;">Enregistrer</button>
+        ${current ? '<button class="btn-ghost" id="nvFlashClearBtn" style="border:1px solid var(--line);">Effacer</button>' : ''}
+      </div>
+    `;
+    document.getElementById('nvFlashSaveBtn').addEventListener('click', () => {
+      const message = document.getElementById('nvFlashInput').value.trim();
+      db.collection('planningNV').doc('flashInfo').set({ message, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => { panel.classList.add('hidden'); })
+        .catch(err => { console.error(err); alert('Erreur lors de l\'enregistrement.'); });
+    });
+    const clearBtn = document.getElementById('nvFlashClearBtn');
+    if(clearBtn) clearBtn.addEventListener('click', () => {
+      db.collection('planningNV').doc('flashInfo').set({ message: '', updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+        .then(() => { panel.classList.add('hidden'); })
+        .catch(err => console.error(err));
+    });
+  }).catch(err => console.error(err));
+});
+
+document.getElementById('nvPortalLogoutBtn').addEventListener('click', () => {
+  stopNvLocationTracking();
+  auth.signOut().finally(() => location.reload());
+});
+
+document.getElementById('nvPortalRapportBtn').addEventListener('click', () => { openNvRapportModal(); });
+
+function findNvAgentSlot(agentName){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const zones = buildZoneAssignmentsNv(weekIdx);
+  for(const zone of Object.keys(zones)){
+    const idx = zones[zone].indexOf(agentName);
+    if(idx >= 0) return { zone, memberIdx: idx };
+  }
+  return null;
+}
+
+function renderNvPortal(){
+  document.getElementById('nvPortalAgentName').textContent = currentNvAgent;
+  const content = document.getElementById('nvPortalContent');
+  const dateKey = dateKeyFor(new Date());
+  const checkinId = `${dateKey}_${currentNvAgent}`;
+
+  const firstName = currentNvAgent.split(' ')[0];
+  const MOTIVATIONAL_QUOTES = [
+    "Chaque course compte. Bonne journée sur le terrain !",
+    "L'équipe compte sur toi aujourd'hui — donne le meilleur !",
+    "Un jour à la fois, une livraison à la fois. On avance !",
+    "Ton travail fait la différence pour toute l'équipe.",
+    "Reste concentré, reste safe — et fais du bon boulot !",
+    "Aujourd'hui encore, on assure la couverture. Bravo d'avance !",
+  ];
+  const quoteIdx = (new Date().getDate() + firstName.length) % MOTIVATIONAL_QUOTES.length;
+  const motivationHtml = `
+    <div style="background:linear-gradient(135deg,var(--sky),var(--sky-deep)); border-radius:16px; padding:22px 20px; margin-bottom:16px; text-align:center; color:#fff; box-shadow:0 16px 34px -18px rgba(0,160,130,0.55);">
+      <div style="width:52px; height:52px; border-radius:50%; background:rgba(255,255,255,0.18); display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 10px;">🛵</div>
+      <div style="font-size:17px; font-weight:800; margin-bottom:4px;">Bonjour, ${firstName} 💪</div>
+      <div style="font-size:12.5px; opacity:.9; max-width:280px; margin:0 auto; line-height:1.5;">${MOTIVATIONAL_QUOTES[quoteIdx]}</div>
+      <div id="nvStreakBadge" style="margin-top:12px;"></div>
+    </div>
+  `;
+
+  db.collection('nvCheckins').doc(checkinId).get().then(checkinDoc => {
+    const isCheckedIn = checkinDoc.exists;
+
+    if(!isCheckedIn){
+      content.innerHTML = `
+        ${motivationHtml}
+        <div style="text-align:center; padding:28px 18px; background:var(--sand-deep); border-radius:14px; border:1.5px solid var(--line);">
+          <div style="width:64px; height:64px; border-radius:50%; background:rgba(0,160,130,0.14); display:flex; align-items:center; justify-content:center; font-size:30px; margin:0 auto 12px;">✅</div>
+          <div style="font-size:15px; font-weight:800; margin-bottom:6px;">Commence ton shift</div>
+          <div style="font-size:12.5px; color:var(--ink-soft); max-width:260px; margin:0 auto 18px; line-height:1.5;">Fais ton check-in pour accéder à ton planning, ta zone et ton hotspot du jour.</div>
+          <button class="portal-btn" id="nvCheckinBtn" style="width:auto; padding:13px 30px;">✅ Check-in</button>
+        </div>
+      `;
+      document.getElementById('nvCheckinBtn').addEventListener('click', () => {
+        const btn = document.getElementById('nvCheckinBtn');
+        btn.disabled = true;
+        db.collection('nvCheckins').doc(checkinId).set({
+          agentName: currentNvAgent, date: dateKey, checkInAt: firebase.firestore.FieldValue.serverTimestamp(),
+        }).then(() => renderNvPortal()).catch(err => { console.error(err); btn.disabled = false; });
+      });
+      return;
+    }
+
+    renderNvPortalFull(content, motivationHtml, dateKey);
+  }).catch(err => {
+    console.error(err);
+    content.innerHTML = `<p style="padding:20px; color:var(--red);">Erreur de chargement.</p>`;
+  }).finally(() => renderNvStreakBadge());
+}
+
+function renderNvStreakBadge(){
+  const el = document.getElementById('nvStreakBadge');
+  if(!el) return;
+  // Une seule requête sur toute la collection : permet de calculer le streak de CHAQUE agent
+  // (pour le classement) sans multiplier les lectures Firestore.
+  db.collection('nvCheckins').get().then(snap => {
+    const byAgent = {};
+    snap.docs.forEach(d => {
+      const data = d.data();
+      if(!byAgent[data.agentName]) byAgent[data.agentName] = new Set();
+      byAgent[data.agentName].add(data.date);
+    });
+
+    function computeStreak(dates){
+      const todayKey = dateKeyFor(new Date());
+      let streak = 0;
+      let cursor = new Date();
+      if(!dates.has(todayKey)) cursor.setDate(cursor.getDate() - 1);
+      while(dates.has(dateKeyFor(cursor))){
+        streak++;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
+    }
+
+    const myStreak = computeStreak(byAgent[currentNvAgent] || new Set());
+
+    const ranking = NV_ALL_AGENTS
+      .map(name => ({ name, streak: computeStreak(byAgent[name] || new Set()) }))
+      .sort((a, b) => b.streak - a.streak);
+    const myRank = ranking.findIndex(r => r.name === currentNvAgent) + 1;
+    const rankTag = myStreak >= 1 ? ` · <b>#${myRank}</b>/${ranking.length}` : '';
+
+    if(myStreak >= 2){
+      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🔥 ${myStreak} jours d'affilée${rankTag}</span>`;
+    } else if(myStreak === 1 && myRank <= 3){
+      el.innerHTML = `<span style="display:inline-flex; align-items:center; gap:5px; background:rgba(255,255,255,0.18); padding:5px 12px; border-radius:20px; font-size:12px; font-weight:700;">🏆 #${myRank}/${ranking.length} de l'équipe</span>`;
+    }
+  }).catch(err => console.error(err));
+}
+
+function renderNvFlashInfoBox(){
+  const box = document.getElementById('nvFlashInfoBox');
+  if(!box) return;
+  db.collection('planningNV').doc('flashInfo').get().then(doc => {
+    const message = doc.exists ? (doc.data().message || '') : '';
+    if(!message){ box.innerHTML = ''; return; }
+    box.innerHTML = `
+      <div style="background:rgba(251,191,36,0.12); border:1px solid rgba(251,191,36,0.35); border-radius:14px; padding:14px 16px; margin-bottom:16px;">
+        <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; color:#B45309; margin-bottom:6px;">📢 Info équipe</div>
+        <div style="font-size:13px; color:var(--ink); line-height:1.5; white-space:pre-wrap;">${message}</div>
+      </div>
+    `;
+  }).catch(err => console.error(err));
+}
+
+function renderNvMyReports(){
+  const box = document.getElementById('nvMyReportsBox');
+  if(!box) return;
+  // Pas de orderBy() ici volontairement : évite de dépendre d'un index composite Firestore
+  // (agentName + createdAt) qui pourrait ne pas exister — on trie côté client à la place.
+  db.collection('rapports').where('agentName', '==', currentNvAgent).limit(20).get().then(snap => {
+    if(snap.empty){ box.innerHTML = ''; return; }
+    const docs = snap.docs
+      .slice()
+      .sort((a, b) => {
+        const ta = a.data().createdAt && a.data().createdAt.toMillis ? a.data().createdAt.toMillis() : 0;
+        const tb = b.data().createdAt && b.data().createdAt.toMillis ? b.data().createdAt.toMillis() : 0;
+        return tb - ta;
+      })
+      .slice(0, 5);
+    const items = docs.map(d => {
+      const r = d.data();
+      const when = r.createdAt && r.createdAt.toDate ? r.createdAt.toDate().toLocaleDateString('fr-FR', { day: '2-digit', month: '2-digit' }) : (r.date || '');
+      const typeLabel = r.type === 'remarque' ? '💬' : r.type === 'urgent' ? '🚨' : '📩';
+      const urgentTag = r.urgent ? ' <span style="color:var(--red); font-weight:800;">URGENT</span>' : '';
+      const seenTag = r.seenAt ? ' <span style="color:var(--green); font-weight:700;">✅ Lu</span>' : '';
+      const replyBlock = r.adminReply
+        ? `<div style="margin-top:4px; padding:6px 10px; background:rgba(0,160,130,0.08); border-radius:8px; border-left:3px solid var(--sky); font-size:11.5px; color:var(--ink);">💬 <b>Réponse :</b> ${r.adminReply}</div>`
+        : '';
+      return `<div style="padding:8px 0; border-bottom:1px solid var(--line); font-size:12px;">
+        <span style="color:var(--ink-soft);">${when}</span> ${typeLabel}${urgentTag}${seenTag} <span style="color:var(--ink);">${(r.text || '').slice(0, 60)}${(r.text || '').length > 60 ? '…' : ''}</span>
+        ${replyBlock}
+      </div>`;
+    }).join('');
+    box.innerHTML = `
+      <div style="font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft); margin-bottom:6px;">Mes derniers envois</div>
+      ${items}
+    `;
+    // L'agent vient de voir ses réponses : on marque tout comme lu pour la pastille de
+    // notification, et on retire la pastille immédiatement.
+    const repliedIds = snap.docs.filter(d => d.data().adminReply).map(d => d.id);
+    if(repliedIds.length){
+      localStorage.setItem('nvRepliesSeen_' + currentNvAgent, JSON.stringify(repliedIds));
+    }
+    const badge = document.getElementById('nvRapportReplyBadge');
+    if(badge) badge.classList.add('hidden');
+  }).catch(err => console.error(err));
+}
+
+let nvReplyNotifUnsub = null;
+function listenNvReplyNotifications(){
+  if(nvReplyNotifUnsub) nvReplyNotifUnsub();
+  // Écoute en continu (pas juste à l'ouverture de la modale) : la pastille rouge sur le bouton
+  // "Rapport" s'allume dès qu'une réponse admin arrive sur un de mes envois, même si je n'ai
+  // jamais ouvert la modale pour la voir.
+  nvReplyNotifUnsub = db.collection('rapports').where('agentName', '==', currentNvAgent).onSnapshot(snap => {
+    const seen = new Set(JSON.parse(localStorage.getItem('nvRepliesSeen_' + currentNvAgent) || '[]'));
+    const hasUnseenReply = snap.docs.some(d => d.data().adminReply && !seen.has(d.id));
+    const badge = document.getElementById('nvRapportReplyBadge');
+    if(badge) badge.classList.toggle('hidden', !hasUnseenReply);
+  }, err => console.error(err));
+}
+
+
+function renderNvPortalFull(content, motivationHtml, dateKey){
+  const weekIdx = getISOWeekIndex(currentWeekStartNv);
+  const slot = findNvAgentSlot(currentNvAgent);
+  if(!slot){ content.innerHTML = motivationHtml + '<p style="padding:20px;">Aucune affectation cette semaine.</p>'; return; }
+
+  const { zone, memberIdx } = slot;
+  const override = NV_OVERRIDES[currentNvAgent] || {};
+  const todayIdx = (new Date().getDay() + 6) % 7; // 0=Lun..6=Dim
+  const weekShiftInfo = resolveNvShiftInfo(override, memberIdx, weekIdx, currentNvAgent);
+  const todayOverride = (override.dayOverrides && override.dayOverrides[todayIdx]) || null;
+  const shiftInfo = todayOverride ? resolveNvShiftInfo(todayOverride, memberIdx, weekIdx) : weekShiftInfo;
+  const offDayIdx = (typeof override.offDayIdx === 'number') ? override.offDayIdx : (memberIdx + weekIdx) % 4;
+  const shiftLabel7 = shiftInfo.label7;
+  const shiftLabel8 = shiftInfo.label8;
+  const shiftName = shiftInfo.name;
+  const isJourShift = shiftInfo.isJour;
+  const slots = HOTSPOTS_NV[zone] || [];
+  const zoneColor = NV_ZONE_COLORS[zone] || 'var(--sky)';
+  const ALL_DAY_LABELS_NV = ['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'];
+
+  window.__nvTodayShiftInfo = (todayIdx !== offDayIdx) ? shiftInfo : null;
+
+  // Génère le bloc d'un jour (nom, heure, hotspot + tous les lieux) — réutilisé pour la carte
+  // "aujourd'hui" mise en avant ET pour chaque ligne de "Voir ma semaine complète".
+  function buildNvDayBlock(dayIdx, dayLabel, featured){
+    const isToday = dayIdx === todayIdx;
+    const todayTag = isToday ? ' <span class="nv-today-tag">Aujourd\'hui</span>' : '';
+    const isWeekend = dayIdx >= 4; // Ven/Sam/Dim
+    const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
+    const dayInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : weekShiftInfo;
+    const dayTime = isWeekend && dayIdx < 6 ? dayInfo.label8 : dayInfo.label7; // 8h Ven-Sam, 7h le reste
+    const timeChip = dayIdx === offDayIdx ? '' : `<span class="nv-time-chip ${dayInfo.isJour ? 'nv-time-jour' : 'nv-time-nuit'}" style="font-size:13px; padding:5px 12px; margin-left:0;">🕐 ${dayTime}</span>`;
+    const dayNameLine = `<div class="nv-day-label" style="font-size:${featured ? '19px' : '15px'}; margin-bottom:8px; ${featured ? 'text-align:center; text-transform:uppercase;' : ''}">${dayLabel}${featured ? '' : todayTag}</div>`;
+    const wrapClass = featured ? 'nv-portal-day nv-day-today' : `nv-portal-day${isToday ? ' nv-day-today' : ''}`;
+    const wrapStyle = featured ? ' style="background:var(--sand-deep); border-radius:16px; padding:18px; border:none; text-align:center;"' : '';
+
+    if(dayIdx === offDayIdx){
+      return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}<span class="nv-day-chip off" style="font-size:13px; padding:5px 12px;">😴 Repos (OFF)</span></div>`;
+    }
+    if(slots.length){
+      const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
+      const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+      const metaLine = `<div style="margin-bottom:8px; display:flex; align-items:center; gap:8px; flex-wrap:wrap; ${featured ? 'justify-content:center;' : ''}">${timeChip}<span style="font-size:12px; color:var(--ink-soft); font-weight:600;">📍 ${slotLabel}</span></div>`;
+      // Les lieux précis (venues) ne sont montrés QUE pour aujourd'hui — pour les autres jours de
+      // "Voir ma semaine complète", seule l'heure et le numéro de hotspot sont visibles (pas les
+      // adresses), pour ne pas exposer les hotspots à l'avance ou après coup.
+      if(!isToday){
+        return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}${metaLine}</div>`;
+      }
+      const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+      const venueChips = venues.length
+        ? venues.map(v => `<a class="nv-day-chip nv-day-chip-link" href="${getVenueMapUrl(v)}" target="_blank" rel="noopener">📍 ${v}</a>`).join('')
+        : `<span class="nv-day-chip">—</span>`;
+      const venuesWrap = featured ? `<div class="nv-day-venues" style="justify-content:center;">${venueChips}</div>` : `<div class="nv-day-venues">${venueChips}</div>`;
+      return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}${metaLine}${venuesWrap}</div>`;
+    }
+    return `<div class="${wrapClass}"${wrapStyle}>${dayNameLine}<div style="margin-bottom:8px;">${timeChip}</div><span class="nv-day-chip">—</span></div>`;
+  }
+
+  const todayBlockHtml = buildNvDayBlock(todayIdx, ALL_DAY_LABELS_NV[todayIdx], true);
+
+  let weekHtml = '';
+  ALL_DAY_LABELS_NV.forEach((dayLabel, dayIdx) => {
+    weekHtml += buildNvDayBlock(dayIdx, dayLabel, false);
+  });
+
+  const firstName = currentNvAgent.split(' ')[0];
+
+  content.innerHTML = `
+    ${motivationHtml}
+    <div id="nvFlashInfoBox"></div>
+    <div class="nv-portal-hero" style="background: linear-gradient(135deg, ${zoneColor}, ${zoneColor}CC);">      <div class="nv-portal-hero-label">Zone cette semaine</div>
+      <div class="nv-portal-hero-zone">${getNvZoneLabel(zone)}</div>
+    </div>
+    <div style="margin-top:14px;">${todayBlockHtml}</div>
+    <div class="portal-status" style="margin-top:14px;">
+      <button class="btn-ghost" id="nvToggleWeekBtn" style="width:100%; display:flex; align-items:center; justify-content:space-between; padding:0; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; color:var(--ink-soft);">
+        <span>📅 Voir ma semaine complète</span>
+        <span id="nvToggleWeekIcon">▾</span>
+      </button>
+      <div class="nv-day-strip hidden" id="nvWeekStripWrap" style="margin-top:12px;">${weekHtml}</div>
+    </div>
+  `;
+
+  renderNvFlashInfoBox();
+
+  // Grille horizontale (façon Vue Semaine admin) affichée en arrière-plan tout en haut de la
+  // page, uniquement sur grand écran — juste un aperçu visuel, non cliquable.
+  const topWeekWrap = document.getElementById('nvPortalTopWeekWrap');
+  if(topWeekWrap){
+    const topCells = ALL_DAY_LABELS_NV.map((dayLabel, dayIdx) => {
+      const isToday = dayIdx === todayIdx;
+      if(dayIdx === offDayIdx){
+        return `<div style="flex:1; text-align:center;"><div style="font-size:10px; font-weight:700; text-transform:uppercase; color:var(--ink-soft); margin-bottom:4px;">${dayLabel.slice(0,3)}${isToday ? ' •' : ''}</div><span class="cell-pill" style="background:var(--sand-deep); color:var(--ink-soft); display:block; font-size:11px; padding:5px 4px;">OFF</span></div>`;
+      }
+      const dayOverride = (override.dayOverrides && override.dayOverrides[dayIdx]) || null;
+      const dayInfo = dayOverride ? resolveNvShiftInfo(dayOverride, memberIdx, weekIdx) : weekShiftInfo;
+      const isWeekend = dayIdx >= 4;
+      const dayTime = isWeekend && dayIdx < 6 ? dayInfo.label8 : dayInfo.label7;
+      let hotspotLabel = '';
+      if(slots.length){
+        const slotIdx = resolveNvHotspotIndexForAgent(override, slots, memberIdx, dayIdx, offDayIdx);
+        const slotLabel = (slots[slotIdx] && slots[slotIdx].label) || `Hotspot ${slotIdx + 1}`;
+        if(isToday){
+          const venues = (slots[slotIdx] && slots[slotIdx].venues) || [];
+          hotspotLabel = venues.length
+            ? `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">📍 ${venues[0]}${venues.length > 1 ? '…' : ''}</div>`
+            : `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px;">📍 ${slotLabel}</div>`;
+        } else {
+          hotspotLabel = `<div style="font-size:9px; color:var(--ink-soft); margin-top:2px;">📍 ${slotLabel}</div>`;
+        }
+      }
+      return `<div style="flex:0 0 62px; text-align:center;">
+        <div style="font-size:10px; font-weight:700; text-transform:uppercase; color:${isToday ? 'var(--sky-ink)' : 'var(--ink-soft)'}; margin-bottom:4px;">${dayLabel.slice(0,3)}${isToday ? ' •' : ''}</div>
+        <span class="cell-pill ${dayInfo.isJour ? 'jour' : 'nuit'}" style="display:block; background:${dayInfo.isJour ? 'rgba(4,120,87,0.14)' : 'rgba(184,128,14,0.16)'}; color:${dayInfo.isJour ? '#047857' : '#8A6208'}; font-size:11.5px; font-weight:800; font-family:var(--font-mono); padding:5px 4px; border-radius:6px;">${dayTime}</span>
+        ${hotspotLabel}
+      </div>`;
+    }).join('');
+    topWeekWrap.innerHTML = `
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <b style="font-size:13px;">${currentNvAgent}</b>
+        <span style="font-size:11px; color:var(--ink-soft);">${getNvZoneLabel(zone)}</span>
+      </div>
+      <div style="display:flex; gap:6px; overflow-x:auto; padding-bottom:2px;">${topCells}</div>
+    `;
+    topWeekWrap.classList.remove('hidden');
+  }
+
+  document.getElementById('nvToggleWeekBtn').addEventListener('click', () => {
+    const wrap = document.getElementById('nvWeekStripWrap');
+    const icon = document.getElementById('nvToggleWeekIcon');
+    const nowHidden = wrap.classList.contains('hidden');
+    wrap.classList.toggle('hidden', !nowHidden);
+    icon.textContent = nowHidden ? '▴' : '▾';
+  });
+}
+
+function openNvRapportModal(){
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.innerHTML = `
+    <div class="modal-card" style="max-width:420px; max-height:85vh; display:flex; flex-direction:column; overflow-y:auto;">
+      <h3>📝 Rapport &amp; remarques</h3>
+      <div style="background:var(--sand-deep); border-radius:14px; padding:14px; border:1px solid var(--line); margin-top:10px;">
+        <select id="nvRapportType" class="login-input" style="margin-bottom:8px;">
+          <option value="rapport">📩 Rapport</option>
+          <option value="urgent">🚨 Urgent</option>
+          <option value="remarque">💬 Remarque</option>
+        </select>
+        <textarea id="nvRapportText" class="login-input" rows="3" style="resize:vertical; min-height:70px;" placeholder="Écris ton rapport ou ta remarque ici..."></textarea>
+        <button class="portal-btn" id="nvSendRapportBtn" style="padding:12px; font-size:14px;">Envoyer</button>
+        <div id="nvRapportMsg" style="text-align:center; font-size:12px; margin-top:8px;"></div>
+      </div>
+      <div id="nvMyReportsBox" style="margin-top:12px;"></div>
+      <div class="modal-actions"><button class="btn-ghost" id="nvRapportCloseBtn">Fermer</button></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+  const close = () => overlay.remove();
+  overlay.addEventListener('click', e => { if(e.target === overlay) close(); });
+  overlay.querySelector('#nvRapportCloseBtn').addEventListener('click', close);
+
+  renderNvMyReports();
+
+  overlay.querySelector('#nvSendRapportBtn').addEventListener('click', () => {
+    const type = overlay.querySelector('#nvRapportType').value;
+    const text = overlay.querySelector('#nvRapportText').value.trim();
+    const urgent = type === 'urgent';
+    const msgEl = overlay.querySelector('#nvRapportMsg');
+    if(!text){ msgEl.style.color = 'var(--red)'; msgEl.textContent = 'Écris quelque chose avant d\'envoyer.'; return; }
+    const btn = overlay.querySelector('#nvSendRapportBtn');
+    btn.disabled = true;
+    db.collection('rapports').add({
+      agentName: currentNvAgent,
+      type,
+      text,
+      urgent,
+      date: dateKeyFor(new Date()),
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+    }).then(() => {
+      overlay.querySelector('#nvRapportText').value = '';
+      msgEl.style.color = 'var(--green)';
+      msgEl.textContent = 'Envoyé ✅';
+      btn.disabled = false;
+      setTimeout(() => { msgEl.textContent = ''; }, 3000);
+      renderNvMyReports();
+    }).catch(err => {
+      console.error(err);
+      msgEl.style.color = 'var(--red)';
+      msgEl.textContent = 'Erreur, réessaie.';
+      btn.disabled = false;
+    });
+  });
+}
+
+function updateNvGeoButtonVisibility(){
+  const area = document.getElementById('nvGeoArea');
+  if(!area) return;
+  const isActive = !!nvGeoIntervalId;
+  const everActivated = localStorage.getItem('nvGeoEverActivated_' + currentNvAgent) === '1';
+  const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftInfo);
+  const minsLeft = shiftEnd ? Math.round((shiftEnd.getTime() - Date.now()) / 60000) : null;
+  const nearShiftEnd = isActive && minsLeft !== null && minsLeft <= 10 && minsLeft >= 0;
+
+  if(!isActive){
+    // Jamais activé (ou désactivé) : le bouton reste visible pour pouvoir démarrer.
+    area.innerHTML = `
+      <div style="text-align:center; padding:22px 16px; background:var(--sand-deep); border-radius:14px; border:1px solid var(--line);">
+        <div style="font-size:30px; margin-bottom:8px;">📍</div>
+        <div style="font-size:14px; font-weight:800; margin-bottom:4px;">Localisation non activée</div>
+        <div style="font-size:12px; color:var(--ink-soft); max-width:260px; margin:0 auto 16px; line-height:1.5;">Active ta position pour que l'équipe sache où tu es pendant ton shift. Elle s'arrête automatiquement à la fin.</div>
+        <button class="portal-btn" id="nvGeoBtn" style="width:auto; padding:12px 24px;">Activer la localisation</button>
+      </div>
+      <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;"></div>
+    `;
+    document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+  } else if(nearShiftEnd){
+    // Shift bientôt fini : on réaffiche le bouton comme rappel pour désactiver.
+    area.innerHTML = `
+      <button class="portal-btn" id="nvGeoBtn" style="background:var(--mustard-deep);">⏰ Ton shift se termine dans ${minsLeft} min — Désactiver</button>
+      <div id="nvGeoStatus" style="text-align:center; font-size:12px; color:var(--ink-soft); margin-top:10px;">✅ Localisation active</div>
+    `;
+    document.getElementById('nvGeoBtn').addEventListener('click', toggleNvLocationTracking);
+  } else {
+    // Actif et loin de la fin du shift : pas besoin d'afficher un bouton, juste un petit indicateur discret.
+    area.innerHTML = `<div style="text-align:center; font-size:12px; color:var(--green); padding:6px;">🟢 Localisation active</div>`;
+  }
+}
+
+function getShiftEndDateNv(shiftInfo){
+  if(!shiftInfo) return null;
+  const day = new Date().getDay(); // 0=Dim..6=Sam
+  const isWeekendShift = (day === 5 || day === 6); // Ven=5, Sam=6
+  const label = isWeekendShift ? shiftInfo.label8 : shiftInfo.label7;
+  const endStr = label.split('-')[1]; // "01:00" etc.
+  const [h, m] = endStr.split(':').map(Number);
+  const start = new Date();
+  const end = new Date();
+  end.setHours(h, m, 0, 0);
+  // Si l'heure de fin est "plus petite" que maintenant de nuit (ex: fin 02:00 après minuit), elle tombe demain.
+  if(end < start && h < 12) end.setDate(end.getDate() + 1);
+  return end;
+}
+
+function toggleNvLocationTracking(){
+  if(nvGeoIntervalId){
+    stopNvLocationTracking();
+    localStorage.removeItem('nvGeoActive_' + currentNvAgent);
+  } else {
+    localStorage.setItem('nvGeoActive_' + currentNvAgent, '1');
+    localStorage.setItem('nvGeoEverActivated_' + currentNvAgent, '1');
+    startNvLocationTracking();
+  }
+  updateNvGeoButtonVisibility();
+}
+
+function startNvLocationTracking(){
+  if(nvGeoIntervalId) return; // déjà actif
+  if(!navigator.geolocation){
+    const statusEl = document.getElementById('nvGeoStatus');
+    if(statusEl) statusEl.textContent = "Ton navigateur ne supporte pas la localisation.";
+    return;
+  }
+  const sendPosition = () => {
+    // Arrêt automatique si le shift du jour est terminé.
+    const shiftEnd = getShiftEndDateNv(window.__nvTodayShiftInfo);
+    if(shiftEnd && Date.now() > shiftEnd.getTime()){
+      stopNvLocationTracking();
+      localStorage.removeItem('nvGeoActive_' + currentNvAgent);
+      updateNvGeoButtonVisibility();
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(pos => {
+      const lat = pos.coords.latitude;
+      const lng = pos.coords.longitude;
+      const now = Date.now();
+      db.collection('planningNV').doc('locations').set({
+        [currentNvAgent]: { lat, lng, updatedAt: now },
+      }, { merge: true }).catch(err => console.error(err));
+      // Traçabilité : on garde un historique de chaque position (pas seulement la dernière)
+      // pour pouvoir reconstituer le trajet du jour a posteriori.
+      db.collection('nvRoutePings').add({
+        agentName: currentNvAgent,
+        date: dateKeyFor(new Date()),
+        lat, lng,
+        ts: now,
+      }).catch(err => console.error(err));
+    }, err => {
+      console.error(err);
+    }, { enableHighAccuracy: true, timeout: 15000 });
+  };
+  sendPosition();
+  nvGeoIntervalId = setInterval(sendPosition, 150000); // toutes les 2.5 min
+}
+
+function stopNvLocationTracking(){
+  if(nvGeoIntervalId){ clearInterval(nvGeoIntervalId); nvGeoIntervalId = null; }
+}
+
+renderProfiles();
+</script>
+
+</body>
+</html>
