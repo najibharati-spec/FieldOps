@@ -1,266 +1,382 @@
 <!DOCTYPE html>
+
 <html lang="fr">
+
 <head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>OPS HQ — Espace Agent</title>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css"/>
-  <style>
-    :root {
-      --bg: #f8fafc; --card: #ffffff; --border: #e2e8f0;
-      --t1: #0f172a; --t2: #334155; --t3: #64748b; --t4: #94a3b8;
-      --acc: #4f46e5; --accbg: #eef2ff; --accbdr: #c7d2fe;
-      --green: #16a34a; --gbg: #f0fdf4; --gbdr: #86efac;
-      --amber: #d97706; --abg: #fffbeb; --abdr: #fcd34d;
-      --red: #dc2626; --rbg: #fef2f2; --rbdr: #fca5a5;
-      --purple: #7c3aed; --pbg: #f5f3ff; --pbdr: #c4b5fd;
-      --slate: #475569; --sbg: #f1f5f9; --sbdr: #cbd5e1;
-      --shadow: 0 4px 6px -1px rgba(0,0,0,0.07), 0 2px 4px -2px rgba(0,0,0,0.05);
-      --r: 12px;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg); color: var(--t1); }
-    .header { background: #fff; border-bottom: 1px solid var(--border); padding: 16px 20px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 10; }
-    .logo { font-size: 18px; font-weight: 800; color: var(--acc); letter-spacing: 2px; }
-    .agent-selector { padding: 8px 14px; border-radius: 8px; border: 1.5px solid var(--accbdr); background: var(--accbg); font-weight: 600; color: var(--acc); font-size: 13px; outline: none; }
-    .container { max-width: 850px; margin: 24px auto; padding: 0 16px; }
 
-    /* WEEK NAV */
-    .nav-box { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 14px 18px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; box-shadow: var(--shadow); }
-    .week-title { font-weight: 700; font-size: 15px; color: var(--t1); display: flex; align-items: center; gap: 8px; }
-    .btn-nav { border: 1px solid var(--border); background: #fff; padding: 6px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; font-size: 13px; }
-    .btn-nav:hover { background: var(--bg); }
+  <meta charset="UTF-8" />
 
-    /* SUMMARY STATS */
-    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px; }
-    .s-card { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 14px; box-shadow: var(--shadow); text-align: center; }
-    .s-val { font-size: 24px; font-weight: 800; margin-top: 4px; }
-    .s-lbl { font-size: 11px; color: var(--t4); text-transform: uppercase; font-weight: 700; }
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    /* WEEK CARDS (MOBILE & DESKTOP) */
-    .week-days { display: flex; flex-direction: column; gap: 10px; margin-bottom: 30px; }
-    .day-row { background: #fff; border: 1px solid var(--border); border-radius: var(--r); padding: 16px; display: flex; align-items: center; justify-content: space-between; box-shadow: var(--shadow); transition: transform 0.1s; }
-    .day-row.is-today { border-left: 5px solid var(--acc); background: #fdfefe; }
-    .day-info { display: flex; align-items: center; gap: 14px; }
-    .day-circle { width: 44px; height: 44px; border-radius: 10px; background: var(--sbg); display: flex; flex-direction: column; align-items: center; justify-content: center; font-weight: 700; }
-    .day-circle .d-name { font-size: 10px; text-transform: uppercase; color: var(--t3); }
-    .day-circle .d-num { font-size: 15px; color: var(--t1); }
-    .day-row.is-today .day-circle { background: var(--accbg); color: var(--acc); }
-    .day-row.is-today .day-circle .d-name, .day-row.is-today .day-circle .d-num { color: var(--acc); }
+  <title>OPS HQ — Dashboard</title>
 
-    .day-title { font-weight: 700; font-size: 14px; color: var(--t1); }
-    .day-sub { font-size: 12px; color: var(--t4); margin-top: 2px; }
+  <link rel="stylesheet" href="../css/style.css" />
 
-    /* SHIFT BADGE */
-    .shift-tag { padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; text-align: right; }
-    .tag-work { background: var(--gbg); border: 1px solid var(--gbdr); color: var(--green); }
-    .tag-off { background: var(--sbg); border: 1px solid var(--sbdr); color: var(--slate); }
-    .tag-absent { background: var(--rbg); border: 1px solid var(--rbdr); color: var(--red); }
-    .tag-conge { background: var(--abg); border: 1px solid var(--abdr); color: var(--amber); }
-    .tag-maladie { background: var(--pbg); border: 1px solid var(--pbdr); color: var(--purple); }
-    .tag-empty { background: var(--bg); border: 1px dashed var(--border); color: var(--t4); font-weight: 500; }
-  </style>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css" />
+
 </head>
+
 <body>
 
-  <header class="header">
-    <div class="logo"><i class="ti ti-activity-heartbeat"></i> OPS HQ</div>
-    <div>
-      <select id="agentSelect" class="agent-selector" onchange="changeAgent()">
-        <!-- Generated dynamically -->
-      </select>
-    </div>
-  </header>
+<div class="app-layout">
 
-  <div class="container">
 
-    <!-- WEEK SELECTOR -->
-    <div class="nav-box">
-      <button class="btn-nav" onclick="prevWeek()"><i class="ti ti-chevron-left"></i> Précédent</button>
-      <div class="week-title">
-        <i class="ti ti-calendar-event" style="color:var(--acc);"></i>
-        <span id="weekLabel">Semaine...</span>
-      </div>
-      <button class="btn-nav" onclick="nextWeek()">Suivant <i class="ti ti-chevron-right"></i></button>
+
+  <!-- SIDEBAR -->
+
+  <aside class="sidebar">
+
+    <div class="sidebar-logo">
+
+      <span class="logo-text">OPS HQ</span>
+
+      <span class="logo-sub">Field Management System</span>
+
     </div>
 
-    <!-- SUMMARY -->
-    <div class="summary-grid">
-      <div class="s-card">
-        <div class="s-lbl">Heures prévues</div>
-        <div class="s-val" style="color:var(--acc);" id="statTotalHours">0h</div>
-      </div>
-      <div class="s-card">
-        <div class="s-lbl">Jours travaillés</div>
-        <div class="s-val" style="color:var(--green);" id="statWorkDays">0 j</div>
-      </div>
-      <div class="s-card">
-        <div class="s-lbl">Jours de repos</div>
-        <div class="s-val" style="color:var(--slate);" id="statOffDays">0 j</div>
-      </div>
+    <span class="nav-section">Principal</span>
+
+    <a href="dashboard.html" class="nav-item active"><i class="ti ti-layout-dashboard"></i> Dashboard</a>
+
+    <a href="planning.html"  class="nav-item"><i class="ti ti-calendar"></i> Planning</a>
+
+    <a href="agents.html"    class="nav-item"><i class="ti ti-users"></i> Agents</a>
+
+    <span class="nav-section">Gestion</span>
+
+    <a href="rapports.html"       class="nav-item"><i class="ti ti-file-text"></i> Rapports</a>
+
+    <a href="abonnements.html"    class="nav-item"><i class="ti ti-credit-card"></i> Abonnements</a>
+
+    <div class="sidebar-user">
+
+      <div class="u-name">Najib Harati</div>
+
+      <div class="u-role">Lead On-Field Agent</div>
+
+      <span class="badge badge-blue">ADMIN</span>
+
+      <br/><br/>
+
+      <span class="btn btn-sm" id="logoutBtn" style="cursor:pointer;">
+
+        <i class="ti ti-logout"></i> Déconnexion
+
+      </span>
+
     </div>
 
-    <!-- LIST OF 7 DAYS OF THE WEEK -->
-    <div class="week-days" id="weekList">
-      <!-- 7 Days injected here -->
+  </aside>
+
+
+
+  <!-- MAIN -->
+
+  <main class="main-content">
+
+
+
+    <div class="topbar">
+
+      <div>
+
+        <div class="page-title">Dashboard</div>
+
+        <div class="page-sub" id="dateDisplay"></div>
+
+      </div>
+
+      <div class="topbar-actions">
+
+        <a href="planning.html" class="btn btn-primary"><i class="ti ti-plus"></i> Nouvelle mission</a>
+
+      </div>
+
     </div>
 
-  </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-    import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    const FC = {
-      apiKey: "AIzaSyDdXwRWBvTJ9RffnY16W_r0dHE1WOJj1Rs",
-      authDomain: "ops-hq-cc38c.firebaseapp.com",
-      projectId: "ops-hq-cc38c",
-      storageBucket: "ops-hq-cc38c.firebasestorage.app",
-      messagingSenderId: "909070102010",
-      appId: "1:909070102010:web:5abb7857fe2a557ed68843"
-    };
-    const app = initializeApp(FC);
-    const db  = getFirestore(app);
+    <!-- STATS -->
 
-    const AGENTS = [
-      "Achraf Akhlij", "Youssef Derkaoui", "Aymane Chlifane", "Ayoub Abssi",
-      "Mourad Cherradi", "Yahya Rhallab", "Hassan Azgoune", "Ayoub Ben Malek",
-      "Charaf Loummihi", "Zakariae Benali", "Islam Elmardi", "Oussama El Atrach"
-    ];
+    <div class="stat-grid">
 
-    const JOURS_FR = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi", "Samedi", "Dimanche"];
+      <div class="stat-card">
 
-    let currentAgent = AGENTS[0];
-    let weekStart = getMonday(new Date());
-    let allPlanning = [];
+        <div class="stat-label">Agents actifs</div>
 
-    function getMonday(d) {
-      const c = new Date(d);
-      const day = c.getDay();
-      c.setDate(c.getDate() - day + (day === 0 ? -6 : 1));
-      c.setHours(0,0,0,0);
-      return c;
+        <div class="stat-val" style="color:var(--green);" id="statAgents">12</div>
+
+        <div class="stat-sub">Équipe complète</div>
+
+      </div>
+
+      <div class="stat-card">
+
+        <div class="stat-label">Missions en cours</div>
+
+        <div class="stat-val" style="color:var(--accent-2);" id="statMissions">—</div>
+
+        <div class="stat-sub">Ce mois</div>
+
+      </div>
+
+      <div class="stat-card">
+
+        <div class="stat-label">Rapports reçus</div>
+
+        <div class="stat-val" style="color:var(--amber);" id="statRapports">—</div>
+
+        <div class="stat-sub" id="statRapportsSub">Chargement...</div>
+
+      </div>
+
+      <div class="stat-card">
+
+        <div class="stat-label">Abonnements</div>
+
+        <div class="stat-val" style="color:var(--purple);" id="statAbos">12</div>
+
+        <div class="stat-sub">Tous actifs</div>
+
+      </div>
+
+    </div>
+
+
+
+    <!-- AGENTS -->
+
+    <div class="card">
+
+      <div class="card-title">
+
+        <span><i class="ti ti-users" style="margin-right:6px;"></i>Agents sur le terrain</span>
+
+      </div>
+
+      <table class="tbl">
+
+        <thead>
+
+          <tr>
+
+            <th>Agent</th>
+
+            <th>Statut abonnement</th>
+
+            <th>Dernière activité</th>
+
+            <th>Action</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody id="agentsTableBody"></tbody>
+
+      </table>
+
+    </div>
+
+
+
+    <!-- DERNIERS RAPPORTS -->
+
+    <div class="card">
+
+      <div class="card-title">
+
+        <span><i class="ti ti-file-text" style="margin-right:6px;"></i>Derniers rapports</span>
+
+        <a href="rapports.html" class="btn btn-sm">Voir tout</a>
+
+      </div>
+
+      <div id="recentRapports">
+
+        <div class="empty"><i class="ti ti-file-off"></i><p>Aucun rapport reçu pour l'instant.</p></div>
+
+      </div>
+
+    </div>
+
+
+
+  </main>
+
+</div>
+
+
+
+<script type="module">
+
+  import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+
+  import { getAuth, onAuthStateChanged, signOut }
+
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+
+  import { getFirestore, collection, getDocs, query, orderBy, limit, doc, getDoc }
+
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  import { firebaseConfig, AGENTS } from "../js/firebase-config.js";
+
+
+
+  const app  = initializeApp(firebaseConfig);
+
+  const auth = getAuth(app);
+
+  const db   = getFirestore(app);
+
+
+
+  // Guard: admin only
+
+  onAuthStateChanged(auth, async (user) => {
+
+    if (!user) { window.location.href = "../index.html"; return; }
+
+    const snap = await getDoc(doc(db, "users", user.uid));
+
+    if (!snap.exists() || snap.data().role !== "admin") {
+
+      window.location.href = "../index.html";
+
     }
-    function addDays(d, n) {
-      const r = new Date(d);
-      r.setDate(r.getDate() + n);
-      return r;
-    }
-    function iso(d) { return d.toISOString().split("T")[0]; }
-    function fmt(d) { return d.toLocaleDateString("fr-FR", { day: "2-digit", month: "short" }); }
 
-    function calcH(v) {
-      if (!v || ["OFF","ABSENT","CONGE","MALADIE",""].includes(v)) return 0;
-      const p = v.split("-"); if (p.length < 2) return 0;
-      let [dh, dm] = p[0].split(":").map(Number);
-      let [fh, fm] = p[1].split(":").map(Number);
-      if (fh < dh || (fh === dh && fm <= dm)) fh += 24;
-      return Math.round(((fh * 60 + fm) - (dh * 60 + dm)) / 60 * 10) / 10;
-    }
+  });
 
-    // Init Dropdown
-    const select = document.getElementById("agentSelect");
-    AGENTS.forEach(name => {
-      const opt = document.createElement("option");
-      opt.value = name;
-      opt.textContent = name;
-      select.appendChild(opt);
-    });
 
-    window.changeAgent = () => {
-      currentAgent = select.value;
-      localStorage.setItem("ops_agent", currentAgent);
-      renderWeek();
-    };
 
-    window.prevWeek = () => { weekStart = addDays(weekStart, -7); renderWeek(); };
-    window.nextWeek = () => { weekStart = addDays(weekStart, 7); renderWeek(); };
+  // Date
 
-    async function loadData() {
-      try {
-        const snap = await getDocs(collection(db, "planning2"));
-        allPlanning = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-        renderWeek();
-      } catch (e) {
-        console.error("Erreur chargement Firestore:", e);
-      }
-    }
+  const now = new Date();
 
-    function renderWeek() {
-      const we = addDays(weekStart, 6);
-      document.getElementById("weekLabel").textContent = `${fmt(weekStart)} — ${fmt(we)}`;
+  document.getElementById("dateDisplay").textContent =
 
-      const cont = document.getElementById("weekList");
-      cont.innerHTML = "";
+    now.toLocaleDateString("fr-FR", { weekday:"long", year:"numeric", month:"long", day:"numeric" });
 
-      let totalHours = 0;
-      let workDays = 0;
-      let offDays = 0;
 
-      const todayStr = iso(new Date());
 
-      for (let i = 0; i < 7; i++) {
-        const curDate = addDays(weekStart, i);
-        const curIso = iso(curDate);
-        const isToday = curIso === todayStr;
+  // Agents table
 
-        const p = allPlanning.find(x => x.agent === currentAgent && x.date === curIso);
-        const val = p ? p.val : "";
+  const tbody = document.getElementById("agentsTableBody");
 
-        let badgeClass = "tag-empty";
-        let textDisplay = "Non planifié";
-        let subText = "Aucun créneau renseigné";
+  AGENTS.forEach(ag => {
 
-        if (val === "OFF") {
-          badgeClass = "tag-off"; textDisplay = "REPOS (OFF)"; subText = "Journée libre"; offDays++;
-        } else if (val === "ABSENT") {
-          badgeClass = "tag-absent"; textDisplay = "ABSENT"; subText = "Absence signalée";
-        } else if (val === "CONGE") {
-          badgeClass = "tag-conge"; textDisplay = "CONGÉ"; subText = "Congé autorisé";
-        } else if (val === "MALADIE") {
-          badgeClass = "tag-maladie"; textDisplay = "MALADIE"; subText = "Arrêt maladie";
-        } else if (val && val.includes("-")) {
-          const h = calcH(val);
-          totalHours += h;
-          workDays++;
-          badgeClass = "tag-work";
-          textDisplay = val.replace("-", " → ");
-          subText = `${h} heures de shift`;
-        }
+    const tr = document.createElement("tr");
 
-        const row = document.createElement("div");
-        row.className = `day-row ${isToday ? 'is-today' : ''}`;
-        row.innerHTML = `
-          <div class="day-info">
-            <div class="day-circle">
-              <span class="d-name">${JOURS_FR[i].substring(0, 3)}</span>
-              <span class="d-num">${curDate.getDate()}</span>
-            </div>
-            <div>
-              <div class="day-title">${JOURS_FR[i]} ${curDate.toLocaleDateString("fr-FR", { month: "long" })} ${isToday ? '<span style="color:var(--acc);font-size:11px;font-weight:700;">(Aujourd’hui)</span>' : ''}</div>
-              <div class="day-sub">${subText}</div>
-            </div>
+    tr.innerHTML = `
+
+      <td>
+
+        <div class="agent-row">
+
+          <div class="avatar">${ag.initials}</div>
+
+          <span class="agent-name-txt">${ag.name}</span>
+
+        </div>
+
+      </td>
+
+      <td><span class="badge badge-green">Actif</span></td>
+
+      <td style="color:var(--text-3);">—</td>
+
+      <td>
+
+        <a href="agents.html" class="btn btn-sm"><i class="ti ti-eye"></i> Voir</a>
+
+      </td>`;
+
+    tbody.appendChild(tr);
+
+  });
+
+
+
+  // Rapports récents
+
+  try {
+
+    const q    = query(collection(db, "rapports"), orderBy("createdAt","desc"), limit(5));
+
+    const snap = await getDocs(q);
+
+    const container = document.getElementById("recentRapports");
+
+    document.getElementById("statRapports").textContent = snap.size;
+
+    const nonLus = snap.docs.filter(d => !d.data().lu).length;
+
+    document.getElementById("statRapportsSub").textContent =
+
+      nonLus > 0 ? `${nonLus} non lu(s)` : "Tous lus";
+
+
+
+    if (!snap.empty) {
+
+      container.innerHTML = "";
+
+      snap.forEach(d => {
+
+        const r   = d.data();
+
+        const div = document.createElement("div");
+
+        div.style.cssText = "display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid var(--border);";
+
+        const dateStr = r.createdAt?.toDate
+
+          ? r.createdAt.toDate().toLocaleDateString("fr-FR")
+
+          : "—";
+
+        div.innerHTML = `
+
+          <div>
+
+            <div style="font-size:13px;color:var(--text-1);font-weight:500;">${r.titre || "Rapport"}</div>
+
+            <div style="font-size:11px;color:var(--text-4);margin-top:2px;">${r.agentName || ""} — ${dateStr}</div>
+
           </div>
-          <div class="shift-tag ${badgeClass}">
-            ${textDisplay}
-          </div>
-        `;
-        cont.appendChild(row);
-      }
 
-      document.getElementById("statTotalHours").textContent = `${totalHours}h`;
-      document.getElementById("statWorkDays").textContent = `${workDays} j`;
-      document.getElementById("statOffDays").textContent = `${offDays} j`;
+          <span class="badge ${r.lu ? 'badge-green' : 'badge-blue'}">${r.lu ? 'Lu' : 'Nouveau'}</span>`;
+
+        container.appendChild(div);
+
+      });
+
     }
 
-    // Auto-select stored agent if available
-    const saved = localStorage.getItem("ops_agent");
-    if (saved && AGENTS.includes(saved)) {
-      currentAgent = saved;
-      select.value = saved;
-    }
+    document.getElementById("statMissions").textContent = snap.size;
 
-    loadData();
-  </script>
+  } catch(e) {
+
+    console.error(e);
+
+  }
+
+
+
+  // Logout
+
+  document.getElementById("logoutBtn").addEventListener("click", async () => {
+
+    await signOut(auth);
+
+    window.location.href = "../index.html";
+
+  });
+
+</script>
+
 </body>
-</html>
+
+</html> 
+
